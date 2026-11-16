@@ -1,0 +1,12 @@
+﻿{
+    "SourceCommit":  "ddbd5f5fefec15963db373b7f4ad476716f01981",
+    "Status":  "WerDumpUnavailable",
+    "CdbPath":  "C:\\Program Files (x86)\\Windows Kits\\10\\Debuggers\\x64\\cdb.exe",
+    "CdbVersion":  "10.0.26100.9457 (WinBuild.160101.0800)",
+    "DumpCreated":  false,
+    "DumpBytes":  null,
+    "CdbExitCode":  null,
+    "RegistryRestored":  true,
+    "Error":  null,
+    "Note":  "Runner-local dump only. No dump, raw memory, or full debugger log is exported. Missing tools or capture do not validate the app."
+}
