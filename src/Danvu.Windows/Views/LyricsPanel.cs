@@ -83,6 +83,7 @@ public sealed class LyricsPanel : Grid
             VerticalAlignment = VerticalAlignment.Center
         });
         var close = QuietButton("⌄", "Close lyrics", 26);
+        AutomationProperties.SetAutomationId(close, "Lyrics.Close");
         close.Click += (_, _) => CloseRequested?.Invoke(this, EventArgs.Empty);
         Grid.SetColumn(close, 1);
         header.Children.Add(close);
@@ -116,6 +117,7 @@ public sealed class LyricsPanel : Grid
         _scroll.VerticalScrollMode = ScrollMode.Enabled;
         _scroll.ZoomMode = ZoomMode.Disabled;
         _scroll.IsTabStop = true;
+        AutomationProperties.SetAutomationId(_scroll, "Lyrics.Scroll");
         AutomationProperties.SetName(_scroll, "Synchronized lyrics. Scroll to browse; choose Jump to current to resume following.");
         _lyricRegion.Children.Add(_scroll);
 
@@ -145,6 +147,7 @@ public sealed class LyricsPanel : Grid
         footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         _source.VerticalAlignment = VerticalAlignment.Center;
+        AutomationProperties.SetAutomationId(_source, "Lyrics.Source");
         _source.TextWrapping = TextWrapping.WrapWholeWords;
         footer.Children.Add(_source);
         _jump = QuietButton("↑  Jump to current", "Jump to current lyric", 13);
@@ -235,6 +238,7 @@ public sealed class LyricsPanel : Grid
                 Opacity = 1
             };
             AutomationProperties.SetName(button, $"Seek to {TimeSpan.FromMilliseconds(line.TimeMs):m\\:ss}: {line.Text}");
+            AutomationProperties.SetAutomationId(button, $"Lyrics.Line.{_rows.Count}");
             button.Click += async (_, _) =>
             {
                 try

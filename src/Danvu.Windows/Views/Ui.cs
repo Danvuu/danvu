@@ -56,6 +56,11 @@ internal static class Ui
         Tactile(b);
         return b;
     }
+    public static T WithId<T>(T element, string id) where T : DependencyObject
+    {
+        AutomationProperties.SetAutomationId(element, id);
+        return element;
+    }
     public static Border Art(string url, double size, double radius = 12)
     {
         var image = new Image { Stretch = Stretch.UniformToFill, Width = size, Height = size };

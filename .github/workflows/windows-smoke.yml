@@ -1,0 +1,138 @@
+name: Native Windows desktop smoke check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/windows-smoke.yml'
+      - 'scripts/smoke-windows.ps1'
+      - 'src/Danvu.Windows/**'
+      - 'src/Danvu.Core/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-desktop:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build current native source without creating a distribution archive
+        shell: pwsh
+        run: ./scripts/build.ps1 -Configuration Release -SkipArchive
+      - name: Scan candidate normally, then exercise its real desktop interface
+        shell: powershell
+        env:
+          MUSIC_SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          ./scripts/smoke-windows.ps1 -ApplicationDirectory (Join-Path $PWD.Path 'artifacts/publish/win-x64') -OutputDirectory (Join-Path $PWD.Path 'artifacts/native-smoke') -SourceCommit $env:MUSIC_SOURCE_COMMIT
+      - name: Record missing smoke evidence
+        if: always()
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'artifacts/native-smoke/report.json')) {
+            '## Native desktop checks unrun' | Add-Content $env:GITHUB_STEP_SUMMARY
+            'The build or smoke runner failed before producing a report. No native functionality result is verified.' | Add-Content $env:GITHUB_STEP_SUMMARY
+          }
+      - name: Upload reports and screenshots only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Music-native-desktop-smoke-diagnostics
+          path: artifacts/native-smoke/
+          if-no-files-found: warn
+          retention-days: 14
+
+  export-diagnostics:
+    name: Store diagnostic evidence without binaries
+    needs: native-desktop
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download this run's diagnostic files
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: Music-native-desktop-smoke-diagnostics
+          path: native-diagnostics
+      - name: Validate bounded diagnostic allowlist
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, pathlib, struct
+          source = pathlib.Path('native-diagnostics')
+          source.mkdir(exist_ok=True)
+          report_path = source / 'report.json'
+          if not report_path.exists():
+              report_path.write_text(json.dumps({'SourceCommit': os.environ['SOURCE_COMMIT'], 'Result': 'Unavailable', 'ApplicationExecuted': False, 'Stage': 'DiagnosticArtifactUnavailable', 'Errors': ['This run produced no downloadable native-smoke report. No functionality pass is established.']}), encoding='utf-8')
+          assert report_path.stat().st_size <= 3_000_000
+          report = json.loads(report_path.read_text(encoding='utf-8-sig'))
+          assert report['SourceCommit'] == os.environ['SOURCE_COMMIT'], 'Report source identity mismatch.'
+          allowed = ('report.json', 'uia-tree.json', 'startup.log', 'home.png', 'album.png', 'lyrics.png', 'last-window.png')
+          payloads = pathlib.Path(os.environ['RUNNER_TEMP'], 'music-smoke-export')
+          payloads.mkdir(exist_ok=True)
+          prefix = 'reports/native-smoke/' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']
+          manifest = []
+          for name in allowed:
+              path = source / name
+              if not path.exists():
+                  continue
+              assert path.is_file() and not path.is_symlink()
+              data = path.read_bytes()
+              assert len(data) <= 3_000_000, 'Diagnostic exceeds per-file size limit.'
+              if name.endswith('.json'):
+                  json.loads(data.decode('utf-8-sig'))
+              if name.endswith('.png'):
+                  assert data[:8] == b'\x89PNG\r\n\x1a\n' and data[12:16] == b'IHDR'
+                  width, height = struct.unpack('>II', data[16:24])
+                  assert 0 < width <= 16384 and 0 < height <= 16384
+              if name == 'startup.log':
+                  assert len(data) <= 65536
+              body = {'message': 'Record native desktop diagnostic ' + os.environ['GITHUB_RUN_ID'], 'branch': 'security-diagnostics', 'content': base64.b64encode(data).decode('ascii')}
+              payload = payloads / (name + '.upload.json')
+              payload.write_text(json.dumps(body), encoding='utf-8')
+              manifest.append(prefix + '/' + name + '\t' + str(payload))
+          (payloads / 'manifest.tsv').write_text('\n'.join(manifest) + '\n', encoding='utf-8')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write('Native diagnostic result: **' + str(report.get('Result', 'Unknown')) + '**. Reports only; no binaries exported.\n')
+          PY
+      - name: Create diagnostic files without overwriting existing evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          endpoint="repos/$GITHUB_REPOSITORY"
+          branch=security-diagnostics
+          if ! gh api "$endpoint/git/ref/heads/$branch" > "$RUNNER_TEMP/music-smoke-ref.json" 2> "$RUNNER_TEMP/music-smoke-ref.error"; then
+            grep -q 'HTTP 404' "$RUNNER_TEMP/music-smoke-ref.error" || { cat "$RUNNER_TEMP/music-smoke-ref.error" >&2; exit 1; }
+            gh api --method POST "$endpoint/git/refs" -f "ref=refs/heads/$branch" -f "sha=$SOURCE_COMMIT" > /dev/null
+          fi
+          while IFS=$'\t' read -r path payload; do
+            if gh api "$endpoint/contents/$path?ref=$branch" > "$RUNNER_TEMP/music-smoke-existing.json" 2> "$RUNNER_TEMP/music-smoke-existing.error"; then
+              python3 - "$payload" <<'PY'
+          import base64, json, os, pathlib, sys
+          existing = json.loads(pathlib.Path(os.environ['RUNNER_TEMP'], 'music-smoke-existing.json').read_text())
+          expected = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          assert base64.b64decode(existing['content']) == base64.b64decode(expected['content']), 'Existing evidence differs; will not overwrite.'
+          PY
+            else
+              grep -q 'HTTP 404' "$RUNNER_TEMP/music-smoke-existing.error" || { cat "$RUNNER_TEMP/music-smoke-existing.error" >&2; exit 1; }
+              gh api --method PUT "$endpoint/contents/$path" --input "$payload" > /dev/null
+            fi
+          done < "$RUNNER_TEMP/music-smoke-export/manifest.tsv"
+          echo "Diagnostic evidence stored under reports/native-smoke/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/ on security-diagnostics."

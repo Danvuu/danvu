@@ -170,7 +170,7 @@ public sealed partial class MainWindow : Window
         var history = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 3, VerticalAlignment = VerticalAlignment.Center };
         _backButton = Ui.IconButton("\uE76B", "Back (Alt+Left)", () => GoHistory(false));
         _forwardButton = Ui.IconButton("\uE76C", "Forward (Alt+Right)", () => GoHistory(true));
-        history.Children.Add(Ui.IconButton("\uE700", "Toggle library sidebar", () =>
+        history.Children.Add(Ui.WithId(Ui.IconButton("\uE700", "Toggle library sidebar", () =>
         {
             _sidebarVisible = !_sidebarVisible;
             if (_sidebarVisible && _queueVisible && _root.ActualWidth < 1180)
@@ -178,7 +178,7 @@ public sealed partial class MainWindow : Window
                 _queueVisible = false; _queueHost.Visibility = Visibility.Collapsed;
             }
             ApplyResponsiveLayout();
-        }, 16));
+        }, 16), "Nav.Toggle"));
         history.Children.Add(_backButton); history.Children.Add(_forwardButton);
         Ui.Add(header, history);
         _search.HorizontalAlignment = HorizontalAlignment.Center;
@@ -238,6 +238,7 @@ public sealed partial class MainWindow : Window
         content.Children.Add(Ui.Text(title, 13));
         var button = new Button { Content = content, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Left, Background = Ui.Brush(Colors.Transparent), BorderThickness = new Thickness(0), CornerRadius = new CornerRadius(8), Padding = new Thickness(12, 10, 12, 10) };
         button.Click += (_, _) => Run(() => NavigateAsync(new Route(kind)));
+        Ui.WithId(button, "Nav." + kind);
         Ui.Tactile(button);
         _navigationButtons[kind] = button;
         _sidebar.Children.Add(button);
@@ -268,7 +269,7 @@ public sealed partial class MainWindow : Window
         _shuffle = Ui.IconButton("\uE8B1", "Shuffle", () => Run(async () => { await _music.SetShuffleAsync(!(_playback?.Shuffle ?? false), _lifetime.Token); await PollAsync(); if (_queueVisible) await RefreshQueueAsync(); }), 15);
         controls.Children.Add(_shuffle);
         controls.Children.Add(Ui.IconButton("\uE892", "Previous track (Ctrl+Left)", () => Run(() => SkipAsync(false)), 19));
-        _play = Ui.IconButton("\uE768", "Play or pause (Space)", () => Run(TogglePlayAsync), 26);
+        _play = Ui.WithId(Ui.IconButton("\uE768", "Play or pause (Space)", () => Run(TogglePlayAsync), 26), "Player.PlayPause");
         controls.Children.Add(_play);
         controls.Children.Add(Ui.IconButton("\uE893", "Next track (Ctrl+Right)", () => Run(() => SkipAsync(true)), 19));
         _repeat = Ui.IconButton("\uE8EE", "Repeat off", () => Run(async () => { var mode = (RepeatMode)(((int)(_playback?.Repeat ?? RepeatMode.Off) + 1) % 3); await _music.SetRepeatAsync(mode, _lifetime.Token); await PollAsync(); }), 15);
@@ -280,10 +281,12 @@ public sealed partial class MainWindow : Window
         _progress.ValueChanged += (_, _) => { if (!_syncPlayer && _playback?.Track is not null) { _seekDebounce.Stop(); _seekDebounce.Start(); } };
         _progress.ThumbToolTipValueConverter = new TimeValueConverter();
         AutomationProperties.SetName(_progress, "Playback position");
+        Ui.WithId(_progress, "Player.Position");
+        Ui.WithId(_trackTitle, "Player.TrackTitle");
         Ui.Add(timeline, _time); Ui.Add(timeline, _progress, 0, 1); Ui.Add(timeline, _remaining, 0, 2);
         center.Children.Add(timeline); Ui.Add(grid, center, 0, 1);
         var right = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 5, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
-        right.Children.Add(Ui.IconButton("\uE8F2", "Lyrics (Ctrl+L)", () => ToggleLyrics(!_lyricsVisible), 17));
+        right.Children.Add(Ui.WithId(Ui.IconButton("\uE8F2", "Lyrics (Ctrl+L)", () => ToggleLyrics(!_lyricsVisible), 17), "Player.Lyrics"));
         right.Children.Add(Ui.IconButton("\uE8FD", "Queue", () => Run(ToggleQueueAsync), 17));
         right.Children.Add(Ui.IconButton("\uE7F4", "Spotify playback devices", () => Run(ShowDevicesAsync), 17));
         right.Children.Add(Ui.Icon("\uE767", 16, Ui.Muted));

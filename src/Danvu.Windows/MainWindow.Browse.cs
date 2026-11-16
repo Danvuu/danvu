@@ -107,7 +107,7 @@ public sealed partial class MainWindow
             copy.Children.Add(Ui.Text(featured.Artist + "  ·  " + featured.Year, 14, false, Color.FromArgb(255, 239, 203, 204)));
             var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Margin = new Thickness(0, 6, 0, 0) };
             actions.Children.Add(Ui.Pill("▶  Play album", () => Run(() => PlayAlbumAsync(featured)), true));
-            actions.Children.Add(Ui.Pill("Explore album", () => Run(() => NavigateAsync(AlbumRoute(featured)))));
+            actions.Children.Add(Ui.WithId(Ui.Pill("Explore album", () => Run(() => NavigateAsync(AlbumRoute(featured)))), "Home.ExploreAlbum"));
             copy.Children.Add(actions);
             Ui.Add(hero, copy);
             var art = Ui.Art(featured.ArtworkUrl, 234, 15);
@@ -217,7 +217,7 @@ public sealed partial class MainWindow
         Ui.Add(header, art);
         var intro = new StackPanel { Spacing = 12, VerticalAlignment = VerticalAlignment.Center };
         intro.Children.Add(Ui.Text(playlist ? "PLAYLIST" : "ALBUM", 11, true, Ui.Accent));
-        var title = Ui.Text(route.Title, 38, true); title.TextWrapping = TextWrapping.Wrap;
+        var title = Ui.WithId(Ui.Text(route.Title, 38, true), "Collection.Title"); title.TextWrapping = TextWrapping.Wrap;
         intro.Children.Add(title);
         var artist = tracks.FirstOrDefault()?.Artist ?? "Your collection";
         var artistButton = new Button { Content = Ui.Text(playlist ? "Your soundtrack" : artist, 15, true, Ui.Accent), Padding = new Thickness(0), Background = Ui.Brush(Colors.Transparent), BorderThickness = new Thickness(0), HorizontalAlignment = HorizontalAlignment.Left };
@@ -225,7 +225,7 @@ public sealed partial class MainWindow
         intro.Children.Add(artistButton);
         intro.Children.Add(Ui.Text($"{tracks.Count} songs  ·  {tracks.Sum(t => (long)t.DurationMs) / 60000} minutes", 12, false, Ui.Muted));
         var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
-        actions.Children.Add(Ui.Pill("▶  Play", () => Run(() => PlayTracksAsync(tracks)), true));
+        actions.Children.Add(Ui.WithId(Ui.Pill("▶  Play", () => Run(() => PlayTracksAsync(tracks)), true), "Collection.Play"));
         actions.Children.Add(Ui.Pill("Shuffle", () => Run(async () => { await _music.SetShuffleAsync(true, _lifetime.Token); await PlayTracksAsync(tracks); })));
         intro.Children.Add(actions);
         Ui.Add(header, intro, 0, 1);

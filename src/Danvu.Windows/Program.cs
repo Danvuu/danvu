@@ -1,3 +1,4 @@
+using Danvu.Windows.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
@@ -8,13 +9,27 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
-        WinRT.ComWrappersSupport.InitializeComWrappers();
-        Application.Start(initialization =>
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
         {
-            SynchronizationContext.SetSynchronizationContext(
-                new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread()));
-            _ = new App();
-        });
+            if (args.ExceptionObject is Exception exception)
+                StartupDiagnostics.Record("Unhandled application error", exception);
+        };
+        StartupDiagnostics.Record("Starting Music");
+        try
+        {
+            WinRT.ComWrappersSupport.InitializeComWrappers();
+            Application.Start(initialization =>
+            {
+                SynchronizationContext.SetSynchronizationContext(
+                    new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread()));
+                _ = new App();
+            });
+        }
+        catch (Exception exception)
+        {
+            StartupDiagnostics.Record("Startup failed", exception);
+            throw;
+        }
     }
 }
 
@@ -28,12 +43,14 @@ public sealed class App : Application
         UnhandledException += (_, args) =>
         {
             // Keep unexpected native UI failures visible rather than silently swallowing them.
-            System.Diagnostics.Trace.TraceError(args.Exception.ToString());
+            StartupDiagnostics.Record("Unhandled WinUI error", args.Exception);
         };
     }
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        StartupDiagnostics.Record("Creating native window");
         _window = new MainWindow();
         _window.Activate();
+        StartupDiagnostics.Record("Native window activated");
     }
 }
