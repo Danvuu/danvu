@@ -1,0 +1,22 @@
+2026-11-16T23:30:13.0592035+00:00 Starting Music
+
+2026-11-16T23:30:13.0605706+00:00 Initializing COM wrappers
+
+2026-11-16T23:30:13.0617046+00:00 Starting XAML application
+
+2026-11-16T23:30:13.2973470+00:00 XAML initialization callback entered
+
+2026-11-16T23:30:13.2991683+00:00 Constructing App
+
+2026-11-16T23:30:13.3017554+00:00 App constructor entered
+
+2026-11-16T23:30:13.3094832+00:00 Loading compiled application resources
+
+2026-11-16T23:30:13.3141554+00:00 Compiled application resources loaded
+
+2026-11-16T23:30:13.3143575+00:00 App constructed
+
+2026-11-16T23:30:13.3193162+00:00 Creating native window
+
+2026-11-16T23:30:13.6237099+00:00 Native window activated
+
