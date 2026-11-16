@@ -21,6 +21,34 @@ function Get-BundleHashes {
     })
 }
 
+function Invoke-CapturedNativeProcess {
+    param([string]$Executable, [string]$Arguments, [int]$TimeoutMilliseconds = 300000)
+    $start = New-Object System.Diagnostics.ProcessStartInfo
+    $start.FileName = $Executable; $start.Arguments = $Arguments
+    $start.UseShellExecute = $false; $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true; $start.RedirectStandardError = $true
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $start
+    try {
+        if (-not $process.Start()) { throw 'Native scanner process did not start.' }
+        # Drain both pipes concurrently, avoiding a deadlock when either fills.
+        $stdout = $process.StandardOutput.ReadToEndAsync()
+        $stderr = $process.StandardError.ReadToEndAsync()
+        $timedOut = -not $process.WaitForExit($TimeoutMilliseconds)
+        if ($timedOut) { $process.Kill() }
+        $process.WaitForExit()
+        $nativeExitCode = $process.ExitCode
+        if ($null -eq $nativeExitCode) { throw 'The owned native process returned no exit status; scan is unverified.' }
+        $complete = [Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($stdout, $stderr), 30000)
+        return [pscustomobject]@{
+            ExitCode = $nativeExitCode; TimedOut = $timedOut; OutputComplete = $complete
+            Stdout = $(if ($stdout.IsCompleted) { $stdout.GetAwaiter().GetResult() } else { '[stdout capture incomplete]' })
+            Stderr = $(if ($stderr.IsCompleted) { $stderr.GetAwaiter().GetResult() } else { '[stderr capture incomplete]' })
+        }
+    }
+    finally { $process.Dispose() }
+}
+
 function Get-ScopedDetections {
     $detections = @(Get-MpThreatDetection -ErrorAction Stop | Where-Object {
         @($_.Resources | Where-Object { Test-ScopedResource -Resource ([string]$_) -Directory $ApplicationDirectory }).Count -gt 0
@@ -117,7 +145,7 @@ $application = $null; $window = $null
 $report = [ordered]@{
     SourceCommit = $SourceCommit; StartedUtc = $started.ToUniversalTime().ToString('o'); FinishedUtc = $null
     Result = 'Unverified'; FailureKind = $null; Stage = 'ValidateCandidate'; ApplicationExecuted = $false
-    Candidate = @(); Defender = $null; DefenderScanExitCode = $null; Detections = @(); Desktop = $null
+    Candidate = @(); Defender = $null; DefenderScanExitCode = $null; DefenderScanOutcome = 'NotStarted'; Detections = @(); Desktop = $null
     ProtectionEnableAttempted = $false; ProtectionEnableResult = 'NotNeeded'
     ProcessId = $null; ProcessExitCode = $null; ForcedTermination = $false; Checks = @(); Screenshots = @(); Errors = @(); ApplicationEvents = @()
     Scope = 'Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim.'
@@ -181,13 +209,17 @@ try {
     $scanner = @($candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1)
     if ($scanner.Count -eq 0) { throw 'Microsoft Defender command-line scanner is unavailable.' }
     $report.Stage = 'DefenderScan'
-    $scan = Start-Process -FilePath $scanner[0] -ArgumentList ('-Scan -ScanType 3 -File "' + $ApplicationDirectory + '"') -PassThru -NoNewWindow `
-        -RedirectStandardOutput (Join-Path $OutputDirectory 'defender.stdout.log') -RedirectStandardError (Join-Path $OutputDirectory 'defender.stderr.log')
-    if (-not $scan.WaitForExit(300000)) { $scan.Kill(); throw 'Candidate Defender scan timed out; no app launch attempted.' }
-    $scan.WaitForExit()
+    $report.DefenderScanOutcome = 'Started'
+    $scan = Invoke-CapturedNativeProcess -Executable $scanner[0] -Arguments ('-Scan -ScanType 3 -File "' + $ApplicationDirectory + '"')
     $report.DefenderScanExitCode = $scan.ExitCode
+    $scan.Stdout | Set-Content (Join-Path $OutputDirectory 'defender.stdout.log') -Encoding UTF8
+    $scan.Stderr | Set-Content (Join-Path $OutputDirectory 'defender.stderr.log') -Encoding UTF8
+    if ($scan.TimedOut) { $report.DefenderScanOutcome = 'TimedOut'; throw 'Candidate Defender scan timed out; no app launch attempted.' }
+    if (-not $scan.OutputComplete) { $report.DefenderScanOutcome = 'OutputCaptureIncomplete'; throw 'Native scan console capture did not complete; no app launch attempted.' }
     $report.Detections = @(Get-ScopedDetections)
-    if ($scan.ExitCode -ne 0 -or $report.Detections.Count -gt 0) { throw 'Defender reported a detection or scan failure; no application was launched and no remediation was reversed.' }
+    if ($report.Detections.Count -gt 0) { $report.DefenderScanOutcome = 'DetectionReported'; throw 'Defender reported a scoped detection; no application was launched and no remediation was reversed.' }
+    if ($scan.ExitCode -ne 0) { $report.DefenderScanOutcome = 'NativeScanFailureOrDetection'; throw "Native Defender scan returned exit $($scan.ExitCode); inspect captured logs. No application was launched." }
+    $report.DefenderScanOutcome = 'ExitZeroNoScopedDetection'
     $after = @(Get-BundleHashes -Directory $ApplicationDirectory)
     if ((ConvertTo-Json -InputObject $baseline -Depth 4 -Compress) -cne (ConvertTo-Json -InputObject $after -Depth 4 -Compress)) { throw 'Bundle files changed or were removed during the scan; no application was launched or restored.' }
     Add-Check 'Candidate antivirus gate' 'Signature refresh succeeded, real-time protection enabled, native scan exit 0, no scoped detections, and bundle hashes unchanged. This does not clear the original user alert.'
