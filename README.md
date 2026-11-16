@@ -19,7 +19,13 @@ The visual direction combines a dark desktop layout, translucent surfaces, spaci
 
 The public Spotify API does not reproduce every official Spotify feature. Spotify's exact Home feed, DJ, offline downloads, music video playback, historical listening statistics, and synced lyrics are not supplied by this app. Availability of individual API features depends on the Spotify developer app's access mode and the connected account.
 
-## Run on Windows
+## Download for Windows
+
+Download **Music-win-x64.zip** from the repository's [Releases](https://github.com/Danvuu/danvu/releases), extract the complete archive, and open **Music.exe**. The .NET and Windows App SDK runtimes are included; you do not need to install the .NET SDK to run this distribution. Release downloads also include a SHA-256 checksum file.
+
+Read the [preview release notes](docs/RELEASES.md) for its current capabilities and remaining Windows/Spotify validation. Keep all files next to the executable when moving the extracted app.
+
+## Build and run from source on Windows
 
 Requirements for building:
 
@@ -98,11 +104,11 @@ dotnet test tests/Danvu.Core.Tests/Danvu.Core.Tests.csproj --configuration Relea
 
 Build the WinUI project on Windows, using `scripts/build.ps1`. Building the whole solution on Linux does not validate the native UI or Windows packaging.
 
-The [Windows workflow](.github/workflows/windows.yml) runs core tests and publishes a self-contained Windows x64 zip. It runs on pull requests, pushes to `main`, and manual dispatch. Download the `Music-Windows-x64` artifact from a successful run. Creating source code or saving this workflow does not mean that a Windows build or CI run has already passed.
+The [Windows workflow](.github/workflows/windows.yml) runs core tests and publishes a self-contained Windows x64 zip. It runs on pull requests, pushes to `main`, version tags beginning with `v`, and manual dispatch. Ordinary runs provide the `Music-Windows-x64` build artifact. A successful push of a newly created version tag also publishes `Music-win-x64.zip` and its SHA-256 checksum as release downloads. All automated releases are marked as prereleases. Only the tag-gated release job receives permission to create releases; build jobs keep read-only repository access. An existing release is not overwritten by a rerun.
 
 See [the Windows smoke test](docs/WINDOWS-SMOKE-TEST.md) for the checks required on an actual Windows desktop. These include layout, animation, OAuth browser return, native file import, and Spotify device behavior.
 
-[Current validation evidence](docs/VALIDATION.md) separates the completed core tests and managed source compilation from the Windows build, desktop, and live-account checks that remain unrun.
+[Recorded implementation validation](docs/VALIDATION.md) describes the original cloud checks. Subsequent Windows build evidence is available in the corresponding GitHub Actions run; a successful native publish does not replace the remaining desktop and live-account checks.
 
 ## Project layout
 
