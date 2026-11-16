@@ -1,0 +1,49 @@
+name: Build native Windows app
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core-tests:
+    name: Portable core tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Test music, authentication, and lyrics logic
+        run: dotnet test tests/Danvu.Core.Tests/Danvu.Core.Tests.csproj --configuration Release --logger trx --results-directory TestResults
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-test-results
+          path: TestResults/*.trx
+          if-no-files-found: warn
+
+  windows:
+    name: Native Windows x64 distribution
+    needs: core-tests
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish native self-contained application
+        shell: pwsh
+        run: ./scripts/build.ps1 -Configuration Release
+      - name: Upload Windows distribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: Music-Windows-x64
+          path: artifacts/Music-win-x64.zip
+          if-no-files-found: error
+          retention-days: 14

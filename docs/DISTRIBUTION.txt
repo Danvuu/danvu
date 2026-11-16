@@ -1,0 +1,31 @@
+Music — native Windows music app
+
+Extract this entire distribution, then open Music.exe. Keep the accompanying
+files next to the executable: they include the required desktop runtimes.
+Requires Windows 10 build 19041 or newer, or Windows 11, on an x64 computer.
+
+Optional installation (PowerShell, from this folder):
+  .\install.ps1
+
+This installs for the current user and creates a Start menu shortcut. No
+administrator access is required. Close Music before installing an update.
+Run uninstall.ps1 from the installed folder to remove the application.
+Personal app settings/account data are retained by the uninstaller.
+
+Demo mode is available without credentials. Its playback timeline is simulated;
+the demo does not produce audio. Spotify mode controls an existing Spotify
+Connect device, requires a configured Spotify developer Client ID and account
+authorization, and requires Spotify Premium for playback-control operations.
+Spotify audio does not stream inside Music. Never enter a Spotify password or
+developer client secret into Music. Account login opens Spotify in your browser.
+
+Spotify's public API does not provide synced lyrics. Demo lyrics are original
+sample text; personal lyrics can be imported from local LRC files.
+
+The Jam action opens the official Spotify app to start/join a Jam there. Music
+does not independently host, join, invite users to, or synchronize Jam sessions.
+
+This distribution is unsigned. It is a portable native application distribution,
+not a signed MSI/MSIX or Microsoft Store package.
+
+Source and setup documentation: see the repository README.md.

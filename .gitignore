@@ -1,0 +1,27 @@
+# .NET / Visual Studio
+**/bin/
+**/obj/
+.vs/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+TestResults/
+**/TestResults/
+artifacts/
+coverage/
+*.trx
+
+# Local tools and settings
+.dotnet/
+.env
+.env.*
+!.env.example
+appsettings.local.json
+*.pfx
+*.p12
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini

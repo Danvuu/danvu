@@ -1,0 +1,52 @@
+{
+  "afterglow": [
+    "#ef593f",
+    "#f5a360",
+    "#3e1d31"
+  ],
+  "blue-hour": [
+    "#304389",
+    "#8495cc",
+    "#161b43"
+  ],
+  "soft-focus": [
+    "#d69bab",
+    "#f1cec3",
+    "#745e8d"
+  ],
+  "velvet-sky": [
+    "#6d244b",
+    "#c37595",
+    "#241a32"
+  ],
+  "currents": [
+    "#267e7f",
+    "#9bc5b2",
+    "#102d3c"
+  ],
+  "midnight-radio": [
+    "#514783",
+    "#a9b4cf",
+    "#181725"
+  ],
+  "daydream": [
+    "#e8b399",
+    "#d58d7b",
+    "#7f748c"
+  ],
+  "golden": [
+    "#e6ad48",
+    "#f3d795",
+    "#9b5d36"
+  ],
+  "bloom": [
+    "#da606c",
+    "#f9afa5",
+    "#52223b"
+  ],
+  "satellites": [
+    "#5f7c9e",
+    "#adc8cc",
+    "#1c293f"
+  ]
+}

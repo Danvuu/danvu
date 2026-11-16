@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Danvu.Core/Danvu.Core.csproj" />
+    <Project Path="src/Danvu.Windows/Danvu.Windows.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Danvu.Core.Tests/Danvu.Core.Tests.csproj" />
+  </Folder>
+</Solution>
