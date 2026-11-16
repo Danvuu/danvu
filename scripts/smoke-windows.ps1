@@ -275,8 +275,8 @@ public static class MusicDesktopProbe {
     if ($null -eq $window -or $window.Current.Name -ne 'Music') { throw 'UI Automation did not expose the expected Music window.' }
 
     $report.Stage = 'Home'
-    $home = Find-Control 'Nav.Home' 'Home'
-    if ($null -eq $home -or $home.Current.IsOffscreen) {
+    $homeControl = Find-Control 'Nav.Home' 'Home'
+    if ($null -eq $homeControl -or $homeControl.Current.IsOffscreen) {
         Invoke-Control (Wait-Control 'Nav.Toggle' 'Toggle library sidebar')
     }
     Invoke-Control (Wait-Control 'Nav.Home' 'Home')
