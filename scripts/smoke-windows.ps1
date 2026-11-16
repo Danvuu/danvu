@@ -310,8 +310,14 @@ public static class MusicDesktopProbe {
     $report.Stage = 'Lyrics'
     Invoke-Control (Wait-Control 'Player.Lyrics' 'Lyrics (Ctrl+L)')
     $lyrics = Wait-Control 'Lyrics.Scroll' 'Synchronized lyrics. Scroll to browse; choose Jump to current to resume following.'
-    $source = Wait-Control 'Lyrics.Source'
-    if ($source.Current.Name -notlike 'Original demo lyrics*simulated playback') { throw 'The lyrics view did not load its original demo document.' }
+    $clock.Restart(); $source = $null
+    do {
+        if ($application.HasExited) { throw 'Application exited while its lyrics document was loading.' }
+        $source = Find-Control 'Lyrics.Source'
+        if ($null -ne $source -and -not $source.Current.IsOffscreen -and $source.Current.IsEnabled -and $source.Current.Name -like 'Original demo lyrics*simulated playback') { break }
+        Start-Sleep -Milliseconds 200
+    } while ($clock.Elapsed.TotalSeconds -lt 20)
+    if ($null -eq $source -or $source.Current.Name -notlike 'Original demo lyrics*simulated playback') { throw 'The lyrics view did not load its original demo document within 20 seconds.' }
     $line = Wait-Control 'Lyrics.Line.0'
     if ($line.Current.Name -notmatch '^Seek to (\d+):(\d{2}):') { throw 'First lyric does not expose its seek timestamp.' }
     $seekTarget = ([int]$Matches[1] * 60 + [int]$Matches[2]) * 1000

@@ -1,8 +1,6 @@
 using Danvu.Windows.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.XamlTypeInfo;
 
 namespace Danvu.Windows;
 
@@ -40,18 +38,8 @@ internal static class Program
     }
 }
 
-public sealed class App : Application, IXamlMetadataProvider
+public sealed partial class App : Application
 {
-    // App.xaml normally generates this provider. This app creates its views from
-    // C#, so expose the WinUI metadata contract explicitly for framework XAML
-    // templates and XamlControlsResources. Lazy initialization also supports
-    // metadata queries made during native base-class construction.
-    private XamlControlsXamlMetaDataProvider? _metadata;
-    private XamlControlsXamlMetaDataProvider Metadata => _metadata ??= new();
-    public IXamlType GetXamlType(Type type) => Metadata.GetXamlType(type);
-    public IXamlType GetXamlType(string fullName) => Metadata.GetXamlType(fullName);
-    public XmlnsDefinition[] GetXmlnsDefinitions() => Metadata.GetXmlnsDefinitions();
-
     private MainWindow? _window;
     public App()
     {
@@ -61,11 +49,9 @@ public sealed class App : Application, IXamlMetadataProvider
             // Keep unexpected native UI failures visible rather than silently swallowing them.
             StartupDiagnostics.Record("Unhandled WinUI error", args.Exception);
         };
-        StartupDiagnostics.Record("Selecting dark theme");
-        RequestedTheme = ApplicationTheme.Dark;
-        StartupDiagnostics.Record("Loading WinUI control resources");
-        Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
-        StartupDiagnostics.Record("WinUI control resources loaded");
+        StartupDiagnostics.Record("Loading compiled application resources");
+        InitializeComponent();
+        StartupDiagnostics.Record("Compiled application resources loaded");
     }
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {

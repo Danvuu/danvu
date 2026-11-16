@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/windows-smoke.yml'
       - 'scripts/smoke-windows.ps1'
+      - 'scripts/capture-native-crash.ps1'
       - 'src/Danvu.Windows/**'
       - 'src/Danvu.Core/**'
   workflow_dispatch:
@@ -27,12 +28,21 @@ jobs:
       - name: Build current native source without creating a distribution archive
         shell: pwsh
         run: ./scripts/build.ps1 -Configuration Release -SkipArchive
+      - name: Prepare optional runner-local crash diagnostics
+        # Crash capture setup uses an existing SDK debugger only; no tool install.
+        # The per-process dump stays private and is never an uploaded artifact.
+        shell: powershell
+        run: ./scripts/capture-native-crash.ps1 -Action Prepare -OutputDirectory (Join-Path $PWD.Path 'artifacts/native-smoke') -SourceCommit $env:GITHUB_SHA
       - name: Scan candidate normally, then exercise its real desktop interface
         shell: powershell
         env:
           MUSIC_SOURCE_COMMIT: ${{ github.sha }}
         run: |
           ./scripts/smoke-windows.ps1 -ApplicationDirectory (Join-Path $PWD.Path 'artifacts/publish/win-x64') -OutputDirectory (Join-Path $PWD.Path 'artifacts/native-smoke') -SourceCommit $env:MUSIC_SOURCE_COMMIT
+      - name: Analyze private crash capture and restore owned WER settings
+        if: always()
+        shell: powershell
+        run: ./scripts/capture-native-crash.ps1 -Action Analyze -OutputDirectory (Join-Path $PWD.Path 'artifacts/native-smoke') -SourceCommit $env:GITHUB_SHA
       - name: Record missing smoke evidence
         if: always()
         shell: pwsh
@@ -82,7 +92,7 @@ jobs:
           assert report_path.stat().st_size <= 3_000_000
           report = json.loads(report_path.read_text(encoding='utf-8-sig'))
           assert report['SourceCommit'] == os.environ['SOURCE_COMMIT'], 'Report source identity mismatch.'
-          allowed = ('report.json', 'uia-tree.json', 'startup.log', 'defender.stdout.log', 'defender.stderr.log', 'home.png', 'album.png', 'lyrics.png', 'last-window.png')
+          allowed = ('report.json', 'uia-tree.json', 'startup.log', 'defender.stdout.log', 'defender.stderr.log', 'crash-capture.json', 'crash-analysis.txt', 'home.png', 'album.png', 'lyrics.png', 'last-window.png')
           payloads = pathlib.Path(os.environ['RUNNER_TEMP'], 'music-smoke-export')
           payloads.mkdir(exist_ok=True)
           prefix = 'reports/native-smoke/' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']
