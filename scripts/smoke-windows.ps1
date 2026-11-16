@@ -95,19 +95,78 @@ function Wait-Control {
     throw "Visible accessible control did not become ready: $Id. Inspect UIA tree and startup/event logs."
 }
 
+function Test-PointInsideBounds {
+    param($Point, $Bounds)
+    return $Point.X -ge $Bounds.Left -and $Point.X -lt $Bounds.Right -and $Point.Y -ge $Bounds.Top -and $Point.Y -lt $Bounds.Bottom
+}
+
 function Invoke-Control {
     param($Element)
-    $pattern = $null
-    if (-not $Element.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern, [ref]$pattern)) { throw 'Control does not expose InvokePattern.' }
-    $pattern.Invoke()
+    $current = $Element.Current
+    $interaction = [ordered]@{ Id = $current.AutomationId; Name = $current.Name; SupportedPatterns = @(); PatternType = $null; Method = 'None'; Status = 'Pending'; PatternError = $null; FocusError = $null; KeyboardFocusVerified = $false; ForegroundVerified = $false; ClickPoint = $null }
+    try {
+        if ($current.IsOffscreen -or -not $current.IsEnabled) { throw 'Interaction requires a visible, enabled control.' }
+        $pattern = $null
+        try {
+            $interaction.SupportedPatterns = @($Element.GetSupportedPatterns() | ForEach-Object { $_.ProgrammaticName })
+            $pattern = $Element.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern)
+            if ($null -ne $pattern) {
+                $interaction.PatternType = $pattern.GetType().FullName
+                if ($pattern -isnot [System.Windows.Automation.InvokePattern]) { throw 'Provider did not return an InvokePattern instance.' }
+            }
+        } catch { $interaction.PatternError = $_.Exception.Message; $pattern = $null }
+        if ($null -ne $pattern) {
+            $interaction.Method = 'InvokePattern.GetCurrentPattern'
+            $pattern.Invoke()
+        }
+        else {
+            if ($current.ControlType -ne [System.Windows.Automation.ControlType]::Button) { throw 'Non-button control has no supported invocation pattern.' }
+            [MusicDesktopProbe]::SetForegroundWindow($application.MainWindowHandle) | Out-Null
+            $focused = $false
+            try {
+                $Element.SetFocus()
+                $focusClock = [Diagnostics.Stopwatch]::StartNew()
+                while (-not $Element.Current.HasKeyboardFocus -and $focusClock.Elapsed.TotalSeconds -lt 2) { Start-Sleep -Milliseconds 50 }
+                $focused = $Element.Current.HasKeyboardFocus
+            } catch { $interaction.FocusError = $_.Exception.Message }
+            if ([MusicDesktopProbe]::GetForegroundWindow() -ne $application.MainWindowHandle) { throw 'Owned Music window is not foreground; no keyboard or mouse input was sent.' }
+            $interaction.ForegroundVerified = $true
+            if ($focused) {
+                $interaction.Method = 'Keyboard.EnterWithVerifiedFocus'
+                $interaction.KeyboardFocusVerified = $true
+                [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
+            }
+            else {
+                $point = $Element.GetClickablePoint()
+                if (-not (Test-PointInsideBounds $point $Element.Current.BoundingRectangle) -or -not (Test-PointInsideBounds $point $window.Current.BoundingRectangle)) { throw 'Clickable point is outside the control or verified Music window; no mouse input was sent.' }
+                if ([MusicDesktopProbe]::GetForegroundWindow() -ne $application.MainWindowHandle) { throw 'Music lost foreground; no mouse input was sent.' }
+                $interaction.Method = 'PhysicalClick.SendInputWithinOwnedWindow'
+                $interaction.ClickPoint = [pscustomobject]@{ X = $point.X; Y = $point.Y }
+                [MusicDesktopProbe]::ClickAt([int]$point.X, [int]$point.Y)
+            }
+        }
+        # Dispatch is not a pass: callers must observe navigation/playback/seek.
+        $interaction.Status = 'DispatchedAwaitingSemanticAssertion'
+    }
+    catch { $interaction.Status = 'Failed'; throw }
+    finally { $report.Interactions += [pscustomobject]$interaction }
 }
 
 function Get-Position {
     $element = Find-Control -Id 'Player.Position' -Name 'Playback position'
     if ($null -eq $element) { throw 'Playback position slider is absent.' }
-    $pattern = $null
-    if (-not $element.TryGetCurrentPattern([System.Windows.Automation.RangeValuePattern]::Pattern, [ref]$pattern)) { throw 'Playback position has no RangeValuePattern.' }
-    return [double]$pattern.Current.Value
+    $provider = [ordered]@{ Id = $element.Current.AutomationId; SupportedPatterns = @(); PatternType = $null; Method = 'RangeValuePattern.GetCurrentPattern'; Error = $null }
+    try {
+        $provider.SupportedPatterns = @($element.GetSupportedPatterns() | ForEach-Object { $_.ProgrammaticName })
+        $pattern = $element.GetCurrentPattern([System.Windows.Automation.RangeValuePattern]::Pattern)
+        if ($null -eq $pattern -or $pattern -isnot [System.Windows.Automation.RangeValuePattern]) { throw 'Playback position did not expose a RangeValuePattern instance.' }
+        $provider.PatternType = $pattern.GetType().FullName
+        $value = [double]$pattern.Current.Value
+        if ([double]::IsNaN($value) -or [double]::IsInfinity($value)) { throw 'Playback provider returned an invalid numeric position.' }
+        return $value
+    }
+    catch { $provider.Error = $_.Exception.Message; throw }
+    finally { $report.PositionProvider = [pscustomobject]$provider }
 }
 
 function Capture-Window {
@@ -147,7 +206,7 @@ $report = [ordered]@{
     Result = 'Unverified'; FailureKind = $null; Stage = 'ValidateCandidate'; ApplicationExecuted = $false
     Candidate = @(); Defender = $null; DefenderScanExitCode = $null; DefenderScanOutcome = 'NotStarted'; Detections = @(); Desktop = $null
     ProtectionEnableAttempted = $false; ProtectionEnableResult = 'NotNeeded'
-    ProcessId = $null; ProcessExitCode = $null; ForcedTermination = $false; Checks = @(); Screenshots = @(); Errors = @(); ApplicationEvents = @()
+    ProcessId = $null; ProcessExitCode = $null; ForcedTermination = $false; Checks = @(); Interactions = @(); PositionProvider = $null; Screenshots = @(); Errors = @(); ApplicationEvents = @()
     Scope = 'Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim.'
 }
 
@@ -236,7 +295,20 @@ public static class MusicDesktopProbe {
     [DllImport("user32.dll", SetLastError=true, CharSet=CharSet.Unicode)] static extern bool GetUserObjectInformation(IntPtr handle, int index, StringBuilder value, int length, out int needed);
     [DllImport("user32.dll")] static extern bool CloseDesktop(IntPtr handle);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr window);
+    [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr window, int command);
+    [DllImport("user32.dll", SetLastError=true)] static extern bool SetCursorPos(int x, int y);
+    [StructLayout(LayoutKind.Sequential)] struct MouseInput { public int X, Y; public uint Data, Flags, Time; public IntPtr Extra; }
+    [StructLayout(LayoutKind.Sequential)] struct Input { public uint Type; public MouseInput Mouse; }
+    [DllImport("user32.dll", SetLastError=true)] static extern uint SendInput(uint count, Input[] inputs, int size);
+    public static void ClickAt(int x, int y) {
+        if (!SetCursorPos(x, y)) throw new Win32Exception(Marshal.GetLastWin32Error());
+        var inputs = new Input[] {
+            new Input { Type = 0, Mouse = new MouseInput { X = 0, Y = 0, Data = 0, Flags = 2, Time = 0, Extra = IntPtr.Zero } },
+            new Input { Type = 0, Mouse = new MouseInput { X = 0, Y = 0, Data = 0, Flags = 4, Time = 0, Extra = IntPtr.Zero } }
+        };
+        if (SendInput(2, inputs, Marshal.SizeOf(typeof(Input))) != 2) throw new Win32Exception(Marshal.GetLastWin32Error());
+    }
     public static string InputDesktop() {
         var handle = OpenInputDesktop(0, false, 1);
         if (handle == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error());
