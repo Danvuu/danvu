@@ -1,0 +1,57 @@
+﻿{
+    "SourceCommit":  "7ccb63b81566aa88aacf2c1073282f3f741f40a7",
+    "StartedUtc":  "2026-11-16T22:41:05.5325235Z",
+    "FinishedUtc":  "2026-11-16T22:41:13.6811759Z",
+    "Result":  "Blocked",
+    "FailureKind":  "SecurityOrEnvironmentPrerequisite",
+    "Stage":  "DefenderScan",
+    "ApplicationExecuted":  false,
+    "Candidate":  [
+                      {
+                          "Path":  "Music.dll",
+                          "Sha256":  "7CBD77B6489B611D3D21364D9448577E4AF9622851D0045D1289D27BB066EDBA"
+                      },
+                      {
+                          "Path":  "Music.exe",
+                          "Sha256":  "0B4E57DB3E873526DCA3AA4B2017EC020161B8168FB66BFFB2128DA71116D95C"
+                      }
+                  ],
+    "Defender":  {
+                     "AMEngineVersion":  "1.1.26100.4",
+                     "AMProductVersion":  "4.18.26100.4",
+                     "AMServiceEnabled":  true,
+                     "AntivirusEnabled":  true,
+                     "RealTimeProtectionEnabled":  true,
+                     "AntivirusSignatureVersion":  "1.463.330.0",
+                     "AntivirusSignatureLastUpdated":  "\/Date(1794820047000)\/",
+                     "DefenderSignaturesOutOfDate":  false
+                 },
+    "DefenderScanExitCode":  null,
+    "Detections":  [
+
+                   ],
+    "Desktop":  null,
+    "ProtectionEnableAttempted":  true,
+    "ProtectionEnableResult":  "EnabledAndVerified",
+    "ProcessId":  null,
+    "ProcessExitCode":  null,
+    "ForcedTermination":  false,
+    "Checks":  [
+                   {
+                       "Name":  "Protection strengthened",
+                       "Passed":  true,
+                       "Detail":  "Enabled real-time protection with the supported Defender preference command on the isolated hosted runner, then verified it effective. No protection reduction was requested.",
+                       "Utc":  "2026-11-16T22:41:13.1898483Z"
+                   }
+               ],
+    "Screenshots":  [
+
+                    ],
+    "Errors":  [
+                   "Defender reported a detection or scan failure; no application was launched and no remediation was reversed."
+               ],
+    "ApplicationEvents":  [
+
+                          ],
+    "Scope":  "Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim."
+}
