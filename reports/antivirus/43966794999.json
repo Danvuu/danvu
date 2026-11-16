@@ -1,0 +1,58 @@
+{
+  "ReleaseTag": "v0.1.0-preview.1",
+  "PreviewWithdrawn": true,
+  "StartedUtc": "2026-11-16T22:06:58.9163861Z",
+  "FinishedUtc": "2026-11-16T22:07:29.3031390Z",
+  "Result": "NoDetectionReported",
+  "Stage": "Complete",
+  "ExpectedArchiveSha256": "5abc1a283f7c70fd6690ab6bc4c4df35fa2ea3bff66c7c4e93d01132d305bd64",
+  "ArchiveSha256": "5abc1a283f7c70fd6690ab6bc4c4df35fa2ea3bff66c7c4e93d01132d305bd64",
+  "ExpectedMusicExeSha256": "4376b77e3be4c9de932b4baafe9bef373560c6c3e1904da0c9c1b6602e50dbf5",
+  "MusicExeSha256": "4376b77e3be4c9de932b4baafe9bef373560c6c3e1904da0c9c1b6602e50dbf5",
+  "MusicExeHashSource": "Extracted file (not executed)",
+  "HashesVerified": true,
+  "SignatureUpdate": "Succeeded",
+  "SignatureFreshness": "Fresh",
+  "SignatureAgeHours": 13.0,
+  "InitialDefenderStatus": {
+    "AMEngineVersion": "1.1.26100.4",
+    "AMProductVersion": "4.18.26100.4",
+    "AMServiceEnabled": true,
+    "AntivirusEnabled": true,
+    "RealTimeProtectionEnabled": false,
+    "AntivirusSignatureVersion": "1.463.330.0",
+    "AntivirusSignatureLastUpdated": "2026-11-16T09:07:27+00:00",
+    "DefenderSignaturesOutOfDate": false
+  },
+  "FinalDefenderStatus": {
+    "AMEngineVersion": "1.1.26100.4",
+    "AMProductVersion": "4.18.26100.4",
+    "AMServiceEnabled": true,
+    "AntivirusEnabled": true,
+    "RealTimeProtectionEnabled": false,
+    "AntivirusSignatureVersion": "1.463.330.0",
+    "AntivirusSignatureLastUpdated": "2026-11-16T09:07:27+00:00",
+    "DefenderSignaturesOutOfDate": false
+  },
+  "ScannerPath": "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.26100.4-0\\MpCmdRun.exe",
+  "DisableRemediationAdvertised": true,
+  "Scans": [
+    {
+      "Target": "Original release ZIP",
+      "ExitCode": 0,
+      "Log": "archive-scan",
+      "ConsoleOutput": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\runneradmin\\AppData\\Local\\Temp\\Music-Defender-56c8c72eb7544af1aa7543a4aae0501a\\Music-win-x64.zip found no threats.\r\n\n"
+    },
+    {
+      "Target": "Extracted original bundle",
+      "ExitCode": 0,
+      "Log": "bundle-scan",
+      "ConsoleOutput": "Scan starting...\r\nScan finished.\r\nScanning C:\\Users\\runneradmin\\AppData\\Local\\Temp\\Music-Defender-56c8c72eb7544af1aa7543a4aae0501a\\bundle found no threats.\r\n\n"
+    }
+  ],
+  "DetectionQuery": "Succeeded",
+  "Detections": [],
+  "Errors": [],
+  "Warnings": [],
+  "Note": "Diagnostic only. No application was executed. No exclusion, protection preference change, or remediation requested. A single-engine scan cannot establish that a file is safe."
+}
