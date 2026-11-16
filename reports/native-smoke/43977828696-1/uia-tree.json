@@ -1,0 +1,1094 @@
+﻿[
+    {
+        "Id":  "",
+        "Name":  "Non Client Input Sink Window",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "AppWindow Custom Title Bar",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Minimize",
+        "Name":  "Minimize",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Maximize",
+        "Name":  "Maximize",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Close",
+        "Name":  "Close",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Music",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Toggle",
+        "Name":  "Toggle library sidebar",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Back (Alt+Left)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  false
+    },
+    {
+        "Id":  "",
+        "Name":  "Forward (Alt+Right)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  false
+    },
+    {
+        "Id":  "",
+        "Name":  "Search music (Ctrl+F)",
+        "Type":  "ControlType.Edit",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Jam",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Jam",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Connect Spotify",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Connect Spotify",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Home",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "A little discovery. A lot of feeling.",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "THE DEMO COLLECTION",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale  ·  2026",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "▶  Play album",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "▶  Play album",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Home.ExploreAlbum",
+        "Name":  "Explore album",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Explore album",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Made for you",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Made for you",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Albums",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Albums",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artists",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artists",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "On repeat",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Albums worth coming back to.",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.List",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Blue Hour",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "North Coast",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Soft Focus",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Ellis Grey",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Velvet Sky",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "The Velvets",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Currents",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "North Coast",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Midnight Radio",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "The Velvets",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Daydream",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Ellis Grey",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Golden",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Solana",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Bloom",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Satellites",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Solana",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Your soundtrack",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "A mood for every moment.",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.List",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "On repeat",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "12 tracks",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Late night feelings",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "15 tracks",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Slow Sunday",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "10 tracks",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "New discoveries",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "16 tracks",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artists in your orbit",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Go a little deeper.",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.List",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artist",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "North Coast",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artist",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "The Velvets",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artist",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Solana",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artist",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Ellis Grey",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artist",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "VerticalScrollBar",
+        "Name":  "Vertical",
+        "Type":  "ControlType.ScrollBar",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Demo mode · original catalog · simulated playback",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Open Now Playing and lyrics",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.TrackTitle",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Like current song",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Shuffle",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Previous track (Ctrl+Left)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.PlayPause",
+        "Name":  "Play or pause (Space)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Next track (Ctrl+Right)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Repeat off",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "0:00",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Position",
+        "Name":  "Playback position",
+        "Type":  "ControlType.Slider",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "−3:08",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Lyrics",
+        "Name":  "Lyrics (Ctrl+L)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Queue",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Spotify playback devices",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    }
+]
