@@ -1,0 +1,78 @@
+﻿{
+    "SourceCommit":  "f1f0ff25559b5907afd88c94d52d768003f3b1d5",
+    "StartedUtc":  "2026-11-16T23:18:06.2117196Z",
+    "FinishedUtc":  "2026-11-16T23:18:18.0079089Z",
+    "Result":  "Failed",
+    "FailureKind":  "NativeStartupOrFunctionalCheck",
+    "Stage":  "Home",
+    "ApplicationExecuted":  true,
+    "Candidate":  [
+                      {
+                          "Path":  "Music.dll",
+                          "Sha256":  "1EBB080E65D90DABF4E5B3A661265F17D9B58849AC65B4444B25AD460C6DC1D5"
+                      },
+                      {
+                          "Path":  "Music.exe",
+                          "Sha256":  "F3436F61C8F7029B3A2925A067E25B05A7B045B4F73DFFDCAFDE413EE65A7740"
+                      }
+                  ],
+    "Defender":  {
+                     "AMEngineVersion":  "1.1.26100.4",
+                     "AMProductVersion":  "4.18.26100.4",
+                     "AMServiceEnabled":  true,
+                     "AntivirusEnabled":  true,
+                     "RealTimeProtectionEnabled":  true,
+                     "AntivirusSignatureVersion":  "1.463.334.0",
+                     "AntivirusSignatureLastUpdated":  "\/Date(1794850101000)\/",
+                     "DefenderSignaturesOutOfDate":  false
+                 },
+    "DefenderScanExitCode":  0,
+    "DefenderScanOutcome":  "ExitZeroNoScopedDetection",
+    "Detections":  [
+
+                   ],
+    "Desktop":  {
+                    "UserInteractive":  true,
+                    "SessionId":  2,
+                    "InputDesktop":  "Default"
+                },
+    "ProtectionEnableAttempted":  true,
+    "ProtectionEnableResult":  "EnabledAndVerified",
+    "ProcessId":  1700,
+    "ProcessExitCode":  0,
+    "ForcedTermination":  false,
+    "Checks":  [
+                   {
+                       "Name":  "Protection strengthened",
+                       "Passed":  true,
+                       "Detail":  "Enabled real-time protection with the supported Defender preference command on the isolated hosted runner, then verified it effective. No protection reduction was requested.",
+                       "Utc":  "2026-11-16T23:18:12.8079227Z"
+                   },
+                   {
+                       "Name":  "Candidate antivirus gate",
+                       "Passed":  true,
+                       "Detail":  "Signature refresh succeeded, real-time protection enabled, native scan exit 0, no scoped detections, and bundle hashes unchanged. This does not clear the original user alert.",
+                       "Utc":  "2026-11-16T23:18:14.5954993Z"
+                   },
+                   {
+                       "Name":  "Interactive desktop",
+                       "Passed":  true,
+                       "Detail":  "Session 2; accessible Default input desktop.",
+                       "Utc":  "2026-11-16T23:18:15.5999017Z"
+                   }
+               ],
+    "Screenshots":  [
+                        {
+                            "Name":  "last-window",
+                            "Status":  "Captured",
+                            "File":  "last-window.png"
+                        }
+                    ],
+    "Errors":  [
+                   "Control does not expose InvokePattern."
+               ],
+    "ApplicationEvents":  [
+
+                          ],
+    "Scope":  "Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim."
+}
