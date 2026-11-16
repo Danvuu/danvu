@@ -1,0 +1,12 @@
+﻿{
+    "SourceCommit":  "6bfde2f113e51c10bcc1f27ef256cdfbcf94ab25",
+    "Status":  "LocalAnalysisCompletedNotRootCauseProof",
+    "CdbPath":  "C:\\Program Files (x86)\\Windows Kits\\10\\Debuggers\\x64\\cdb.exe",
+    "CdbVersion":  "10.0.26100.9457 (WinBuild.160101.0800)",
+    "DumpCreated":  true,
+    "DumpBytes":  431869161,
+    "CdbExitCode":  0,
+    "RegistryRestored":  true,
+    "Error":  null,
+    "Note":  "Runner-local dump only. No dump, raw memory, or full debugger log is exported. Missing tools or capture do not validate the app."
+}
