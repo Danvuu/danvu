@@ -1,4 +1,6 @@
-# Music for Windows — preview
+# Music for Windows — preview (withdrawn)
+
+**Do not run v0.1.0-preview.1.** Microsoft Defender reported a Severe / Trojan detection for the installed `Music.exe`. This release is withdrawn pending investigation. Do not restore it from quarantine or add an exclusion. No false-positive conclusion has been reached. See [the investigation status](ANTIVIRUS-INVESTIGATION.md).
 
 Download **Music-win-x64.zip**, extract the entire archive, and open **Music.exe**. Keep its accompanying files in the extracted folder. This native Windows x64 distribution includes the .NET and Windows App SDK runtimes; the .NET SDK is needed only to build the source code.
 

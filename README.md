@@ -1,5 +1,7 @@
 # Music
 
+> **Windows preview withdrawn:** Microsoft Defender blocked `Music.exe` from `v0.1.0-preview.1` with a Severe / Trojan alert. Do not run it, restore it from quarantine, or add an antivirus exception. The detection is under investigation; it has not been established to be a false positive. Binary publishing is paused. See [the incident status](docs/ANTIVIRUS-INVESTIGATION.md).
+
 A native Windows music app with an Apple Music–inspired interface and a Spotify account connection. The desktop UI is C# and WinUI 3: no Electron, embedded website, WebView, or local web server powers the interface.
 
 The visual direction combines a dark desktop layout, translucent surfaces, spacious artwork, a persistent player, and an expanded lyrics screen with artwork-colored atmosphere.
@@ -21,7 +23,7 @@ The public Spotify API does not reproduce every official Spotify feature. Spotif
 
 ## Download for Windows
 
-Download **Music-win-x64.zip** from the repository's [Releases](https://github.com/Danvuu/danvu/releases), extract the complete archive, and open **Music.exe**. The .NET and Windows App SDK runtimes are included; you do not need to install the .NET SDK to run this distribution. Release downloads also include a SHA-256 checksum file.
+Binary downloads are currently withdrawn. Do not run a previously downloaded `Music-win-x64.zip` from `v0.1.0-preview.1`. Future cleared previews would be published through this repository’s [Releases](https://github.com/Danvuu/danvu/releases). The .NET and Windows App SDK runtimes are included; you do not need to install the .NET SDK to run this distribution. Release downloads also include a SHA-256 checksum file.
 
 Read the [preview release notes](docs/RELEASES.md) for its current capabilities and remaining Windows/Spotify validation. Keep all files next to the executable when moving the extracted app.
 
@@ -104,7 +106,7 @@ dotnet test tests/Danvu.Core.Tests/Danvu.Core.Tests.csproj --configuration Relea
 
 Build the WinUI project on Windows, using `scripts/build.ps1`. Building the whole solution on Linux does not validate the native UI or Windows packaging.
 
-The [Windows workflow](.github/workflows/windows.yml) runs core tests and publishes a self-contained Windows x64 zip. It runs on pull requests, pushes to `main`, version tags beginning with `v`, and manual dispatch. Ordinary runs provide the `Music-Windows-x64` build artifact. A successful push of a newly created version tag also publishes `Music-win-x64.zip` and its SHA-256 checksum as release downloads. All automated releases are marked as prereleases. Only the tag-gated release job receives permission to create releases; build jobs keep read-only repository access. An existing release is not overwritten by a rerun.
+The [Windows workflow](.github/workflows/windows.yml) runs core tests and publishes a self-contained Windows x64 zip. It runs on pull requests, pushes to `main`, version tags beginning with `v`, and manual dispatch. The `Music-Windows-x64` binary artifact is currently gated by the same release-enablement variable while the antivirus report is investigated. When the repository variable `MUSIC_RELEASES_ENABLED` is explicitly set to `true`, a successful push of a newly created version tag also publishes `Music-win-x64.zip` and its SHA-256 checksum as release downloads. All automated releases are marked as prereleases. Only the tag-gated release job receives permission to create releases; build jobs keep read-only repository access. An existing release is not overwritten by a rerun.
 
 See [the Windows smoke test](docs/WINDOWS-SMOKE-TEST.md) for the checks required on an actual Windows desktop. These include layout, animation, OAuth browser return, native file import, and Spotify device behavior.
 

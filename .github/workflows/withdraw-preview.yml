@@ -1,0 +1,24 @@
+name: Withdraw blocked Windows preview
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/withdraw-preview.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  withdraw:
+    name: Remove preview from public downloads
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Withdraw the antivirus-blocked preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release edit v0.1.0-preview.1 --repo "$GITHUB_REPOSITORY" --draft=true
+          printf '%s\n' '## Preview withdrawn' 'v0.1.0-preview.1 is a draft. Its public download is withdrawn pending investigation of a reported Microsoft Defender Severe / Trojan detection. Do not run or allow the blocked executable.' >> "$GITHUB_STEP_SUMMARY"
