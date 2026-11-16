@@ -1,0 +1,118 @@
+﻿{
+    "SourceCommit":  "6bfde2f113e51c10bcc1f27ef256cdfbcf94ab25",
+    "StartedUtc":  "2026-11-16T23:35:07.3110521Z",
+    "FinishedUtc":  "2026-11-16T23:35:32.1225742Z",
+    "Result":  "Failed",
+    "FailureKind":  "NativeStartupOrFunctionalCheck",
+    "Stage":  "Home",
+    "ApplicationExecuted":  true,
+    "Candidate":  [
+                      {
+                          "Path":  "Music.dll",
+                          "Sha256":  "A65BFA0DF23B237E873E1B020599EB0BB01CF1629D8FF6DC9DB9FCBAEB91C538"
+                      },
+                      {
+                          "Path":  "Music.exe",
+                          "Sha256":  "DFFA58D9D1B1F0E2962D75F3CE4A248F958054A1BBFF07FFE64C9AAC69CAC523"
+                      }
+                  ],
+    "Defender":  {
+                     "AMEngineVersion":  "1.1.26100.4",
+                     "AMProductVersion":  "4.18.26100.4",
+                     "AMServiceEnabled":  true,
+                     "AntivirusEnabled":  true,
+                     "RealTimeProtectionEnabled":  true,
+                     "AntivirusSignatureVersion":  "1.463.334.0",
+                     "AntivirusSignatureLastUpdated":  "\/Date(1794850101000)\/",
+                     "DefenderSignaturesOutOfDate":  false
+                 },
+    "DefenderScanExitCode":  0,
+    "DefenderScanOutcome":  "ExitZeroNoScopedDetection",
+    "Detections":  [
+
+                   ],
+    "Desktop":  {
+                    "UserInteractive":  true,
+                    "SessionId":  2,
+                    "InputDesktop":  "Default"
+                },
+    "ProtectionEnableAttempted":  true,
+    "ProtectionEnableResult":  "EnabledAndVerified",
+    "ProcessId":  9056,
+    "ProcessExitCode":  -1073741189,
+    "ForcedTermination":  false,
+    "Checks":  [
+                   {
+                       "Name":  "Protection strengthened",
+                       "Passed":  true,
+                       "Detail":  "Enabled real-time protection with the supported Defender preference command on the isolated hosted runner, then verified it effective. No protection reduction was requested.",
+                       "Utc":  "2026-11-16T23:35:25.6783358Z"
+                   },
+                   {
+                       "Name":  "Candidate antivirus gate",
+                       "Passed":  true,
+                       "Detail":  "Signature refresh succeeded, real-time protection enabled, native scan exit 0, no scoped detections, and bundle hashes unchanged. This does not clear the original user alert.",
+                       "Utc":  "2026-11-16T23:35:26.6742968Z"
+                   },
+                   {
+                       "Name":  "Interactive desktop",
+                       "Passed":  true,
+                       "Detail":  "Session 2; accessible Default input desktop.",
+                       "Utc":  "2026-11-16T23:35:27.5550788Z"
+                   }
+               ],
+    "Interactions":  [
+                         {
+                             "Id":  "Nav.Toggle",
+                             "Name":  "Toggle library sidebar",
+                             "SupportedPatterns":  [
+                                                       "InvokePatternIdentifiers.Pattern",
+                                                       "ScrollItemPatternIdentifiers.Pattern"
+                                                   ],
+                             "PatternType":  "System.Windows.Automation.InvokePattern",
+                             "Method":  "InvokePattern.GetCurrentPattern",
+                             "Status":  "DispatchedAwaitingSemanticAssertion",
+                             "PatternError":  null,
+                             "FocusError":  null,
+                             "KeyboardFocusVerified":  false,
+                             "ForegroundVerified":  false,
+                             "ClickPoint":  null
+                         },
+                         {
+                             "Id":  "Nav.Home",
+                             "Name":  "",
+                             "SupportedPatterns":  [
+                                                       "InvokePatternIdentifiers.Pattern",
+                                                       "ScrollItemPatternIdentifiers.Pattern"
+                                                   ],
+                             "PatternType":  "System.Windows.Automation.InvokePattern",
+                             "Method":  "InvokePattern.GetCurrentPattern",
+                             "Status":  "DispatchedAwaitingSemanticAssertion",
+                             "PatternError":  null,
+                             "FocusError":  null,
+                             "KeyboardFocusVerified":  false,
+                             "ForegroundVerified":  false,
+                             "ClickPoint":  null
+                         }
+                     ],
+    "PositionProvider":  null,
+    "Screenshots":  [
+                        {
+                            "Name":  "last-window",
+                            "Status":  "Unavailable",
+                            "Error":  "The property \u0027Width\u0027 cannot be found on this object. Verify that the property exists."
+                        }
+                    ],
+    "Errors":  [
+                   "Application exited while waiting for Home.ExploreAlbum (exit code -1073741189)."
+               ],
+    "ApplicationEvents":  [
+                              {
+                                  "TimeCreated":  "\/Date(1794872129195)\/",
+                                  "Id":  1000,
+                                  "ProviderName":  "Application Error",
+                                  "Message":  "Faulting application name: Music.exe, version: 1.0.0.0, time stamp: 0x6ae30000\r\nFaulting module name: Microsoft.UI.Xaml.dll, version: 3.1.8.0, time stamp: 0x2239de89\r\nException code: 0xc000027b\r\nFault offset: 0x000000000039dce5\r\nFaulting process id: 0x2360\r\nFaulting application start time: 0x1DD7623290CB7D1\r\nFaulting application path: D:\\a\\danvu\\danvu\\artifacts\\publish\\win-x64\\Music.exe\r\nFaulting module path: D:\\a\\danvu\\danvu\\artifacts\\publish\\win-x64\\Microsoft.UI.Xaml.dll\r\nReport Id: f443a257-b753-4e69-a02c-cef920689842\r\nFaulting package full name: \r\nFaulting package-relative application ID: "
+                              }
+                          ],
+    "Scope":  "Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim."
+}
