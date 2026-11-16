@@ -76,10 +76,9 @@ function Find-Control {
     param([string]$Id, [string]$Name = '')
     $condition = New-Object -TypeName System.Windows.Automation.PropertyCondition -ArgumentList @([System.Windows.Automation.AutomationElement]::AutomationIdProperty, $Id)
     $element = $window.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
-    if ($null -eq $element -and $Name.Length -gt 0) {
-        $condition = New-Object -TypeName System.Windows.Automation.PropertyCondition -ArgumentList @([System.Windows.Automation.AutomationElement]::NameProperty, $Name)
-        $element = $window.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
-    }
+    # Stable IDs identify the control. A display-name fallback can select page
+    # text such as the Home heading when the responsive sidebar is collapsed.
+    # Keep Name as a diagnostic hint only; never dispatch input to a namesake.
     return $element
 }
 
