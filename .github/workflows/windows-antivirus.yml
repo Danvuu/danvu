@@ -1,0 +1,59 @@
+name: Withdraw preview and scan original Windows files
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/windows-antivirus.yml'
+      - 'scripts/scan-windows.ps1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: music-withdrawn-preview-antivirus
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: Diagnose unchanged preview with Microsoft Defender
+    runs-on: windows-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write # Required to retrieve this repository's withdrawn draft assets.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download the original withdrawn release assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $folder = Join-Path $env:RUNNER_TEMP 'Music-withdrawn-assets'
+          New-Item -ItemType Directory -Path $folder -Force | Out-Null
+          gh release download v0.1.0-preview.1 --repo $env:GITHUB_REPOSITORY --pattern Music-win-x64.zip --pattern Music-win-x64.zip.sha256 --dir $folder
+          if ($LASTEXITCODE -ne 0) { throw 'Could not obtain the original withdrawn assets. No scan is verified.' }
+      - name: Scan exact original ZIP and extracted bundle without remediation
+        shell: pwsh
+        run: |
+          $folder = Join-Path $env:RUNNER_TEMP 'Music-withdrawn-assets'
+          ./scripts/scan-windows.ps1 -ArchivePath (Join-Path $folder 'Music-win-x64.zip') -ChecksumPath (Join-Path $folder 'Music-win-x64.zip.sha256')
+      - name: Publish diagnostic availability
+        if: always()
+        shell: pwsh
+        run: |
+          $report = 'artifacts/antivirus/defender-report.json'
+          if (-not (Test-Path -LiteralPath $report)) {
+            '## Preview withdrawn; Defender scan unverified' | Add-Content $env:GITHUB_STEP_SUMMARY
+            'No scan report was produced. Inspect download/readiness/timeout failures; do not treat this as a clean result.' | Add-Content $env:GITHUB_STEP_SUMMARY
+          }
+      - name: Upload diagnostic logs only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Music-original-preview-defender-diagnostics
+          path: artifacts/antivirus/
+          if-no-files-found: warn
+          retention-days: 14
