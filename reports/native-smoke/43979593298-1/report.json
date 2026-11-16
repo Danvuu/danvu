@@ -1,0 +1,97 @@
+﻿{
+    "SourceCommit":  "ddbd5f5fefec15963db373b7f4ad476716f01981",
+    "StartedUtc":  "2026-11-16T23:30:01.6318483Z",
+    "FinishedUtc":  "2026-11-16T23:30:22.5577156Z",
+    "Result":  "Failed",
+    "FailureKind":  "NativeStartupOrFunctionalCheck",
+    "Stage":  "Home",
+    "ApplicationExecuted":  true,
+    "Candidate":  [
+                      {
+                          "Path":  "Music.dll",
+                          "Sha256":  "0FDB26EC80B1C4C4F388CEE448A95619AF51D1D437816B8F82EB7F779E8E661D"
+                      },
+                      {
+                          "Path":  "Music.exe",
+                          "Sha256":  "68A7302DB59CCE2BE50E469056732623AA589965F826C2562D113B29C8925C39"
+                      }
+                  ],
+    "Defender":  {
+                     "AMEngineVersion":  "1.1.26100.4",
+                     "AMProductVersion":  "4.18.26100.4",
+                     "AMServiceEnabled":  true,
+                     "AntivirusEnabled":  true,
+                     "RealTimeProtectionEnabled":  true,
+                     "AntivirusSignatureVersion":  "1.463.334.0",
+                     "AntivirusSignatureLastUpdated":  "\/Date(1794850101000)\/",
+                     "DefenderSignaturesOutOfDate":  false
+                 },
+    "DefenderScanExitCode":  0,
+    "DefenderScanOutcome":  "ExitZeroNoScopedDetection",
+    "Detections":  [
+
+                   ],
+    "Desktop":  {
+                    "UserInteractive":  true,
+                    "SessionId":  2,
+                    "InputDesktop":  "Default"
+                },
+    "ProtectionEnableAttempted":  true,
+    "ProtectionEnableResult":  "EnabledAndVerified",
+    "ProcessId":  1612,
+    "ProcessExitCode":  0,
+    "ForcedTermination":  false,
+    "Checks":  [
+                   {
+                       "Name":  "Protection strengthened",
+                       "Passed":  true,
+                       "Detail":  "Enabled real-time protection with the supported Defender preference command on the isolated hosted runner, then verified it effective. No protection reduction was requested.",
+                       "Utc":  "2026-11-16T23:30:06.8926598Z"
+                   },
+                   {
+                       "Name":  "Candidate antivirus gate",
+                       "Passed":  true,
+                       "Detail":  "Signature refresh succeeded, real-time protection enabled, native scan exit 0, no scoped detections, and bundle hashes unchanged. This does not clear the original user alert.",
+                       "Utc":  "2026-11-16T23:30:08.7401618Z"
+                   },
+                   {
+                       "Name":  "Interactive desktop",
+                       "Passed":  true,
+                       "Detail":  "Session 2; accessible Default input desktop.",
+                       "Utc":  "2026-11-16T23:30:12.8693268Z"
+                   }
+               ],
+    "Interactions":  [
+                         {
+                             "Id":  "",
+                             "Name":  "Home",
+                             "SupportedPatterns":  [
+                                                       "TextPatternIdentifiers.Pattern",
+                                                       "ScrollItemPatternIdentifiers.Pattern"
+                                                   ],
+                             "PatternType":  null,
+                             "Method":  "None",
+                             "Status":  "Failed",
+                             "PatternError":  "Exception calling \"GetCurrentPattern\" with \"1\" argument(s): \"Unsupported Pattern.\"",
+                             "FocusError":  null,
+                             "KeyboardFocusVerified":  false,
+                             "ForegroundVerified":  false,
+                             "ClickPoint":  null
+                         }
+                     ],
+    "PositionProvider":  null,
+    "Screenshots":  [
+                        {
+                            "Name":  "last-window",
+                            "Status":  "Captured",
+                            "File":  "last-window.png"
+                        }
+                    ],
+    "Errors":  [
+                   "Non-button control has no supported invocation pattern."
+               ],
+    "ApplicationEvents":  [
+
+                          ],
+    "Scope":  "Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim."
+}
