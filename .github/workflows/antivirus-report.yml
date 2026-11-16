@@ -1,0 +1,73 @@
+name: Export original preview antivirus diagnostics
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/antivirus-report.yml']
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: music-original-preview-diagnostic-export
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: Music-original-preview-defender-diagnostics
+          run-id: 43966794999
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
+          path: scan-report
+      - name: Validate and summarize the original report
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, pathlib
+          path = pathlib.Path('scan-report/defender-report.json')
+          data = path.read_bytes()
+          report = json.loads(data.decode('utf-8-sig'))
+          assert report['ReleaseTag'] == 'v0.1.0-preview.1'
+          assert report['ArchiveSha256'] == '5abc1a283f7c70fd6690ab6bc4c4df35fa2ea3bff66c7c4e93d01132d305bd64'
+          assert report['MusicExeSha256'] == '4376b77e3be4c9de932b4baafe9bef373560c6c3e1904da0c9c1b6602e50dbf5'
+          assert report['HashesVerified'] is True
+          assert len(data) < 1_000_000, 'Unexpected report size; no publication attempted.'
+          summary = {key: report.get(key) for key in ('Result', 'SignatureUpdate', 'SignatureFreshness', 'FinalDefenderStatus', 'ArchiveSha256', 'MusicExeSha256')}
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as target:
+              target.write('## Original withdrawn preview: recorded Defender evidence\n\n```json\n' + json.dumps(summary, indent=2) + '\n```\n\nDiagnostic evidence only; this does not clear the user-reported alert. Preview stays withdrawn.\n')
+          body = {'message': 'Record original preview Defender diagnostic run 43966794999', 'branch': 'security-diagnostics', 'content': base64.b64encode(data).decode('ascii')}
+          pathlib.Path(os.environ['RUNNER_TEMP'], 'music-report-upload.json').write_text(json.dumps(body), encoding='utf-8')
+          PY
+      - name: Store JSON on diagnostics branch without overwriting
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          branch=security-diagnostics
+          endpoint="repos/$GITHUB_REPOSITORY"
+          if ! gh api "$endpoint/git/ref/heads/$branch" > "$RUNNER_TEMP/music-diagnostic-ref.json" 2> "$RUNNER_TEMP/music-diagnostic-ref.error"; then
+            grep -q 'HTTP 404' "$RUNNER_TEMP/music-diagnostic-ref.error" || { cat "$RUNNER_TEMP/music-diagnostic-ref.error" >&2; exit 1; }
+            gh api --method POST "$endpoint/git/refs" -f "ref=refs/heads/$branch" -f "sha=$SOURCE_SHA" > /dev/null
+          fi
+          report_path=reports/antivirus/43966794999.json
+          if gh api "$endpoint/contents/$report_path?ref=$branch" > "$RUNNER_TEMP/music-existing-report.json" 2> "$RUNNER_TEMP/music-existing-report.error"; then
+            python3 - <<'PY'
+          import base64, json, os, pathlib
+          existing = json.loads(pathlib.Path(os.environ['RUNNER_TEMP'], 'music-existing-report.json').read_text())
+          assert base64.b64decode(existing['content']) == pathlib.Path('scan-report/defender-report.json').read_bytes(), 'Existing report differs; it will not be overwritten.'
+          PY
+            echo 'Identical diagnostic JSON already exists; no changes made.'
+          else
+            grep -q 'HTTP 404' "$RUNNER_TEMP/music-existing-report.error" || { cat "$RUNNER_TEMP/music-existing-report.error" >&2; exit 1; }
+            gh api --method PUT "$endpoint/contents/$report_path" --input "$RUNNER_TEMP/music-report-upload.json" > /dev/null
+            echo 'Stored reports/antivirus/43966794999.json on security-diagnostics.'
+          fi
