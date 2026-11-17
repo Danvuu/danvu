@@ -1,0 +1,702 @@
+﻿[
+    {
+        "Id":  "",
+        "Name":  "Non Client Input Sink Window",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "AppWindow Custom Title Bar",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Minimize",
+        "Name":  "Minimize",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Maximize",
+        "Name":  "Maximize",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Close",
+        "Name":  "Close",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Popup",
+        "Type":  "ControlType.Window",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Account.Dialog",
+        "Name":  "Music · Your account",
+        "Type":  "ControlType.Window",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "ContentScrollViewer",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Music · Your account",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Explore the original demo collection, or connect your Spotify account. Demo playback is silent.",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Spotify developer Client ID",
+        "Type":  "ControlType.Edit",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Spotify developer Client ID",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Add this exact redirect URI in your Spotify developer app:\nhttp://127.0.0.1:5543/callback\n\nSign-in opens your system browser. No client secret or Spotify password is stored by Music. Tokens are encrypted for your Windows account.",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Spotify Premium and an available Connect device are required for playback controls. Spotify audio plays on that device. Spotify’s API does not provide synced lyrics, offline downloads, or native Jam hosting.",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Spotify developer dashboard ↗",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Spotify developer dashboard ↗",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "PrimaryButton",
+        "Name":  "Sign in with Spotify",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "CloseButton",
+        "Name":  "Done",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Music",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Toggle",
+        "Name":  "Toggle library sidebar",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Back (Alt+Left)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Forward (Alt+Right)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  false
+    },
+    {
+        "Id":  "",
+        "Name":  "Search music (Ctrl+F)",
+        "Type":  "ControlType.Edit",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Header.Jam",
+        "Name":  "Jam",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Jam",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Header.Account",
+        "Name":  "Sign in",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Sign in",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "ALBUM",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Collection.Title",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "5 songs, 18 minutes",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Shuffle collection",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Collection.Play",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Play",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Collection options",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Song",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artist",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Album",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Time",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.List",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Danvu.Windows.MainWindow+TrackRow",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackAlbum",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "3:08",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackOptions",
+        "Name":  "Song options",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Danvu.Windows.MainWindow+TrackRow",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Stay a Little Longer",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackAlbum",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "3:27",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackOptions",
+        "Name":  "Song options",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Danvu.Windows.MainWindow+TrackRow",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Polaroid Summer",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackAlbum",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "3:46",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackOptions",
+        "Name":  "Song options",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Danvu.Windows.MainWindow+TrackRow",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Everything in Color",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackAlbum",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "4:05",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackOptions",
+        "Name":  "Song options",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Danvu.Windows.MainWindow+TrackRow",
+        "Type":  "ControlType.ListItem",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "The Way Home",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackAlbum",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "4:24",
+        "Type":  "ControlType.Text",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "TrackOptions",
+        "Name":  "Song options",
+        "Type":  "ControlType.Button",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "VerticalScrollBar",
+        "Name":  "Vertical",
+        "Type":  "ControlType.ScrollBar",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Demo mode · original catalog · simulated playback",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Shuffle",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Previous track (Ctrl+Left)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.PlayPause",
+        "Name":  "Play (Space)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Next track (Ctrl+Right)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Repeat off",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Open Now Playing and lyrics",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.TrackTitle",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "0:03",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Position",
+        "Name":  "Playback position",
+        "Type":  "ControlType.Slider",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "−3:05",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Like current song",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Playback volume",
+        "Type":  "ControlType.Slider",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Lyrics",
+        "Name":  "Lyrics (Ctrl+L)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Queue",
+        "Name":  "Queue",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Devices",
+        "Name":  "Spotify playback devices",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    }
+]
