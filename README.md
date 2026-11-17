@@ -1,17 +1,17 @@
 # Music
 
-> **Windows preview withdrawn:** Microsoft Defender blocked `Music.exe` from `v0.1.0-preview.1` with a Severe / Trojan alert. Do not run it, restore it from quarantine, or add an antivirus exception. The detection is under investigation; it has not been established to be a false positive. Binary publishing is paused. See [the incident status](docs/ANTIVIRUS-INVESTIGATION.md).
+> **Windows preview withdrawn:** Microsoft Defender blocked `Music.exe` from `v0.1.0-preview.1` with a Severe / Trojan alert. Do not run it, restore it from quarantine, or add an antivirus exception. The detection is under investigation; it has not been established to be a false positive. No replacement download has been validated or published. See [the incident status](docs/ANTIVIRUS-INVESTIGATION.md).
 
 A native Windows music app with an Apple Music–inspired interface and a Spotify account connection. The desktop UI is C# and WinUI 3: no Electron, embedded website, WebView, or local web server powers the interface.
 
-The visual direction combines a dark desktop layout, translucent surfaces, spacious artwork, a persistent player, and an expanded lyrics screen with artwork-colored atmosphere.
+The current redesign uses a charcoal desktop canvas, frosted sidebar, compact playback controls at the top, artwork-led shelves, and aligned Song / Artist / Album / Time columns. The expanded lyrics screen uses artwork colors, actual Gaussian blur on nearby inactive lines, spring following, and native composition animations. Playback uses a native animated play/pause path morph. These source changes still need comparison against the references in a captured Windows render; a managed compile is not visual validation.
 
 ## What this version does
 
 - Browse demo albums, artists, playlists, and tracks immediately, without credentials.
 - Search music, open artist and album details, and browse a personal library.
 - Show a playback bar, expanded player, queue, playback position, volume, shuffle, and repeat controls.
-- Show large time-synced lyrics, highlight the current line, seek from a line, and return to the current line after manual scrolling. The visual treatment uses dimming, scaling, and edge fades; inactive lines do not yet have a true Gaussian blur effect.
+- Show large time-synced lyrics, highlight the current line, seek from a line, and return to the current line after manual scrolling. The source implements dimming, scaling, edge fades, and a 1.5 px Gaussian blur for inactive lines near the viewport. If the graphics driver rejects the composition effect, Music reports the limitation and retains readable timed lyrics and seeking. The current blur, spring scrolling, and icon-morph changes still require native Windows verification.
 - Import a local `.lrc` lyrics file and save it for the current track. Demo lyrics are original sample text, not lyrics fetched from Spotify.
 - Connect a personal Spotify account through OAuth PKCE in the system browser; no client secret or Spotify password is entered in Music.
 - Use Spotify's public API for the available catalog, library, playlist, device, and playback-control operations.
@@ -23,9 +23,11 @@ The public Spotify API does not reproduce every official Spotify feature. Spotif
 
 ## Download for Windows
 
-Binary downloads are currently withdrawn. Do not run a previously downloaded `Music-win-x64.zip` from `v0.1.0-preview.1`. Future cleared previews would be published through this repository’s [Releases](https://github.com/Danvuu/danvu/releases). The .NET and Windows App SDK runtimes are included; you do not need to install the .NET SDK to run this distribution. Release downloads also include a SHA-256 checksum file.
+Binary downloads are currently withdrawn. Do not run a previously downloaded `Music-win-x64.zip` from `v0.1.0-preview.1`. Any replacement preview will be published through this repository’s [Releases](https://github.com/Danvuu/danvu/releases) only after its required checks pass. A passing hosted scan would not resolve the earlier detection on the user’s computer. The .NET and Windows App SDK runtimes are included; you do not need to install the .NET SDK to run this distribution. Release downloads also include a SHA-256 checksum file.
 
-Read the [preview release notes](docs/RELEASES.md) for its current capabilities and remaining Windows/Spotify validation. Keep all files next to the executable when moving the extracted app.
+The requested single-file installer, `Music-Setup.exe`, is being prepared; no installer download has been validated or published. Its publisher metadata will be **Danvu**, but without a code-signing certificate that metadata does not establish a verified Windows publisher. The installer will be unsigned unless legitimate signing credentials are configured. It will not install a self-signed trust certificate or change antivirus protection.
+
+Read the [preview release notes](docs/RELEASES.md) for current capabilities and remaining Windows/Spotify validation. For a portable ZIP, keep all accompanying files next to the executable when moving the extracted app.
 
 ## Build and run from source on Windows
 
@@ -58,7 +60,7 @@ artifacts/Music-win-x64.zip
 
 The zip contains the executable **and its required native/runtime files**. Extract the entire zip before launching `Music.exe`; do not copy only the executable. A single-file executable is deliberately not used for the WinUI deployment. The .NET and Windows App SDK runtimes are included by the publish settings.
 
-Published artifacts are unsigned. This repository does not yet produce a signed MSIX/MSI installer or a Microsoft Store release.
+The current preview artifacts are unsigned. A single setup executable is being prepared around the complete native runtime bundle; the app executable itself still requires those accompanying files after installation. Code-signing, a signed MSIX/MSI package, and a Microsoft Store release are not currently configured.
 
 ### Optional per-user installation
 
@@ -106,11 +108,13 @@ dotnet test tests/Danvu.Core.Tests/Danvu.Core.Tests.csproj --configuration Relea
 
 Build the WinUI project on Windows, using `scripts/build.ps1`. Building the whole solution on Linux does not validate the native UI or Windows packaging.
 
-The [Windows workflow](.github/workflows/windows.yml) runs core tests and publishes a self-contained Windows x64 zip. It runs on pull requests, pushes to `main`, version tags beginning with `v`, and manual dispatch. The `Music-Windows-x64` binary artifact is currently gated by the same release-enablement variable while the antivirus report is investigated. When the repository variable `MUSIC_RELEASES_ENABLED` is explicitly set to `true`, a successful push of a newly created version tag also publishes `Music-win-x64.zip` and its SHA-256 checksum as release downloads. All automated releases are marked as prereleases. Only the tag-gated release job receives permission to create releases; build jobs keep read-only repository access. An existing release is not overwritten by a rerun.
+The [Windows workflow](.github/workflows/windows.yml) runs on pull requests, pushes to `main`, version tags beginning with `v`, and manual dispatch. Before uploading a distribution, it requires core tests, a fresh normal-remediation Defender scan with verified real-time protection, and actual native Home, album navigation, silent playback/pause, lyrics seek, and close checks. A failed or unavailable prerequisite blocks the binary upload and release. The separate [native smoke workflow](.github/workflows/windows-smoke.yml) retains bounded diagnostic reports and screenshots without publishing application binaries.
+
+The original `v0.1.0-preview.1` tag is excluded from distribution. The candidate `v0.1.1-preview.1` tag has a dedicated path through the required gates; other tags and binary artifacts additionally require `MUSIC_RELEASES_ENABLED=true`. This configuration is not evidence that a candidate passed or that a replacement exists. Successful releases include the ZIP, its SHA-256 checksum, and a dated link to their validation run. Releases are marked as prereleases; only the tag-gated release job receives release-write permission. An existing release is not overwritten by a rerun.
 
 See [the Windows smoke test](docs/WINDOWS-SMOKE-TEST.md) for the checks required on an actual Windows desktop. These include layout, animation, OAuth browser return, native file import, and Spotify device behavior.
 
-[Recorded implementation validation](docs/VALIDATION.md) describes the original cloud checks. Subsequent Windows build evidence is available in the corresponding GitHub Actions run; a successful native publish does not replace the remaining desktop and live-account checks.
+[Recorded validation](docs/VALIDATION.md) distinguishes portable tests, managed API compilation, Windows builds, observed native failures, and checks that remain unrun. The app now initializes compiled resources and generated XAML metadata through `App.xaml`. A successful native publish does not replace desktop interaction, visual, or live-account checks.
 
 ## Project layout
 

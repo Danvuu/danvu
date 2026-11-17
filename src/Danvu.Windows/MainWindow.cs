@@ -230,10 +230,11 @@ public sealed partial class MainWindow : Window
         searchField.Children.Add(searchIcon);
         Ui.Add(header, searchField, 0, 1);
         var account = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, VerticalAlignment = VerticalAlignment.Center };
-        account.Children.Add(Ui.Pill("Jam", () => Run(ShowJamAsync)));
+        account.Children.Add(Ui.WithId(Ui.Pill("Jam", () => Run(ShowJamAsync)), "Header.Jam"));
         _accountButton = Ui.Pill("Sign in", () => Run(ShowAccountAsync));
         _accountButton.Foreground = Ui.Brush(Ui.Accent);
         _accountButton.Content = Ui.Text("Sign in", 13, true, Ui.Accent);
+        Ui.WithId(_accountButton, "Header.Account");
         account.Children.Add(_accountButton);
         Ui.Add(header, account, 0, 2);
         Ui.Add(_workspace, header);
@@ -360,8 +361,8 @@ public sealed partial class MainWindow : Window
         AutomationProperties.SetName(_volume, "Playback volume");
         right.Children.Add(_volume);
         right.Children.Add(Ui.WithId(Ui.IconButton("\uE8F2", "Lyrics (Ctrl+L)", () => ToggleLyrics(!_lyricsVisible), 17), "Player.Lyrics"));
-        right.Children.Add(Ui.IconButton("\uE8FD", "Queue", () => Run(ToggleQueueAsync), 17));
-        right.Children.Add(Ui.IconButton("\uE7F4", "Spotify playback devices", () => Run(ShowDevicesAsync), 17));
+        right.Children.Add(Ui.WithId(Ui.IconButton("\uE8FD", "Queue", () => Run(ToggleQueueAsync), 17), "Player.Queue"));
+        right.Children.Add(Ui.WithId(Ui.IconButton("\uE7F4", "Spotify playback devices", () => Run(ShowDevicesAsync), 17), "Player.Devices"));
         Ui.Add(grid, right, 0, 2);
         outer.Child = grid;
         return outer;

@@ -403,6 +403,32 @@ public static class MusicDesktopProbe {
     $closed = Find-Control 'Lyrics.Scroll'
     if ($null -ne $closed -and -not $closed.Current.IsOffscreen) { throw 'Lyrics close action left the lyrics view visible.' }
     Add-Check 'Close lyrics' 'The native close action hid the lyrics pane.'
+
+    $report.Stage = 'Queue'
+    Invoke-Control (Wait-Control 'Player.Queue')
+    $queueTitle = Wait-Control 'Queue.Title'
+    if ($queueTitle.Current.Name -ne 'Queue') { throw 'Queue control did not expose its real heading.' }
+    Capture-Window 'queue'
+    Invoke-Control (Wait-Control 'Queue.Close')
+    Start-Sleep -Milliseconds 250
+    $queueTitle = Find-Control 'Queue.Title'
+    if ($null -ne $queueTitle -and -not $queueTitle.Current.IsOffscreen) { throw 'Queue close action left the queue visible.' }
+    Add-Check 'Queue open and close' 'Real queue panel rendered and closed through its native controls.'
+
+    foreach ($dialogProbe in @(
+        @{ Open = 'Player.Devices'; Dialog = 'Devices.Dialog'; Title = 'Playback devices' },
+        @{ Open = 'Header.Account'; Dialog = 'Account.Dialog'; Title = 'Spotify account settings' },
+        @{ Open = 'Header.Jam'; Dialog = 'Jam.Dialog'; Title = 'Official Spotify Jam handoff' }
+    )) {
+        $report.Stage = $dialogProbe.Title
+        Invoke-Control (Wait-Control $dialogProbe.Open)
+        $dialogControl = Wait-Control $dialogProbe.Dialog
+        Invoke-Control (Wait-Control ($dialogProbe.Dialog + '.Close'))
+        Start-Sleep -Milliseconds 250
+        $dialogControl = Find-Control $dialogProbe.Dialog
+        if ($null -ne $dialogControl -and -not $dialogControl.Current.IsOffscreen) { throw ('Native dialog remained visible after Close: ' + $dialogProbe.Title) }
+        Add-Check $dialogProbe.Title 'Native dialog opened and dismissed. No account authorization, external application, or Spotify session was invoked.'
+    }
     $report.Result = 'Passed'
     if (@($report.Screenshots | Where-Object { $_.Status -ne 'Captured' }).Count -gt 0) { $report.Result = 'Partial'; $report.FailureKind = 'ScreenshotCaptureUnavailable' }
     $report.Stage = 'Complete'

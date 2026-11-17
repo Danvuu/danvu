@@ -10,7 +10,7 @@ $repository = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot)).TrimEnd
 $ApplicationDirectory = [IO.Path]::GetFullPath($ApplicationDirectory).TrimEnd('\', '/')
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
-$report = [ordered]@{ SourceCommit = $SourceCommit; Scope = 'Build metadata and relative native resource filenames only; no binaries or credentials.'; PublishResources = @(); BuildResources = @(); GeneratedApplication = @(); CompilerInputs = @(); EvaluatedProperties = $null; PriDumpStatus = 'NotRun'; AppResourceMapEntries = @(); Errors = @() }
+$report = [ordered]@{ SourceCommit = $SourceCommit; Scope = 'Build metadata, bounded generated App.g.cs source, and relative native resource filenames; no binary payloads or credentials.'; PublishResources = @(); BuildResources = @(); GeneratedApplication = @(); CompilerInputs = @(); EvaluatedProperties = $null; PriDumpStatus = 'NotRun'; AppResourceMapEntries = @(); Errors = @() }
 function Relative-Name([string]$Path, [string]$Root) {
     return [IO.Path]::GetRelativePath($Root, $Path).Replace('\', '/')
 }
@@ -29,7 +29,11 @@ try {
         foreach ($file in @(Get-ChildItem -LiteralPath $obj -Filter 'App.g*.cs' -File -Recurse | Sort-Object FullName | Select-Object -First 8)) {
             if ($file.Length -gt 1048576) { continue }
             $code = [IO.File]::ReadAllText($file.FullName)
-            $report.GeneratedApplication += [ordered]@{ Path = Relative-Name $file.FullName $repository; ResourceUris = @([regex]::Matches($code, 'ms-appx:[^"\s]+') | ForEach-Object { $_.Value } | Select-Object -Unique -First 8); CallsLoadComponent = $code.Contains('LoadComponent'); Bytes = $file.Length }
+            $entry = [ordered]@{ Path = Relative-Name $file.FullName $repository; ResourceUris = @([regex]::Matches($code, 'ms-appx:[^"\s]+') | ForEach-Object { $_.Value } | Select-Object -Unique -First 8); CallsLoadComponent = $code.Contains('LoadComponent'); Bytes = $file.Length }
+            if ($file.Name -eq 'App.g.cs' -and $file.Length -le 16384) {
+                $entry['GeneratedSource'] = $code.Replace($repository, '<repository>')
+            }
+            $report.GeneratedApplication += $entry
         }
         foreach ($file in @(Get-ChildItem -LiteralPath $obj -Filter 'input.json' -File -Recurse | Sort-Object FullName | Select-Object -First 8)) {
             if ($file.Length -gt 16777216) { continue }
@@ -55,7 +59,17 @@ try {
                 $report.PriDumpStatus = 'Completed'
                 if ((Get-Item -LiteralPath $temporary).Length -le 16777216) {
                     [xml]$map = [IO.File]::ReadAllText($temporary)
-                    $report.AppResourceMapEntries = @($map.SelectNodes('//*[@name="App.xbf" or @name="App.xaml"]') | Select-Object -First 8 | ForEach-Object { $text = $_.OuterXml.Replace($repository, '<repository>'); $text.Substring(0, [Math]::Min(4096, $text.Length)) })
+                    $report.AppResourceMapEntries = @($map.SelectNodes('//*[@name="App.xbf" or @name="App.xaml"]') | Select-Object -First 8 | ForEach-Object {
+                        $node = $_.CloneNode($true)
+                        # PRI can embed XBF bytes. Export metadata only, never encoded payloads.
+                        foreach ($payload in @($node.SelectNodes('.//Base64Value'))) {
+                            $placeholder = $map.CreateElement('EmbeddedDataPresent')
+                            $placeholder.InnerText = 'true'
+                            $null = $payload.ParentNode.ReplaceChild($placeholder, $payload)
+                        }
+                        $text = $node.OuterXml.Replace($repository, '<repository>')
+                        $text.Substring(0, [Math]::Min(4096, $text.Length))
+                    })
                 } else { $report.Errors += 'PRI dump exceeded bounded parser limit.' }
             } else { $report.PriDumpStatus = 'ToolFailed' }
         } finally { if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Force } }

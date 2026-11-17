@@ -22,6 +22,7 @@ public sealed partial class MainWindow
         public Track Track { get; } = track;
         public string Title => Track.Title;
         public string Artist => Track.Artist;
+        public Uri? Artwork => LocalState.ResolveArtworkUri(Track.ArtworkUrl);
     }
     private bool _dialogOpen;
     private Button _accountButton = null!;
@@ -30,6 +31,22 @@ public sealed partial class MainWindow
     {
         if (_dialogOpen) return ContentDialogResult.None;
         _dialogOpen = true;
+        var id = Microsoft.UI.Xaml.Automation.AutomationProperties.GetAutomationId(dialog);
+        if (!string.IsNullOrEmpty(id))
+            dialog.Opened += (_, _) =>
+            {
+                static Button? CloseButton(DependencyObject parent)
+                {
+                    for (var index = 0; index < VisualTreeHelper.GetChildrenCount(parent); index++)
+                    {
+                        var child = VisualTreeHelper.GetChild(parent, index);
+                        if (child is Button { Name: "CloseButton" } button) return button;
+                        if (CloseButton(child) is { } found) return found;
+                    }
+                    return null;
+                }
+                if (CloseButton(dialog) is { } close) Ui.WithId(close, id + ".Close");
+            };
         try
         {
             dialog.XamlRoot = _root.XamlRoot;
@@ -65,7 +82,7 @@ public sealed partial class MainWindow
         var limitation = Ui.Text("Spotify Premium and an available Connect device are required for playback controls. Spotify audio plays on that device. Spotify’s API does not provide synced lyrics, offline downloads, or native Jam hosting.", 12, false, Ui.Muted);
         limitation.TextWrapping = TextWrapping.Wrap; body.Children.Add(limitation);
         body.Children.Add(Ui.Pill("Spotify developer dashboard ↗", () => Run(async () => { await Launcher.LaunchUriAsync(new Uri("https://developer.spotify.com/dashboard")); })));
-        var dialog = new ContentDialog { Title = "Music · Your account", Content = body, PrimaryButtonText = _music.IsDemo ? "Sign in with Spotify" : "Reconnect Spotify", SecondaryButtonText = _music.IsDemo ? "" : "Sign out & use demo", CloseButtonText = "Done", DefaultButton = ContentDialogButton.Primary };
+        var dialog = Ui.WithId(new ContentDialog { Title = "Music · Your account", Content = body, PrimaryButtonText = _music.IsDemo ? "Sign in with Spotify" : "Reconnect Spotify", SecondaryButtonText = _music.IsDemo ? "" : "Sign out & use demo", CloseButtonText = "Done", DefaultButton = ContentDialogButton.Primary }, "Account.Dialog");
         dialog.PrimaryButtonClick += (_, e) =>
         {
             if (!string.IsNullOrWhiteSpace(clientId.Text)) return;
@@ -126,7 +143,7 @@ public sealed partial class MainWindow
         var text = Ui.Text(_music.IsDemo ? "Demo playback animates the interface without audio." : "Open Spotify on a computer, phone, or speaker so it appears here. Audio will play on the selected device.", 13, false, Ui.Muted); text.TextWrapping = TextWrapping.Wrap;
         body.Children.Add(text); body.Children.Add(choices);
         if (devices.Count == 0) body.Children.Add(Ui.Text("No available devices. Open Spotify and start a track, then try again.", 13));
-        var dialog = new ContentDialog { Title = "Listen on", Content = body, PrimaryButtonText = "Use device", IsPrimaryButtonEnabled = choices.SelectedItem is not null, CloseButtonText = "Close" };
+        var dialog = Ui.WithId(new ContentDialog { Title = "Listen on", Content = body, PrimaryButtonText = "Use device", IsPrimaryButtonEnabled = choices.SelectedItem is not null, CloseButtonText = "Close" }, "Devices.Dialog");
         choices.SelectionChanged += (_, _) => dialog.IsPrimaryButtonEnabled = choices.SelectedItem is PlaybackDevice;
         if (await ShowDialogAsync(dialog) == ContentDialogResult.Primary && choices.SelectedItem is PlaybackDevice device)
         {
@@ -141,7 +158,7 @@ public sealed partial class MainWindow
         body.Children.Add(Ui.Text("Bring everyone into the music.", 21, true));
         var message = Ui.Text("Spotify Jam lets people listen and build a queue together. Spotify’s public API doesn’t let Music create, join, or manage a Jam.\n\nOpen the official Spotify app, open the current track or device menu, and choose “Start a Jam” where available. To join, use the invitation link or QR code from your host.\n\nMusic can control your selected Connect device, but it doesn’t synchronize or host the Jam session. Spotify account and device requirements apply.", 14);
         message.TextWrapping = TextWrapping.Wrap; body.Children.Add(message);
-        var dialog = new ContentDialog { Title = "Spotify Jam", Content = body, PrimaryButtonText = "Open Spotify", CloseButtonText = "Not now", DefaultButton = ContentDialogButton.Primary };
+        var dialog = Ui.WithId(new ContentDialog { Title = "Spotify Jam", Content = body, PrimaryButtonText = "Open Spotify", CloseButtonText = "Not now", DefaultButton = ContentDialogButton.Primary }, "Jam.Dialog");
         if (await ShowDialogAsync(dialog) == ContentDialogResult.Primary)
         {
             var uri = _playback?.Track?.Uri;
@@ -202,8 +219,8 @@ public sealed partial class MainWindow
         panel.RowDefinitions.Add(new RowDefinition { Height = Ui.Star });
         var heading = Ui.Columns(Ui.Star, Ui.Auto);
         var headingLabel = Ui.Text("Queue", 20, true); headingLabel.VerticalAlignment = VerticalAlignment.Center;
-        Ui.Add(heading, headingLabel);
-        Ui.Add(heading, Ui.IconButton("\uE711", "Close queue", () => Run(ToggleQueueAsync), 14), 0, 1);
+        Ui.Add(heading, Ui.WithId(headingLabel, "Queue.Title"));
+        Ui.Add(heading, Ui.WithId(Ui.IconButton("\uE711", "Close queue", () => Run(ToggleQueueAsync), 14), "Queue.Close"), 0, 1);
         Ui.Add(panel, heading);
         var now = new StackPanel { Spacing = 9, Margin = new Thickness(0, 16, 0, 18) };
         now.Children.Add(Ui.Text("NOW PLAYING", 10, true, Ui.Muted));
@@ -223,10 +240,16 @@ public sealed partial class MainWindow
         // Native DataTemplate supplies accessible text and artwork; the data stays strongly typed.
         list.ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
             <DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-              <StackPanel Padding="2,8" Spacing="4" Width="218">
-                <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                <TextBlock Text="{Binding Artist}" FontSize="11" Opacity="0.55" TextTrimming="CharacterEllipsis" />
-              </StackPanel>
+              <Grid Padding="2,8" ColumnSpacing="11" Width="218">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Border Width="36" Height="36" CornerRadius="5" Background="#2B2B2D">
+                  <Image Source="{Binding Artwork}" Stretch="UniformToFill"/>
+                </Border>
+                <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Text="{Binding Artist}" FontSize="11" Opacity="0.55" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+              </Grid>
             </DataTemplate>
             """);
         int dragFrom = -1; QueueEntry? dragged = null;

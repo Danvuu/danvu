@@ -35,24 +35,59 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
       - name: Publish native self-contained application
         shell: pwsh
-        run: ./scripts/build.ps1 -Configuration Release
+        run: ./scripts/build.ps1 -Configuration Release -SkipArchive
+      - name: Sign owned payload only when a legitimate certificate is configured
+        shell: pwsh
+        env:
+          MUSIC_CODESIGN_PFX_PATH: ${{ secrets.MUSIC_CODESIGN_PFX_PATH }}
+          MUSIC_CODESIGN_PFX_PASSWORD: ${{ secrets.MUSIC_CODESIGN_PFX_PASSWORD }}
+          MUSIC_CODESIGN_TIMESTAMP_URL: ${{ secrets.MUSIC_CODESIGN_TIMESTAMP_URL }}
+        run: ./scripts/sign-windows.ps1 -Target Payload
+      - name: Require protected native playback and lyrics checks before distribution
+        shell: powershell
+        run: ./scripts/smoke-windows.ps1 -ApplicationDirectory (Join-Path $PWD.Path 'artifacts/publish/win-x64') -OutputDirectory (Join-Path $PWD.Path 'artifacts/native-smoke') -SourceCommit $env:GITHUB_SHA
+      - name: Build the native per-user installer from the tested payload
+        shell: pwsh
+        run: ./scripts/build-installer.ps1 -Action Build
+      - name: Sign installer only when a legitimate certificate is configured
+        shell: pwsh
+        env:
+          MUSIC_CODESIGN_PFX_PATH: ${{ secrets.MUSIC_CODESIGN_PFX_PATH }}
+          MUSIC_CODESIGN_PFX_PASSWORD: ${{ secrets.MUSIC_CODESIGN_PFX_PASSWORD }}
+          MUSIC_CODESIGN_TIMESTAMP_URL: ${{ secrets.MUSIC_CODESIGN_TIMESTAMP_URL }}
+        run: ./scripts/sign-windows.ps1 -Target Installer
+      - name: Require final package scans and isolated install/uninstall verification
+        shell: pwsh
+        run: ./scripts/build-installer.ps1 -Action Verify
+      - name: Retain native validation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Music-Windows-validation
+          path: artifacts/native-smoke/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Upload Windows distribution
-        if: vars.MUSIC_RELEASES_ENABLED == 'true'
+        if: success() && github.ref != 'refs/tags/v0.1.0-preview.1' && (vars.MUSIC_RELEASES_ENABLED == 'true' || github.ref == 'refs/tags/v0.1.1-preview.1')
         uses: actions/upload-artifact@v4
         with:
           name: Music-Windows-x64
-          path: artifacts/Music-win-x64.zip
+          path: |
+            artifacts/Music-Setup.exe
+            artifacts/Music-win-x64.zip
           if-no-files-found: error
           retention-days: 14
 
   release:
     name: Publish Windows download
-    if: vars.MUSIC_RELEASES_ENABLED == 'true' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && github.event.created
+    if: needs.windows.result == 'success' && github.ref != 'refs/tags/v0.1.0-preview.1' && (vars.MUSIC_RELEASES_ENABLED == 'true' || github.ref == 'refs/tags/v0.1.1-preview.1') && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && github.event.created
     needs: windows
     runs-on: ubuntu-latest
     permissions:
@@ -69,8 +104,12 @@ jobs:
       - name: Generate ZIP checksum
         working-directory: release
         run: |
+          sha256sum Music-Setup.exe > Music-Setup.exe.sha256
+          cat Music-Setup.exe.sha256
           sha256sum Music-win-x64.zip > Music-win-x64.zip.sha256
           cat Music-win-x64.zip.sha256
+          cp ../docs/RELEASES.md RELEASE-NOTES.md
+          printf '\n## Recorded tag-run validation\n\nSource: `%s`\n\nRelease evidence recorded at %s UTC after the required core, protected Defender, and native UI checks passed: [workflow run](%s/%s/actions/runs/%s). Scanner versions, file hashes, and native-flow details are in that run\047s Music-Windows-validation diagnostic artifact.\n' "$GITHUB_SHA" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" >> RELEASE-NOTES.md
       - name: Publish tagged Windows release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -80,6 +119,8 @@ jobs:
           title="Music ${RELEASE_TAG#v} — Windows preview"
           release_args=(
             release create "$RELEASE_TAG"
+            release/Music-Setup.exe
+            release/Music-Setup.exe.sha256
             release/Music-win-x64.zip
             release/Music-win-x64.zip.sha256
             --repo "$GITHUB_REPOSITORY"
@@ -87,6 +128,6 @@ jobs:
             --verify-tag
             --prerelease
             --title "$title"
-            --notes-file docs/RELEASES.md
+            --notes-file release/RELEASE-NOTES.md
           )
           gh "${release_args[@]}"

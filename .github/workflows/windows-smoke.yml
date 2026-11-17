@@ -97,7 +97,7 @@ jobs:
           assert report_path.stat().st_size <= 3_000_000
           report = json.loads(report_path.read_text(encoding='utf-8-sig'))
           assert report['SourceCommit'] == os.environ['SOURCE_COMMIT'], 'Report source identity mismatch.'
-          allowed = ('report.json', 'uia-tree.json', 'startup.log', 'defender.stdout.log', 'defender.stderr.log', 'crash-capture.json', 'crash-analysis.txt', 'resource-inventory.json', 'home.png', 'album.png', 'lyrics.png', 'last-window.png')
+          allowed = ('report.json', 'uia-tree.json', 'startup.log', 'defender.stdout.log', 'defender.stderr.log', 'crash-capture.json', 'crash-analysis.txt', 'resource-inventory.json', 'home.png', 'album.png', 'lyrics.png', 'queue.png', 'last-window.png')
           payloads = pathlib.Path(os.environ['RUNNER_TEMP'], 'music-smoke-export')
           payloads.mkdir(exist_ok=True)
           prefix = 'reports/native-smoke/' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']
