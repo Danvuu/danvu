@@ -26,7 +26,9 @@ public sealed partial class MainWindow
         _page.Content = LoadingView();
         try
         {
+            Services.StartupDiagnostics.Record("Building navigation content");
             var content = await BuildRouteAsync(route);
+            Services.StartupDiagnostics.Record("Navigation content built");
             if (version != _navigationVersion || _closed) return;
             var scroll = new ScrollViewer { Content = content, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             var container = new Grid();
@@ -68,8 +70,9 @@ public sealed partial class MainWindow
             Ui.FadeIn(content);
             Notify(_music.IsDemo ? "Demo mode · original catalog · simulated playback" : "Connected to Spotify · audio plays on your selected Spotify device");
         }
-        catch (Exception ex) when (ex is MusicServiceException or HttpRequestException or IOException)
+        catch (Exception ex) when (ex is MusicServiceException or HttpRequestException or IOException or ArgumentException or System.Runtime.InteropServices.COMException)
         {
+            Services.StartupDiagnostics.Record("Navigation content failed", ex);
             if (version != _navigationVersion) return;
             var panel = PageHeading("Something needs attention", ex.Message);
             panel.Children.Add(Ui.Pill("Try again", () => Run(() => NavigateAsync(route, false)), true));
@@ -166,6 +169,7 @@ public sealed partial class MainWindow
     private async Task<FrameworkElement> HomeViewAsync()
     {
         var home = await _music.GetHomeAsync(_lifetime.Token);
+        Services.StartupDiagnostics.Record("Building home heading");
         var panel = PageHeading("", "");
         var heading = Ui.Columns(Ui.Star, Ui.Auto);
         heading.ColumnSpacing = 22;
@@ -194,6 +198,7 @@ public sealed partial class MainWindow
             Ui.Add(heading, explore, 0, 1);
         }
         panel.Children.Add(heading);
+        Services.StartupDiagnostics.Record("Building home artists");
         if (home.Artists.Count > 0)
             AddSection(panel, _music.IsDemo ? "Artists to know" : "Your artists", "", ArtistSpotlight(home.Artists));
 
@@ -203,10 +208,12 @@ public sealed partial class MainWindow
             : home.FeaturedAlbum is { } rotationAlbum
                 ? await _music.GetAlbumTracksAsync(rotationAlbum.Id, _lifetime.Token)
                 : Array.Empty<Track>();
+        Services.StartupDiagnostics.Record("Building home songs");
         if (homeTracks.Count > 0)
             AddSection(panel, _music.IsDemo ? "Songs to discover" : "Songs in your collection", "", CompactSongs(homeTracks.Take(8).ToArray()));
         if (home.Albums.Count > 0)
             AddSection(panel, "Albums for you", "", AlbumShelf(home.Albums));
+        Services.StartupDiagnostics.Record("Building home playlists");
         if (home.Playlists.Count > 0)
             AddSection(panel, "Your playlists", "", PlaylistShelf(home.Playlists));
         if (home.Albums.Count == 0 && home.Playlists.Count == 0 && home.Artists.Count == 0)

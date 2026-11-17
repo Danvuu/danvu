@@ -377,7 +377,10 @@ public sealed partial class MainWindow : Window
         try { await action(); }
         catch (OperationCanceledException) { }
         catch (Exception ex) when (ex is MusicServiceException or HttpRequestException or IOException or UnauthorizedAccessException or ArgumentException or System.Text.Json.JsonException or System.Runtime.InteropServices.COMException)
-        { Notify(ex.Message); }
+        {
+            StartupDiagnostics.Record("Handled operation failure", ex);
+            Notify(ex.Message);
+        }
     }
     private void Notify(string message)
     {
