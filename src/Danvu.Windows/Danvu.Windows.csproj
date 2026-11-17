@@ -5,6 +5,11 @@
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <RootNamespace>Danvu.Windows</RootNamespace>
     <AssemblyName>Music</AssemblyName>
+    <Version>0.1.1-preview.1</Version>
+    <Authors>Danvu</Authors>
+    <Company>Danvu</Company>
+    <Product>Music</Product>
+    <Copyright>Copyright © 2026 Danvu</Copyright>
     <ApplicationIcon>Assets/Music.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x64</Platforms>
@@ -25,6 +30,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250907003" />
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.3.2" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
     <ProjectReference Include="../Danvu.Core/Danvu.Core.csproj" />

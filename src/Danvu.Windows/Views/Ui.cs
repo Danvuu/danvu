@@ -151,8 +151,16 @@ internal static class Ui
         move.Duration = TimeSpan.FromMilliseconds(420);
         v.StartAnimation("Translation", move);
     }
+    public static void StyleSlider(Slider slider)
+    {
+        // Explicitly apply the self-contained native template to code-created controls.
+        slider.Style = (Style)Application.Current.Resources["MusicSliderStyle"];
+    }
+    public static void StyleButton(Button button)
+        => button.Style = (Style)Application.Current.Resources["MusicButtonStyle"];
     public static void Tactile(FrameworkElement element, float pressScale = .96f)
     {
+        if (element is Button button && button.Style is null) StyleButton(button);
         element.SizeChanged += (_, _) => ElementCompositionPreview.GetElementVisual(element).CenterPoint = new Vector3((float)element.ActualWidth / 2, (float)element.ActualHeight / 2, 0);
         void Scale(float scale)
         {

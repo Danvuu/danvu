@@ -117,6 +117,42 @@ function Convert-BoundedDebuggerUtf16 {
     return [pscustomobject]@{ Text = $message; Terminated = $terminated; CharactersRead = $builder.Length }
 }
 
+function Get-SafeSymbolDiagnostics {
+    param([string]$Text)
+    $lines = @($Text -split "`r?`n" | Where-Object { $_ -match '(?i)ResultCode|ExceptionForm|symbol|syntax|unable|couldn|not found|type information|memory access|error' } | Select-Object -First 10)
+    $safe = ($lines -join "`r`n") -replace '(?i)0x[0-9a-f`]{9,17}|(?<![0-9a-f])[0-9a-f]{8}`?[0-9a-f]{8}(?![0-9a-f])', '<address>'
+    $safe = $safe -replace '(?i)github_pat_[a-z0-9_]+|gh[pousr]_[a-z0-9_]{20,}', '[redacted]'
+    if ($safe -match '(?i)authorization|bearer\s|access.token|refresh.token|password|secret|environment') { return '[sensitive symbol diagnostic omitted]' }
+    return $safe.Substring(0, [Math]::Min(1500, $safe.Length))
+}
+
+function Get-CppStowedTypeFields {
+    param([string]$Cdb, [string]$Dump, [string]$Symbols, [string]$Pointer)
+    if ($Pointer -notmatch '^[0-9a-fA-F]{1,16}$') { throw 'Invalid stowed pointer token.' }
+    $expression = '((combase!STOWED_EXCEPTION_INFORMATION_V2*)0x' + $Pointer + ')'
+    $commands = '.reload /f combase.dll; .echo MUSIC_RESULT_BEGIN; ?? ' + $expression + '->ResultCode; .echo MUSIC_RESULT_END; .echo MUSIC_FORM_BEGIN; ?? ' + $expression + '->ExceptionForm; .echo MUSIC_FORM_END; q'
+    $raw = Invoke-PrivateCdb $Cdb $Dump $Symbols $commands
+    $codeText = Get-MarkedCdbText $raw 'MUSIC_RESULT'
+    $formText = Get-MarkedCdbText $raw 'MUSIC_FORM'
+    if (($codeText + $formText) -match '(?i)couldn|syntax|unable|not found|type information|memory access') { throw ('Symbol field query unavailable: ' + (Get-SafeSymbolDiagnostics $raw)) }
+    $code = [regex]::Match($codeText, '(?i)0x([0-9a-f]{1,8})\b|0n(-?\d+)\b|\s(-?\d+)\s*$')
+    $form = [regex]::Match($formText, '(?i)0x([0-9a-f]{1,8})\b|0n(\d+)\b|\s(\d+)\s*$')
+    if (-not $code.Success -or -not $form.Success) { throw ('Typed field values unavailable: ' + (Get-SafeSymbolDiagnostics $raw)) }
+    $number = if ($code.Groups[1].Success) { [Convert]::ToInt64($code.Groups[1].Value, 16) } elseif ($code.Groups[2].Success) { [long]$code.Groups[2].Value } else { [long]$code.Groups[3].Value }
+    $kind = if ($form.Groups[1].Success) { [Convert]::ToInt32($form.Groups[1].Value, 16) } elseif ($form.Groups[2].Success) { [int]$form.Groups[2].Value } else { [int]$form.Groups[3].Value }
+    $textPointer = $null
+    if ($kind -eq 2) {
+        # Query the union's ErrorText only after the text form is proven.
+        $raw = Invoke-PrivateCdb $Cdb $Dump $Symbols ('.reload /f combase.dll; .echo MUSIC_POINTER_BEGIN; ?? ' + $expression + '->ErrorText; .echo MUSIC_POINTER_END; q')
+        $pointerText = Get-MarkedCdbText $raw 'MUSIC_POINTER'
+        $match = [regex]::Match($pointerText, '(?i)(?:wchar_t|WCHAR|PCWSTR|PWSTR|unsigned short)\s*(?:\*)?\s*(?:__ptr64\s*)?0x([0-9a-f`]{1,17})\b')
+        if (-not $match.Success) { throw ('Typed ErrorText pointer unavailable: ' + (Get-SafeSymbolDiagnostics $raw)) }
+        $textPointer = $match.Groups[1].Value.Replace('`', '')
+        if ($textPointer -notmatch '^[0-9a-fA-F]{1,16}$') { throw 'Invalid symbol ErrorText pointer token.' }
+    }
+    return [pscustomobject]@{ HResult = '0x' + (($number -band 4294967295L).ToString('X8')); ExceptionForm = $kind; ErrorTextPointer = $textPointer }
+}
+
 function Get-StowedExceptionDetails {
     param([string]$InitialText, [string]$Cdb, [string]$Dump, [string]$Symbols)
     $array = Get-StowedArrayInformation $InitialText
@@ -132,19 +168,30 @@ function Get-StowedExceptionDetails {
     }
     if ($records.Count -eq 0) { throw 'No readable stowed-exception pointers were obtained.' }
     $commands = '.reload /f combase.dll; '
-    foreach ($record in $records) { $commands += '.echo MUSIC_TYPE_' + $record.Index + '_BEGIN; dt 0x' + $record.Pointer + ' combase!STOWED_EXCEPTION_INFORMATION_V2 -r; .echo MUSIC_TYPE_' + $record.Index + '_END; ' }
+    foreach ($record in $records) { $commands += '.echo MUSIC_TYPE_' + $record.Index + '_BEGIN; dt -r combase!STOWED_EXCEPTION_INFORMATION_V2 0x' + $record.Pointer + '; .echo MUSIC_TYPE_' + $record.Index + '_END; ' }
     $types = Invoke-PrivateCdb $Cdb $Dump $Symbols ($commands + 'q')
     $public = @(); $textCommands = ''
     foreach ($record in $records) {
-        $fields = Convert-StowedTypeFields (Get-MarkedCdbText $types ('MUSIC_TYPE_' + $record.Index))
+        $typeBlock = Get-MarkedCdbText $types ('MUSIC_TYPE_' + $record.Index)
+        $fields = $null; $fieldDiagnostics = $null
+        try { $fields = Convert-StowedTypeFields $typeBlock }
+        catch {
+            try { $fields = Get-CppStowedTypeFields $Cdb $Dump $Symbols $record.Pointer }
+            catch { $fieldDiagnostics = (Get-SafeSymbolDiagnostics ($typeBlock + "`r`n" + $_.Exception.Message)) }
+        }
         $record | Add-Member -NotePropertyName Fields -NotePropertyValue $fields
-        if ($fields.ExceptionForm -eq 2 -and $null -ne $fields.ErrorTextPointer -and [Convert]::ToUInt64($fields.ErrorTextPointer, 16) -ne 0) {
+        $record | Add-Member -NotePropertyName FieldDiagnostics -NotePropertyValue $fieldDiagnostics
+        if ($null -ne $fields -and $fields.ExceptionForm -eq 2 -and $null -ne $fields.ErrorTextPointer -and [Convert]::ToUInt64($fields.ErrorTextPointer, 16) -ne 0) {
             $textCommands += '.echo MUSIC_TEXT_' + $record.Index + '_BEGIN; dw 0x' + $fields.ErrorTextPointer + ' L0x100; .echo MUSIC_TEXT_' + $record.Index + '_END; '
         }
     }
     $strings = if ($textCommands.Length -gt 0) { Invoke-PrivateCdb $Cdb $Dump $Symbols ($textCommands + 'q') } else { '' }
     foreach ($record in $records) {
         $fields = $record.Fields
+        if ($null -eq $fields) {
+            $public += [pscustomobject]@{ Index = $record.Index; Type = 'combase!STOWED_EXCEPTION_INFORMATION_V2'; HResult = $null; ExceptionForm = $null; ErrorText = $null; TextStatus = 'SymbolFieldsUnavailable'; FieldDiagnostics = $record.FieldDiagnostics }
+            continue
+        }
         $item = [ordered]@{ Index = $record.Index; Type = 'combase!STOWED_EXCEPTION_INFORMATION_V2'; HResult = $fields.HResult; ExceptionForm = $fields.ExceptionForm; ErrorText = $null; TextStatus = 'BinaryFormNoErrorTextRead' }
         if ($fields.ExceptionForm -eq 2) {
             $item.TextStatus = 'NullOrUnreadableErrorText'
@@ -240,13 +287,14 @@ try {
             if ($bounded.Length -eq 0) { $bounded = 'The debugger produced no matching bounded exception/stack diagnostics. No underlying cause is established.' }
             try {
                 $info.StowedExceptions = @(Get-StowedExceptionDetails -InitialText $text -Cdb $state.CdbPath -Dump $dump.FullName -Symbols $symbols)
-                $info.StowedInspectionStatus = if ($info.StowedExceptions.Count -gt 0) { 'SymbolFieldsRead' } else { 'NoStowedArrayFound' }
+                $info.StowedInspectionStatus = if (@($info.StowedExceptions | Where-Object { $_.TextStatus -eq 'SymbolFieldsUnavailable' }).Count -gt 0) { 'SymbolFieldsPartiallyUnavailable' } elseif ($info.StowedExceptions.Count -gt 0) { 'SymbolFieldsRead' } else { 'NoStowedArrayFound' }
                 $specific = @()
                 foreach ($item in $info.StowedExceptions) {
                     $specific += "STOWED RECORD $($item.Index): $($item.Type)"
                     $specific += "HRESULT: $($item.HResult); ExceptionForm: $($item.ExceptionForm)"
                     $specific += "ErrorText: $($item.ErrorText)"
                     $specific += "Text status: $($item.TextStatus)"
+                    if ($null -ne $item.PSObject.Properties['FieldDiagnostics']) { $specific += "Symbol fields: $($item.FieldDiagnostics)" }
                 }
                 if ($specific.Count -gt 0) { $bounded = ($specific -join "`r`n") + "`r`n`r`n" + $bounded }
             }

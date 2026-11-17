@@ -35,6 +35,7 @@ public sealed partial class MainWindow : Window
         SelectionHighlightColor = Ui.Brush(Ui.Accent),
     };
     private readonly ContentControl _trackArt = new();
+    private readonly PlayPauseGlyph _playGlyph = new();
     private readonly TextBlock _trackTitle = Ui.Text("Choose something you love", 13, true);
     private readonly TextBlock _trackArtist = Ui.Text("Music", 12, false, Ui.Muted);
     private readonly TextBlock _time = Ui.Text("0:00", 11, false, Ui.Muted);
@@ -165,7 +166,15 @@ public sealed partial class MainWindow : Window
         };
         Ui.Add(_body, side);
         BuildSidebar();
-        Ui.Add(_body, _page, 0, 1);
+        // Status has one permanent parent. A detached WinUI content tree can
+        // retain native parentage even when FrameworkElement.Parent is null.
+        var viewport = new Grid();
+        viewport.RowDefinitions.Add(new RowDefinition { Height = Ui.Star });
+        viewport.RowDefinitions.Add(new RowDefinition { Height = Ui.Auto });
+        Ui.Add(viewport, _page);
+        _status.Margin = new Thickness(30, 7, 30, 11);
+        Ui.Add(viewport, _status, 1);
+        Ui.Add(_body, viewport, 0, 1);
         _queueHost.Visibility = Visibility.Collapsed;
         Ui.Add(_body, _queueHost, 0, 2);
         Ui.Add(_root, BuildPlayer(), 1);
@@ -287,6 +296,7 @@ public sealed partial class MainWindow : Window
         controls.Children.Add(_shuffle);
         controls.Children.Add(Ui.IconButton("\uE892", "Previous track (Ctrl+Left)", () => Run(() => SkipAsync(false)), 22));
         _play = Ui.WithId(Ui.IconButton("\uE768", "Play or pause (Space)", () => Run(TogglePlayAsync), 25), "Player.PlayPause");
+        _play.Content = _playGlyph;
         _play.Padding = new Thickness(4); _play.Width = 36; _play.Height = 36;
         controls.Children.Add(_play);
         controls.Children.Add(Ui.IconButton("\uE893", "Next track (Ctrl+Right)", () => Run(() => SkipAsync(true)), 22));
@@ -301,6 +311,7 @@ public sealed partial class MainWindow : Window
         _trackArt.Content = Ui.Art("ms-appx:///Assets/Artwork/afterglow.png", 48, 4);
         _trackArt.SizeChanged += (_, _) => ElementCompositionPreview.GetElementVisual(_trackArt).CenterPoint = new Vector3((float)_trackArt.ActualWidth / 2, (float)_trackArt.ActualHeight / 2, 0);
         var artButton = new Button { Content = _trackArt, Padding = new Thickness(0), Background = Ui.Brush(Colors.Transparent), BorderThickness = new Thickness(0) };
+        Ui.StyleButton(artButton);
         artButton.Click += (_, _) => ToggleLyrics(true);
         ToolTipService.SetToolTip(artButton, "Open Now Playing & lyrics (Ctrl+L)");
         AutomationProperties.SetName(artButton, "Open Now Playing and lyrics");
@@ -315,6 +326,7 @@ public sealed partial class MainWindow : Window
             Background = Ui.Brush(Colors.Transparent), BorderThickness = new Thickness(0), HorizontalAlignment = HorizontalAlignment.Center,
         };
         artistButton.Click += (_, _) => { if (_playback?.Track is { } t) Run(() => NavigateAsync(new Route("Artist", t.ArtistId))); };
+        Ui.StyleButton(artistButton);
         details.Children.Add(artistButton);
         var timeline = Ui.Columns(Ui.Auto, Ui.Star, Ui.Auto);
         _time.FontSize = 9; _remaining.FontSize = 9;
@@ -324,6 +336,8 @@ public sealed partial class MainWindow : Window
         Microsoft.UI.Xaml.Documents.Typography.SetNumeralAlignment(_remaining, FontNumeralAlignment.Tabular);
         _progress.ValueChanged += (_, _) => { if (!_syncPlayer && _playback?.Track is not null) { _seekDebounce.Stop(); _seekDebounce.Start(); } };
         _progress.ThumbToolTipValueConverter = new TimeValueConverter();
+        Ui.StyleSlider(_progress);
+        Ui.StyleSlider(_volume);
         AutomationProperties.SetName(_progress, "Playback position");
         Ui.WithId(_progress, "Player.Position"); Ui.WithId(_trackTitle, "Player.TrackTitle");
         Ui.Add(timeline, _time); Ui.Add(timeline, _progress, 0, 1); Ui.Add(timeline, _remaining, 0, 2);
@@ -420,7 +434,8 @@ public sealed partial class MainWindow : Window
             _syncPlayer = false;
             _trackTitle.Text = state.Track?.Title ?? "Choose something you love";
             _trackArtist.Text = state.Track?.Artist ?? (_music.IsDemo ? "Demo mode · silent playback" : "Select a Spotify device");
-            _play.Content = Ui.Icon(state.IsPlaying ? "\uE769" : "\uE768", 25);
+            _playGlyph.SetPlaying(state.IsPlaying);
+            AutomationProperties.SetName(_play, state.IsPlaying ? "Pause (Space)" : "Play (Space)");
             _shuffle.Content = Ui.Icon("\uE8B1", 15, state.Shuffle ? Ui.Accent : Ui.Muted);
             _repeat.Content = Ui.Icon(state.Repeat == RepeatMode.One ? "\uE8ED" : "\uE8EE", 15, state.Repeat != RepeatMode.Off ? Ui.Accent : Ui.Muted);
             ToolTipService.SetToolTip(_repeat, "Repeat " + state.Repeat.ToString().ToLowerInvariant());

@@ -33,12 +33,7 @@ public sealed partial class MainWindow
             var scroll = new ScrollViewer { Content = content, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             var container = new Grid();
             container.RowDefinitions.Add(new RowDefinition { Height = Ui.Star });
-            container.RowDefinitions.Add(new RowDefinition { Height = Ui.Auto });
             Ui.Add(container, scroll);
-            // One status element belongs to the current content tree at a time.
-            if (_status.Parent is Panel old) old.Children.Remove(_status);
-            _status.Margin = new Thickness(30, 8, 30, 12);
-            Ui.Add(container, _status, 1);
             var compactTitle = Ui.WithId(Ui.Text(CompactPageTitle(route), 14, true), "Page.CompactTitle");
             compactTitle.HorizontalAlignment = HorizontalAlignment.Center;
             compactTitle.VerticalAlignment = VerticalAlignment.Center;

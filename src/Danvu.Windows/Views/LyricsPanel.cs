@@ -1,6 +1,8 @@
 using System.Numerics;
+using System.Diagnostics;
 using Danvu.Core;
 using Danvu.Windows.Services;
+using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -62,6 +64,11 @@ public sealed class LyricsPanel : Grid
     private bool _loaded;
     private double _lyricFontSize = 44;
     private ConnectedAnimation? _artworkAnimation;
+    private CompositionEffectFactory? _lyricBlurFactory;
+    private readonly HashSet<int> _blurredRows = [];
+    private bool _blurUnavailable, _rowBoundsDirty = true, _scrollSpringRunning;
+    private double _scrollSpringTarget, _scrollSpringPosition, _scrollSpringVelocity;
+    private long _scrollSpringTick;
 
     public event EventHandler? CloseRequested;
     public event EventHandler? ImportRequested;
@@ -151,8 +158,8 @@ public sealed class LyricsPanel : Grid
         AutomationProperties.SetName(_scroll, "Synchronized lyrics. Scroll to browse; choose Jump to current to resume following.");
         _lyricRegion.Children.Add(_scroll);
 
-        // Fade the viewport edges rather than rasterizing every line into a blur
-        // surface. Text remains accessible and all per-line motion is composited.
+        // Edge fades complement the viewport-bounded blur surfaces. Original text
+        // stays accessible and per-line motion runs on composition transforms.
         var topFade = EdgeFade(true);
         var bottomFade = EdgeFade(false);
         _lyricRegion.Children.Add(topFade);
@@ -170,6 +177,16 @@ public sealed class LyricsPanel : Grid
             _topSpace.Height = Math.Max(40, _scroll.ViewportHeight * 0.36);
             _bottomSpace.Height = Math.Max(80, _scroll.ViewportHeight * 0.50);
             if (_following) FollowCurrent(false);
+            _rowBoundsDirty = true;
+            UpdateVisibleBlurRows();
+        };
+        _scroll.ViewChanged += (_, _) => UpdateVisibleBlurRows();
+        _lineStack.SizeChanged += (_, _) => _rowBoundsDirty = true;
+        _lineStack.LayoutUpdated += (_, _) =>
+        {
+            if (!_rowBoundsDirty || Visibility != Visibility.Visible) return;
+            CacheRowBounds();
+            UpdateVisibleBlurRows();
         };
 
         var footer = new Grid { ColumnSpacing = 14 };
@@ -231,12 +248,35 @@ public sealed class LyricsPanel : Grid
             _loaded = true;
             UpdateArtworkScale();
             FollowCurrent(false);
+            _rowBoundsDirty = true;
+            UpdateVisibleBlurRows();
         };
         Unloaded += (_, _) =>
         {
             _loaded = false;
             CancelArtworkAnimation();
+            StopScrollSpring();
+            SetAmbientMotion(false);
+            ReleaseBlurRows();
+            _lyricBlurFactory?.Dispose();
+            _lyricBlurFactory = null;
         };
+        RegisterPropertyChangedCallback(VisibilityProperty, (_, _) =>
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                _rowBoundsDirty = true;
+                SetAmbientMotion(AnimationsEnabled);
+                UpdateVisibleBlurRows();
+            }
+            else
+            {
+                StopScrollSpring();
+                CancelArtworkAnimation();
+                SetAmbientMotion(false);
+                ReleaseBlurRows();
+            }
+        });
     }
 
     public void SetContent(Track track, LyricsDocument document, IReadOnlyList<Color> colors)
@@ -259,6 +299,8 @@ public sealed class LyricsPanel : Grid
         catch (Exception error) when (error is UriFormatException or ArgumentException) { _art.Source = null; }
         CrossfadeAtmosphere(colors);
 
+        StopScrollSpring();
+        ReleaseBlurRows();
         _rows.Clear();
         _lineStack.Children.Clear();
         _lineStack.Children.Add(_topSpace);
@@ -274,9 +316,16 @@ public sealed class LyricsPanel : Grid
             text.TextWrapping = TextWrapping.WrapWholeWords;
             text.CharacterSpacing = -25;
             text.LineHeight = _lyricFontSize * 1.19;
+            var lineContent = new Grid();
+            lineContent.Children.Add(text);
+            // The backdrop effect reads the original glyphs beneath this overlay.
+            // Keeping the TextBlock intact preserves text accessibility while
+            // inactive lines receive a real Gaussian blur.
+            var blurOverlay = new Grid { IsHitTestVisible = false };
+            lineContent.Children.Add(blurOverlay);
             var button = new Button
             {
-                Content = text,
+                Content = lineContent,
                 Padding = new Thickness(3, 12, 10, 12),
                 Margin = new Thickness(5, 0, 14, 0),
                 Background = new SolidColorBrush(Colors.Transparent),
@@ -288,6 +337,7 @@ public sealed class LyricsPanel : Grid
             };
             button.Resources["ButtonBackgroundPointerOver"] = new SolidColorBrush(Color.FromArgb(8, 255, 255, 255));
             button.Resources["ButtonBackgroundPressed"] = new SolidColorBrush(Color.FromArgb(14, 255, 255, 255));
+            Ui.StyleButton(button);
             ElementCompositionPreview.SetIsTranslationEnabled(button, true);
             AutomationProperties.SetName(button, $"Seek to {TimeSpan.FromMilliseconds(line.TimeMs):m\\:ss}: {line.Text}");
             AutomationProperties.SetAutomationId(button, $"Lyrics.Line.{_rows.Count}");
@@ -303,7 +353,8 @@ public sealed class LyricsPanel : Grid
                 catch (OperationCanceledException) { /* Closing the app cancels pending seeks. */ }
                 catch (Exception error) { _report(error.Message); }
             };
-            _rows.Add(new LyricRow(line, button, text));
+            _rows.Add(new LyricRow(line, button, text, blurOverlay));
+            button.SizeChanged += (_, _) => _rowBoundsDirty = true;
             _lineStack.Children.Add(button);
         }
         if (_rows.Count == 0)
@@ -319,6 +370,7 @@ public sealed class LyricsPanel : Grid
             _lineStack.Children.Add(empty);
         }
         _lineStack.Children.Add(_bottomSpace);
+        _rowBoundsDirty = true;
         _scroll.ChangeView(null, 0, null, true);
         UpdatePlayback(0, _isPlaying);
     }
@@ -384,6 +436,7 @@ public sealed class LyricsPanel : Grid
         _activeIndex = next;
         for (var index = 0; index < _rows.Count; index++)
             AnimateRow(_rows[index], index == _activeIndex, index < _activeIndex);
+        UpdateVisibleBlurRows();
         if (_following) FollowCurrent(true);
     }
 
@@ -391,6 +444,7 @@ public sealed class LyricsPanel : Grid
     {
         if (_rows.Count == 0) return;
         _following = false;
+        StopScrollSpring();
         _jump.Visibility = Visibility.Visible;
     }
 
@@ -408,21 +462,186 @@ public sealed class LyricsPanel : Grid
         if (row.ActualHeight <= 0) return;
         var position = row.TransformToVisual(_lineStack).TransformPoint(new global::Windows.Foundation.Point(0, 0));
         var target = Math.Clamp(position.Y - _scroll.ViewportHeight * 0.38, 0, Math.Max(0, _scroll.ScrollableHeight));
-        _scroll.ChangeView(null, target, null, !animate || !AnimationsEnabled);
+        if (!animate || !AnimationsEnabled)
+        {
+            StopScrollSpring();
+            _scroll.ChangeView(null, target, null, true);
+            return;
+        }
+        _scrollSpringTarget = target;
+        if (_scrollSpringRunning) return;
+        _scrollSpringPosition = _scroll.VerticalOffset;
+        _scrollSpringVelocity = 0;
+        _scrollSpringTick = Stopwatch.GetTimestamp();
+        _scrollSpringRunning = true;
+        CompositionTarget.Rendering += AdvanceScrollSpring;
+    }
+
+    private void AdvanceScrollSpring(object? sender, object args)
+    {
+        if (!_loaded || !_following || Visibility != Visibility.Visible || !AnimationsEnabled)
+        {
+            var snap = _following && Visibility == Visibility.Visible && !AnimationsEnabled;
+            StopScrollSpring();
+            if (snap) _scroll.ChangeView(null, _scrollSpringTarget, null, true);
+            return;
+        }
+        var now = Stopwatch.GetTimestamp();
+        var elapsed = Math.Clamp(Stopwatch.GetElapsedTime(_scrollSpringTick, now).TotalSeconds, 0, 0.05);
+        _scrollSpringTick = now;
+        // Integrate a damped spring with small bounded steps. ScrollViewer changes
+        // its native scroll transform; the lyric layout itself stays unchanged.
+        while (elapsed > 0)
+        {
+            var step = Math.Min(elapsed, 1.0 / 120);
+            var acceleration = (320 * (_scrollSpringTarget - _scrollSpringPosition) - 30 * _scrollSpringVelocity) / 0.8;
+            _scrollSpringVelocity += acceleration * step;
+            _scrollSpringPosition += _scrollSpringVelocity * step;
+            elapsed -= step;
+        }
+        _scrollSpringPosition = Math.Clamp(_scrollSpringPosition, 0, Math.Max(0, _scroll.ScrollableHeight));
+        if (Math.Abs(_scrollSpringPosition - _scrollSpringTarget) < 0.25 && Math.Abs(_scrollSpringVelocity) < 1)
+        {
+            _scroll.ChangeView(null, _scrollSpringTarget, null, true);
+            StopScrollSpring();
+        }
+        else _scroll.ChangeView(null, _scrollSpringPosition, null, true);
+    }
+
+    private void StopScrollSpring()
+    {
+        if (!_scrollSpringRunning) return;
+        CompositionTarget.Rendering -= AdvanceScrollSpring;
+        _scrollSpringRunning = false;
+        _scrollSpringVelocity = 0;
+    }
+
+    private void CacheRowBounds()
+    {
+        var top = _topSpace.ActualHeight + _lineStack.Spacing;
+        _rowBoundsDirty = false;
+        foreach (var row in _rows)
+        {
+            if (row.Button.ActualHeight <= 0) _rowBoundsDirty = true;
+            row.Top = top;
+            row.Bottom = top + row.Button.ActualHeight;
+            top = row.Bottom + _lineStack.Spacing;
+        }
+    }
+
+    private void UpdateVisibleBlurRows()
+    {
+        if (!_loaded || Visibility != Visibility.Visible || _blurUnavailable || _scroll.ViewportHeight <= 0) return;
+        if (_rowBoundsDirty) CacheRowBounds();
+        var minimum = Math.Max(0, _scroll.VerticalOffset - 90);
+        var maximum = _scroll.VerticalOffset + _scroll.ViewportHeight + 90;
+        // Cached row bounds keep scrolling from querying layout for every line.
+        var low = 0;
+        var high = _rows.Count;
+        while (low < high)
+        {
+            var middle = (low + high) / 2;
+            if (_rows[middle].Bottom < minimum) low = middle + 1;
+            else high = middle;
+        }
+        var first = low;
+        var last = first;
+        while (last < _rows.Count && _rows[last].Top <= maximum) last++;
+        foreach (var index in _blurredRows.ToArray())
+        {
+            if (index >= first && index < last) continue;
+            ReleaseBlurRow(_rows[index]);
+            _blurredRows.Remove(index);
+        }
+        try
+        {
+            for (var index = first; index < last; index++)
+            {
+                var row = _rows[index];
+                if (row.Button.ActualHeight <= 0 || _blurredRows.Contains(index)) continue;
+                _blurredRows.Add(index);
+                CreateBlurRow(row, index == _activeIndex);
+            }
+        }
+        catch (Exception error) when (error is System.Runtime.InteropServices.COMException or NotSupportedException)
+        {
+            StartupDiagnostics.Record("Lyric Gaussian blur unavailable", error);
+            _blurUnavailable = true;
+            ReleaseBlurRows();
+            _lyricBlurFactory?.Dispose();
+            _lyricBlurFactory = null;
+            _report("The graphics driver could not enable lyric blur. Lyrics and seeking remain available.");
+        }
+    }
+
+    private void CreateBlurRow(LyricRow row, bool active)
+    {
+        var compositor = ElementCompositionPreview.GetElementVisual(row.BlurOverlay).Compositor;
+        if (_lyricBlurFactory is null)
+        {
+            using var effect = new GaussianBlurEffect
+            {
+                Name = "LyricBlur", BlurAmount = 1.5f,
+                BorderMode = EffectBorderMode.Hard,
+                Optimization = EffectOptimization.Balanced,
+                Source = new CompositionEffectSourceParameter("TextBackdrop")
+            };
+            _lyricBlurFactory = compositor.CreateEffectFactory(effect, ["LyricBlur.BlurAmount"]);
+        }
+        row.Backdrop = compositor.CreateBackdropBrush();
+        row.BlurBrush = _lyricBlurFactory.CreateBrush();
+        row.BlurBrush.SetSourceParameter("TextBackdrop", row.Backdrop);
+        row.BlurBrush.Properties.InsertScalar("LyricBlur.BlurAmount", active ? 0 : 1.5f);
+        row.BlurVisual = compositor.CreateSpriteVisual();
+        row.BlurVisual.RelativeSizeAdjustment = Vector2.One;
+        row.BlurVisual.Brush = row.BlurBrush;
+        ElementCompositionPreview.SetElementChildVisual(row.BlurOverlay, row.BlurVisual);
+    }
+
+    private void ReleaseBlurRows()
+    {
+        foreach (var index in _blurredRows) ReleaseBlurRow(_rows[index]);
+        _blurredRows.Clear();
+    }
+
+    private static void ReleaseBlurRow(LyricRow row)
+    {
+        ElementCompositionPreview.SetElementChildVisual(row.BlurOverlay, null);
+        row.BlurVisual?.Dispose();
+        row.BlurBrush?.Dispose();
+        row.Backdrop?.Dispose();
+        row.BlurVisual = null;
+        row.BlurBrush = null;
+        row.Backdrop = null;
     }
 
     private bool AnimationsEnabled => _uiSettings.AnimationsEnabled;
 
     private void AnimateRow(LyricRow row, bool active, bool previous)
     {
+        if (row.AppearanceInitialized && row.WasActive == active && row.WasPrevious == previous) return;
+        row.AppearanceInitialized = true;
+        row.WasActive = active;
+        row.WasPrevious = previous;
         var visual = ElementCompositionPreview.GetElementVisual(row.Button);
         visual.CenterPoint = new Vector3(0, (float)row.Button.ActualHeight / 2, 0);
         var opacity = active ? 1f : previous ? 0.25f : 0.40f;
         var scale = active ? Vector3.One : new Vector3(0.94f, 0.94f, 1);
-        if (!AnimationsEnabled || !_loaded)
+        var translation = active ? Vector3.Zero : new Vector3(previous ? 0 : 6, previous ? -2 : 3, 0);
+        var blur = active ? 0 : 1.5f;
+        if (!AnimationsEnabled || !_loaded || !row.Button.IsLoaded)
         {
+            visual.StopAnimation("Opacity");
+            visual.StopAnimation("Scale");
+            visual.StopAnimation("Translation");
             visual.Opacity = opacity;
             visual.Scale = scale;
+            visual.Properties.InsertVector3("Translation", translation);
+            if (row.BlurBrush is { } staticBrush)
+            {
+                staticBrush.StopAnimation("LyricBlur.BlurAmount");
+                staticBrush.Properties.InsertScalar("LyricBlur.BlurAmount", blur);
+            }
             return;
         }
         var fade = visual.Compositor.CreateScalarKeyFrameAnimation();
@@ -434,6 +653,18 @@ public sealed class LyricsPanel : Grid
         spring.DampingRatio = 0.84f;
         spring.Period = TimeSpan.FromMilliseconds(320);
         visual.StartAnimation("Scale", spring);
+        var positionSpring = visual.Compositor.CreateSpringVector3Animation();
+        positionSpring.FinalValue = translation;
+        positionSpring.DampingRatio = 0.88f;
+        positionSpring.Period = TimeSpan.FromMilliseconds(360);
+        visual.StartAnimation("Translation", positionSpring);
+        if (row.BlurBrush is not null)
+        {
+            var focus = visual.Compositor.CreateScalarKeyFrameAnimation();
+            focus.InsertKeyFrame(1, blur);
+            focus.Duration = TimeSpan.FromMilliseconds(340);
+            row.BlurBrush.StartAnimation("LyricBlur.BlurAmount", focus);
+        }
     }
 
     private void UpdateArtworkScale()
@@ -453,6 +684,15 @@ public sealed class LyricsPanel : Grid
     {
         Color[] fallback = [Color.FromArgb(255, 100, 44, 72), Color.FromArgb(255, 38, 41, 84), Color.FromArgb(255, 101, 69, 45)];
         var palette = colors.Count >= 3 ? colors : fallback;
+        _artGlow.Fill = new RadialGradientBrush
+        {
+            GradientStops =
+            {
+                new GradientStop { Color = Color.FromArgb(150, palette[0].R, palette[0].G, palette[0].B), Offset = 0 },
+                new GradientStop { Color = Color.FromArgb(55, palette[0].R, palette[0].G, palette[0].B), Offset = 0.38 },
+                new GradientStop { Color = Color.FromArgb(0, palette[0].R, palette[0].G, palette[0].B), Offset = 1 }
+            }
+        };
         var layer = new Grid { IsHitTestVisible = false };
         layer.Background = new LinearGradientBrush
         {
@@ -521,6 +761,30 @@ public sealed class LyricsPanel : Grid
         batch.End();
     }
 
+    private void SetAmbientMotion(bool enabled)
+    {
+        foreach (var layer in _atmosphere.Children.OfType<Grid>())
+        {
+            var index = 0;
+            foreach (var glow in layer.Children.OfType<Ellipse>())
+            {
+                var visual = ElementCompositionPreview.GetElementVisual(glow);
+                visual.StopAnimation("Translation");
+                if (enabled)
+                {
+                    var drift = visual.Compositor.CreateVector3KeyFrameAnimation();
+                    drift.InsertKeyFrame(0, Vector3.Zero);
+                    drift.InsertKeyFrame(0.5f, new Vector3(index == 1 ? -80 : 110, index == 0 ? 80 : -70, 0));
+                    drift.InsertKeyFrame(1, Vector3.Zero);
+                    drift.Duration = TimeSpan.FromSeconds(24 + index * 7);
+                    drift.IterationBehavior = AnimationIterationBehavior.Forever;
+                    visual.StartAnimation("Translation", drift);
+                }
+                index++;
+            }
+        }
+    }
+
     private static Color Shade(Color color, double amount) => Color.FromArgb(255,
         (byte)(color.R * amount), (byte)(color.G * amount), (byte)(color.B * amount));
 
@@ -558,9 +822,24 @@ public sealed class LyricsPanel : Grid
             CornerRadius = new CornerRadius(12), VerticalAlignment = VerticalAlignment.Center
         };
         AutomationProperties.SetName(button, accessibleName);
+        Ui.Tactile(button);
         ToolTipService.SetToolTip(button, accessibleName);
         return button;
     }
 
-    private sealed record LyricRow(LyricLine Line, Button Button, TextBlock Text);
+    private sealed class LyricRow(LyricLine line, Button button, TextBlock text, Grid blurOverlay)
+    {
+        public LyricLine Line { get; } = line;
+        public Button Button { get; } = button;
+        public TextBlock Text { get; } = text;
+        public Grid BlurOverlay { get; } = blurOverlay;
+        public double Top { get; set; }
+        public double Bottom { get; set; }
+        public CompositionBackdropBrush? Backdrop { get; set; }
+        public CompositionEffectBrush? BlurBrush { get; set; }
+        public SpriteVisual? BlurVisual { get; set; }
+        public bool AppearanceInitialized { get; set; }
+        public bool WasActive { get; set; }
+        public bool WasPrevious { get; set; }
+    }
 }
