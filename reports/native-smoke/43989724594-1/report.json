@@ -1,0 +1,97 @@
+﻿{
+    "SourceCommit":  "07c701419a67217f3278b055836e509603f97fa3",
+    "StartedUtc":  "2026-11-17T00:43:31.8938978Z",
+    "FinishedUtc":  "2026-11-17T00:44:02.0502680Z",
+    "Result":  "Failed",
+    "FailureKind":  "NativeStartupOrFunctionalCheck",
+    "Stage":  "Home",
+    "ApplicationExecuted":  true,
+    "Candidate":  [
+                      {
+                          "Path":  "Music.dll",
+                          "Sha256":  "D7843BE22A7D51619EF7303119F9A20DB8F3D2BBEBFCE8A0E0FD373BCE1C186E"
+                      },
+                      {
+                          "Path":  "Music.exe",
+                          "Sha256":  "58076BD5BCC176C55C8806B24B7BF37E77728C69DD4A453CF98F41BA31BFF9A6"
+                      }
+                  ],
+    "Defender":  {
+                     "AMEngineVersion":  "1.1.26100.4",
+                     "AMProductVersion":  "4.18.26100.4",
+                     "AMServiceEnabled":  true,
+                     "AntivirusEnabled":  true,
+                     "RealTimeProtectionEnabled":  true,
+                     "AntivirusSignatureVersion":  "1.463.334.0",
+                     "AntivirusSignatureLastUpdated":  "\/Date(1794850101000)\/",
+                     "DefenderSignaturesOutOfDate":  false
+                 },
+    "DefenderScanExitCode":  0,
+    "DefenderScanOutcome":  "ExitZeroNoScopedDetection",
+    "Detections":  [
+
+                   ],
+    "Desktop":  {
+                    "UserInteractive":  true,
+                    "SessionId":  2,
+                    "InputDesktop":  "Default"
+                },
+    "ProtectionEnableAttempted":  true,
+    "ProtectionEnableResult":  "EnabledAndVerified",
+    "ProcessId":  2772,
+    "ProcessExitCode":  0,
+    "ForcedTermination":  false,
+    "Checks":  [
+                   {
+                       "Name":  "Protection strengthened",
+                       "Passed":  true,
+                       "Detail":  "Enabled real-time protection with the supported Defender preference command on the isolated hosted runner, then verified it effective. No protection reduction was requested.",
+                       "Utc":  "2026-11-17T00:43:37.2202204Z"
+                   },
+                   {
+                       "Name":  "Candidate antivirus gate",
+                       "Passed":  true,
+                       "Detail":  "Signature refresh succeeded, real-time protection enabled, native scan exit 0, no scoped detections, and bundle hashes unchanged. This does not clear the original user alert.",
+                       "Utc":  "2026-11-17T00:43:38.3105816Z"
+                   },
+                   {
+                       "Name":  "Interactive desktop",
+                       "Passed":  true,
+                       "Detail":  "Session 2; accessible Default input desktop.",
+                       "Utc":  "2026-11-17T00:43:39.2387519Z"
+                   }
+               ],
+    "Interactions":  [
+                         {
+                             "Id":  "Nav.Home",
+                             "Name":  "",
+                             "SupportedPatterns":  [
+                                                       "InvokePatternIdentifiers.Pattern",
+                                                       "ScrollItemPatternIdentifiers.Pattern"
+                                                   ],
+                             "PatternType":  "System.Windows.Automation.InvokePattern",
+                             "Method":  "InvokePattern.GetCurrentPattern",
+                             "Status":  "DispatchedAwaitingSemanticAssertion",
+                             "PatternError":  null,
+                             "FocusError":  null,
+                             "KeyboardFocusVerified":  false,
+                             "ForegroundVerified":  false,
+                             "ClickPoint":  null
+                         }
+                     ],
+    "PositionProvider":  null,
+    "Screenshots":  [
+                        {
+                            "Name":  "last-window",
+                            "Status":  "Captured",
+                            "File":  "last-window.png"
+                        }
+                    ],
+    "Errors":  [
+                   "Visible accessible control did not become ready: Home.ExploreAlbum. Inspect UIA tree and startup/event logs."
+               ],
+    "ApplicationEvents":  [
+
+                          ],
+    "Scope":  "Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim."
+}
