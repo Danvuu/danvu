@@ -1,0 +1,106 @@
+﻿STOWED RECORD 0: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x8000FFFF; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 1: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x8000FFFF; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 2: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x8000FFFF; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(848.978): Unknown exception - code c000027b (first/second chance not available)
+
+KERNELBASE!RaiseFailFastException+0x188:
+00007ffc`a189f0d8 0f1f440000      nop     dword ptr [rax+rax]
+0:000> cdb: Reading initial command '!analyze -v; .exr -1; k 20; q'
+*                        Exception Analysis                                   *
+*                                                                             *
+*** WARNING: Check Image - Checksum mismatch - Dump: 0xe5b12b, File: 0xe58b27 - D:\a\_temp\MusicNativeCrash-100136aea5364120829513990b1f0924\symbols\Microsoft.UI.Xaml.dll\2239DE89e5e000\Microsoft.UI.Xaml.dll
+*** WARNING: Unable to verify checksum for Music.exe
+DEBUG_FLR_EXCEPTION_CODE(8000ffff) and the ".exr -1" ExceptionCode(c000027b) don't match
+
+    Value: STOWED_EXCEPTION_8000ffff_combase.dll!RoOriginateLanguageException
+
+KERNELBASE!RaiseFailFastException+0x188:
+00007ffc`a189f0d8 0f1f440000      nop     dword ptr [rax+rax]
+Resetting default scope
+EXCEPTION_RECORD:  (.exr -1)
+ExceptionAddress: 00007ffc5d38dce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+PROCESS_NAME:  Music.dll
+
+ERROR_CODE: (NTSTATUS) 0xc000027b - An application-internal exception has occurred.
+
+EXCEPTION_CODE_STR:  8000ffff
+
+EXCEPTION_PARAMETER1:  000001d82873d8d0
+
+EXCEPTION_PARAMETER2:  0000000000000003
+
+FAULTING_THREAD:  ffffffff
+
+STACK_TEXT:  
+000001d8`2873d490 00007ffc`a25c0f0f combase!RoOriginateLanguageException+0x5f
+
+STACK_COMMAND:  *** Stowed Exception v2 ***; .exr -1; dpp 0x1d82873d8d0 L0x3; dt 0x1d828641cc8 combase!STOWED_EXCEPTION_INFORMATION_V2 -r; dps 0x1d82873d490 L0x2; *** Nested 'LEO1' @ 0x1D828652950 ***; *** Invalid Nested Address *** ; ** Pseudo Context ** StowedPseudo ** Val
+
+FAULTING_SOURCE_LINE:  onecore\com\combase\winrt\error\error.cpp
+
+FAULTING_SOURCE_FILE:  onecore\com\combase\winrt\error\error.cpp
+
+FAULTING_SOURCE_LINE_NUMBER:  1517
+
+SYMBOL_NAME:  combase!RoOriginateLanguageException+5f
+
+MODULE_NAME: combase
+
+IMAGE_NAME:  combase.dll
+
+FAILURE_BUCKET_ID:  STOWED_EXCEPTION_8000ffff_combase.dll!RoOriginateLanguageException
+
+FAILURE_ID_HASH:  {713ff165-e8a3-8f67-e1bc-7add8ec1f298}
+
+ExceptionAddress: 00007ffc5d38dce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+000000c2`6017dbd0 00007ffc`a25f3549     KERNELBASE!RaiseFailFastException+0x188
+000000c2`6017e1b0 00007ffc`5d38dce5     combase!RoFailFastWithErrorContextInternal2+0x4a9
+000000c2`6017e3d0 00007ffc`5d324162     Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x59
+000000c2`6017e400 00007ffc`5d2629f2     Microsoft_UI_Xaml!DirectUI::FrameworkApplication::StartDesktop+0x1c65fa
+(Inline Function) --------`--------     Microsoft_UI_Xaml!DirectUI::FrameworkApplicationFactory::StartImpl+0x37
+000000c2`6017e4a0 00007ffc`032ec126     Microsoft_UI_Xaml!DirectUI::FrameworkApplicationFactory::Start+0x62
+000000c2`6017e4f0 00007ffc`032ead6c     0x00007ffc`032ec126
+000000c2`6017e620 00007ffc`032ea032     0x00007ffc`032ead6c
+000000c2`6017e660 00007ffc`62f43b03     0x00007ffc`032ea032
+000000c2`6017e700 00007ffc`62e16af8     coreclr!CallDescrWorkerInternal+0x83
+(Inline Function) --------`--------     coreclr!CallDescrWorkerWithHandler+0x5b
+000000c2`6017e740 00007ffc`62e8ae7f     coreclr!MethodDescCallSite::CallTargetWorker+0x414
+(Inline Function) --------`--------     coreclr!MethodDescCallSite::Call+0xb
+000000c2`6017e8e0 00007ffc`62e8ab62     coreclr!RunMainInternal+0x113
+000000c2`6017ea00 00007ffc`62e8a523     coreclr!RunMain+0x112
+000000c2`6017eaa0 00007ffc`62e89475     coreclr!Assembly::ExecuteMainMethod+0x1b7
+000000c2`6017ed70 00007ffc`62eec3b7     coreclr!CorHost2::ExecuteAssembly+0x235
+000000c2`6017ee80 00007ffc`7d0bdd0a     coreclr!coreclr_execute_assembly+0xd7
+(Inline Function) --------`--------     hostpolicy!coreclr_t::execute_assembly+0x29
+000000c2`6017ef20 00007ffc`7d0bdfac     hostpolicy!run_app_for_context+0x5ea
+000000c2`6017f050 00007ffc`7d0bef21     hostpolicy!run_app+0x3c
+000000c2`6017f090 00007ffc`81f1d56b     hostpolicy!corehost_main+0x171
+000000c2`6017f190 00007ffc`81f2029c     hostfxr!execute_app+0x2bb
+000000c2`6017f220 00007ffc`81f22676     hostfxr!`anonymous namespace'::read_config_and_execute+0xac
+000000c2`6017f320 00007ffc`81f2079d     hostfxr!fx_muxer_t::handle_exec_host_command+0x1d6
+000000c2`6017f3d0 00007ffc`81f18998     hostfxr!fx_muxer_t::execute+0x2ad
+000000c2`6017f500 00007ff7`4ee82f48     hostfxr!hostfxr_main_startupinfo+0xa8
+000000c2`6017f600 00007ff7`4ee833c6     Music_exe!exe_start+0xaa8
+000000c2`6017f7b0 00007ff7`4ee93b28     Music_exe!wmain+0x156
+(Inline Function) --------`--------     Music_exe!invoke_main+0x22
+000000c2`6017f830 00007ffc`a245dd37     Music_exe!__scrt_common_main_seh+0x10c
+000000c2`6017f870 00007ffc`a441f2bc     kernel32!BaseThreadInitThunk+0x17
+quit:
