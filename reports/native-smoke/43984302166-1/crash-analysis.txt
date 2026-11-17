@@ -1,0 +1,161 @@
+﻿This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(1f04.208c): Unknown exception - code c000027b (first/second chance not available)
+For analysis of this file, run !analyze -v
+KERNELBASE!RaiseFailFastException+0x188:
+00007ffc`2c38f0d8 0f1f440000      nop     dword ptr [rax+rax]
+0:000> cdb: Reading initial command '!analyze -v; .exr -1; k 20; q'
+*                        Exception Analysis                                   *
+*                                                                             *
+*** WARNING: Check Image - Checksum mismatch - Dump: 0xe5b12b, File: 0xe58b27 - D:\a\_temp\MusicNativeCrash-f9382756f946438581b40da336d05717\symbols\Microsoft.UI.Xaml.dll\2239DE89e5e000\Microsoft.UI.Xaml.dll
+*** WARNING: Unable to verify checksum for Music.exe
+DEBUG_FLR_EXCEPTION_CODE(800f1000) and the ".exr -1" ExceptionCode(c000027b) don't match
+
+    Value: STOWED_EXCEPTION_800f1000_Microsoft.UI.Xaml.dll!DirectUI::ErrorHelper::OriginateError
+
+KERNELBASE!RaiseFailFastException+0x188:
+00007ffc`2c38f0d8 0f1f440000      nop     dword ptr [rax+rax]
+Resetting default scope
+EXCEPTION_RECORD:  (.exr -1)
+ExceptionAddress: 00007ffbe444dce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+PROCESS_NAME:  Music.dll
+
+ERROR_CODE: (NTSTATUS) 0xc000027b - An application-internal exception has occurred.
+
+EXCEPTION_CODE_STR:  800f1000
+
+EXCEPTION_PARAMETER1:  0000018e9e1aff80
+
+EXCEPTION_PARAMETER2:  0000000000000004
+
+FAULTING_THREAD:  ffffffff
+
+STACK_TEXT:  
+0000018e`a010a350 00007ffc`2e640dc1 combase!RoOriginateErrorW+0x131
+0000018e`a010a358 00007ffb`e488e167 Microsoft_UI_Xaml!DirectUI::ErrorHelper::OriginateError+0x16f
+0000018e`a010a360 00007ffb`e4839f43 Microsoft_UI_Xaml!CJupiterErrorServiceListener::NotifyErrorAdded+0x193
+0000018e`a010a368 00007ffb`e4467587 Microsoft_UI_Xaml!CErrorService::AddError+0x147
+0000018e`a010a370 00007ffb`e446895d Microsoft_UI_Xaml!CErrorService::ReportRuntimeError+0xdd
+0000018e`a010a378 00007ffb`e4468626 Microsoft_UI_Xaml!CErrorService::ReportGenericError+0x166
+0000018e`a010a380 00007ffb`e43b2cf3 Microsoft_UI_Xaml!DirectUI::DefaultStyles::GetDefaultStyleByTypeName+0x20f31b
+0000018e`a010a388 00007ffb`e41b3008 Microsoft_UI_Xaml!DirectUI::DefaultStyles::GetDefaultStyleByKey+0x1c8
+0000018e`a010a390 00007ffb`e41b2db0 Microsoft_UI_Xaml!AgCoreCallbacks::GetBuiltInStyle+0x90
+0000018e`a010a398 00007ffb`e40d5c25 Microsoft_UI_Xaml!CControl::GetBuiltInStyle+0x45
+0000018e`a010a3a0 00007ffb`e40d5b65 Microsoft_UI_Xaml!CControl::ApplyBuiltInStyle+0x25
+0000018e`a010a3a8 00007ffb`e40d5f35 Microsoft_UI_Xaml!CControl::EnterImpl+0xc5
+0000018e`a010a3b0 00007ffb`e41356aa Microsoft_UI_Xaml!CDependencyObject::Enter+0x62a
+0000018e`a010a3b8 00007ffb`e40be843 Microsoft_UI_Xaml!CDOCollection::ChildEnter+0xd3
+0000018e`a010a3c0 00007ffb`e4134d34 Microsoft_UI_Xaml!CDOCollection::Append+0x8c4
+0000018e`a010a3c8 00007ffb`e41359b5 Microsoft_UI_Xaml!CUIElementCollection::Append+0x65
+0000018e`a010a3d0 00007ffb`e413723f Microsoft_UI_Xaml!CUIElement::AddChild+0x7f
+0000018e`a010a3d8 00007ffb`e41cf47c Microsoft_UI_Xaml!CContentPresenter::ApplyTemplate+0x23c
+0000018e`a010a3e0 00007ffb`e40d78c2 Microsoft_UI_Xaml!CFrameworkElement::InvokeApplyTemplate+0xa2
+0000018e`a010a3e8 00007ffb`e40d8c25 Microsoft_UI_Xaml!CFrameworkElement::MeasureCore+0xd5
+0000018e`a010a3f0 00007ffb`e413a12a Microsoft_UI_Xaml!CUIElement::MeasureInternal+0x4ba
+0000018e`a010a3f8 00007ffb`e4139b6e Microsoft_UI_Xaml!CUIElement::Measure+0x40e
+0000018e`a010a400 00007ffb`e4138b06 Microsoft_UI_Xaml!CControl::MeasureOverride+0x36
+0000018e`a010a408 00007ffb`e40d8da3 Microsoft_UI_Xaml!CFrameworkElement::MeasureCore+0x253
+0000018e`a010a410 00007ffb`e413a12a Microsoft_UI_Xaml!CUIElement::MeasureInternal+0x4ba
+0000018e`a010a418 00007ffb`e4139b6e Microsoft_UI_Xaml!CUIElement::Measure+0x40e
+0000018e`a010a420 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a428 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a430 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a438 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a440 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a448 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a450 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a458 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a460 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a468 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a470 00007ffb`e4139b0f Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000018e`a010a478 00007ffb`e413ed40 Microsoft_UI_Xaml!CLayoutManager::UpdateLayout+0x6e0
+0000018e`a010a480 00007ffb`e413dcbf Microsoft_UI_Xaml!CCoreServices::NWDrawTree+0x20f
+0000018e`a010a488 00007ffb`e414ec6d Microsoft_UI_Xaml!CCoreServices::NWDrawMainTree+0xd1
+0000018e`a010a490 00007ffb`e414ea50 Microsoft_UI_Xaml!CWindowRenderTarget::Draw+0x74
+0000018e`a010a498 00007ffb`e414e988 Microsoft_UI_Xaml!CXcpBrowserHost::OnTick+0x58
+0000018e`a010a4a0 00007ffb`e41640fe Microsoft_UI_Xaml!CXcpDispatcher::Tick+0x8e
+0000018e`a010a4a8 00007ffb`e41651df Microsoft_UI_Xaml!CXcpDispatcher::OnReentrancyProtectedWindowMessage+0x223
+0000018e`a010a4b0 00007ffb`e4164701 Microsoft_UI_Xaml!CXcpDispatcher::MessageTimerCallback+0xe1
+0000018e`a010a4b8 00007ffb`e42c811d Microsoft_UI_Xaml!Microsoft::WRL::Details::DelegateArgTraits<long (__cdecl ABI::Windows::Foundation::ITypedEventHandler_impl<ABI::Windows::Foundation::Internal::AggregateType<ABI::Microsoft::UI::Dispatching::DispatcherQueueTimer *,ABI::Microsoft::UI::Dispatching::IDispatcherQueueTimer *>,IInspectable *>::*)(ABI::Microsoft::UI::Dispatching::IDispatcherQueueTimer *,IInspectable *)>::DelegateInvokeHelper<Microsoft::WRL::Implements<Microsoft::WRL::RuntimeClassFlag
+0000018e`a010a4c0 00007ffb`f99c7607 CoreMessagingXP!Microsoft::WRL::Details::DelegateArgTraits<long (__cdecl Windows::Foundation::ITypedEventHandler_impl<Windows::Foundation::Internal::AggregateType<Microsoft::UI::Dispatching::DispatcherQueueTimer * __ptr64,Microsoft::UI::Dispatching::IDispatcherQueueTimer * __ptr64>,IInspectable * __ptr64>::*)(Microsoft::UI::Dispatching::IDispatcherQueueTimer * __ptr64,IInspectable * __ptr64) __ptr64>::DelegateInvokeHelper<Microsoft::WRL::Implements<Microsoft::
+0000018e`a010a4c8 00007ffb`f99c73f1 CoreMessagingXP!Microsoft::WRL::EventSource<Windows::Foundation::ITypedEventHandler<Microsoft::UI::Dispatching::DispatcherQueueTimer * __ptr64,IInspectable * __ptr64>,Microsoft::WRL::InvokeModeOptions<1> >::InvokeAll<Microsoft::UI::Dispatching::DispatcherQueueTimer * __ptr64,std::nullptr_t>+0xad
+0000018e`a010a4d0 00007ffb`f99c7a33 CoreMessagingXP!Microsoft::UI::Dispatching::DispatcherQueueTimer::TimerCallback+0x83
+0000018e`a010a4d8 00007ffb`f9970a3d CoreMessagingXP!CFlat::SehSafe::Execute<<lambda_a81ff790741c2a62f2197c2561f5fe49> >+0x21
+0000018e`a010a4e0 00007ffb`f9974a96 CoreMessagingXP!Microsoft::CoreUI::ActionCallback::ImportAdapter$+0x66
+0000018e`a010a4e8 00007ffb`f9960dd9 CoreMessagingXP!Microsoft::CoreUI::Dispatch::TimeoutManager::Callback_OnDispatch+0x1a9
+0000018e`a010a4f0 00007ffb`f994c8c0 CoreMessagingXP!Microsoft::CoreUI::Dispatch::Dispatcher::Callback_DispatchNextItem+0x1bc
+0000018e`a010a4f8 00007ffb`f994c62d CoreMessagingXP!Microsoft::CoreUI::Dispatch::Dispatcher::Callback_DispatchLoop+0x1b9
+0000018e`a010a500 00007ffb`f993fd7c CoreMessagingXP!Microsoft::CoreUI::Dispatch::EventLoop::Callback_RunCoreLoop+0x164
+0000018e`a010a508 00007ffb`f9942ca6 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::DrainCoreMessagingQueue+0x15a
+0000018e`a010a510 00007ffb`f994301c CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::OnUserDispatch+0x98
+0000018e`a010a518 00007ffb`f99836e3 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::DoWork+0xa7
+0000018e`a010a520 00007ffb`f9983876 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::HandleDispatchNotifyMessage+0x132
+0000018e`a010a528 00007ffb`f9983dee CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::WindowProc+0x5e
+0000018e`a010a530 00007ffc`2e9f74f6 user32!UserCallWinProcCheckWow+0x356
+0000018e`a010a538 00007ffc`2e9f6d7c user32!DispatchClientMessage+0x9c
+0000018e`a010a540 00007ffc`2ea24e83 user32!_fnDWORD+0x33
+0000018e`a010a548 00007ffc`2f2262e4 ntdll!KiUserCallbackDispatcherContinue+0x0
+0000018e`a010a550 00007ffc`2ce11324 win32u!NtUserGetMessage+0x14
+0000018e`a010a558 00007ffc`2ea1de72 user32!GetMessageW+0x22
+0000018e`a010a560 00007ffb`e42bbf80 Microsoft_UI_Xaml!DirectUI::FrameworkApplication::RunDesktopWindowMessageLoop+0x3c
+0000018e`a010a568 00007ffb`e421dd71 Microsoft_UI_Xaml!DirectUI::FrameworkApplication::StartDesktop+0x209
+0000018e`a010a570 00007ffb`e43229f2 Microsoft_UI_Xaml!DirectUI::FrameworkApplicationFactory::Start+0x62
+
+FAULTING_SOURCE_LINE:  C:\__w\1\s\dxaml\xcp\dxaml\lib\ErrorHelper.cpp
+
+FAULTING_SOURCE_FILE:  C:\__w\1\s\dxaml\xcp\dxaml\lib\ErrorHelper.cpp
+
+FAULTING_SOURCE_LINE_NUMBER:  647
+
+SYMBOL_NAME:  Microsoft_UI_Xaml!DirectUI::ErrorHelper::OriginateError+16f
+
+MODULE_NAME: Microsoft_UI_Xaml
+
+IMAGE_NAME:  Microsoft.UI.Xaml.dll
+
+STACK_COMMAND:  *** Stowed Exception v2 ***; .exr -1; dpp 0x18e9e1aff80 L0x4; dt 0x18ea00f3e88 combase!STOWED_EXCEPTION_INFORMATION_V2 -r; dps 0x18ea010a350 L0x46 ; ** Pseudo Context ** StowedPseudo ** Value: 3 ** ; kb
+
+FAILURE_BUCKET_ID:  STOWED_EXCEPTION_800f1000_Microsoft.UI.Xaml.dll!DirectUI::ErrorHelper::OriginateError
+
+FAILURE_ID_HASH:  {fbb63017-a1c3-fb48-2d1c-71dd05375267}
+
+ExceptionAddress: 00007ffbe444dce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+0000003d`42b7b3e0 00007ffc`2e6b3549     KERNELBASE!RaiseFailFastException+0x188
+0000003d`42b7b9c0 00007ffb`e444dce5     combase!RoFailFastWithErrorContextInternal2+0x4a9
+0000003d`42b7bbe0 00007ffb`e43b2d7c     Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x59
+0000003d`42b7bc10 00007ffb`e41b3008     Microsoft_UI_Xaml!DirectUI::DefaultStyles::GetDefaultStyleByTypeName+0x20f3a4
+0000003d`42b7bd50 00007ffb`e41b2db0     Microsoft_UI_Xaml!DirectUI::DefaultStyles::GetDefaultStyleByKey+0x1c8
+0000003d`42b7bde0 00007ffb`e40d5c25     Microsoft_UI_Xaml!AgCoreCallbacks::GetBuiltInStyle+0x90
+(Inline Function) --------`--------     Microsoft_UI_Xaml!FxCallbacks::Control_GetBuiltInStyle+0xd
+0000003d`42b7be60 00007ffb`e40d5b65     Microsoft_UI_Xaml!CControl::GetBuiltInStyle+0x45
+0000003d`42b7bed0 00007ffb`e40d5f35     Microsoft_UI_Xaml!CControl::ApplyBuiltInStyle+0x25
+0000003d`42b7bf00 00007ffb`e41356aa     Microsoft_UI_Xaml!CControl::EnterImpl+0xc5
+0000003d`42b7bf70 00007ffb`e40be843     Microsoft_UI_Xaml!CDependencyObject::Enter+0x62a
+0000003d`42b7c040 00007ffb`e4134d34     Microsoft_UI_Xaml!CDOCollection::ChildEnter+0xd3
+0000003d`42b7c0d0 00007ffb`e41359b5     Microsoft_UI_Xaml!CDOCollection::Append+0x8c4
+0000003d`42b7c190 00007ffb`e413723f     Microsoft_UI_Xaml!CUIElementCollection::Append+0x65
+0000003d`42b7c220 00007ffb`e41cf47c     Microsoft_UI_Xaml!CUIElement::AddChild+0x7f
+0000003d`42b7c250 00007ffb`e40d78c2     Microsoft_UI_Xaml!CContentPresenter::ApplyTemplate+0x23c
+0000003d`42b7c2e0 00007ffb`e40d8c25     Microsoft_UI_Xaml!CFrameworkElement::InvokeApplyTemplate+0xa2
+0000003d`42b7c350 00007ffb`e413a12a     Microsoft_UI_Xaml!CFrameworkElement::MeasureCore+0xd5
+0000003d`42b7c470 00007ffb`e4139b6e     Microsoft_UI_Xaml!CUIElement::MeasureInternal+0x4ba
+0000003d`42b7c5b0 00007ffb`e4138b06     Microsoft_UI_Xaml!CUIElement::Measure+0x40e
+0000003d`42b7c6c0 00007ffb`e40d8da3     Microsoft_UI_Xaml!CControl::MeasureOverride+0x36
+0000003d`42b7c700 00007ffb`e413a12a     Microsoft_UI_Xaml!CFrameworkElement::MeasureCore+0x253
+0000003d`42b7c820 00007ffb`e4139b6e     Microsoft_UI_Xaml!CUIElement::MeasureInternal+0x4ba
+0000003d`42b7c960 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x40e
+0000003d`42b7ca70 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000003d`42b7cb80 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000003d`42b7cc90 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000003d`42b7cda0 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000003d`42b7ceb0 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000003d`42b7cfc0 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000003d`42b7d0d0 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+0000003d`42b7d1e0 00007ffb`e4139b0f     Microsoft_UI_Xaml!CUIElement::Measure+0x3af
+quit:
