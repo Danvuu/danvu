@@ -1,0 +1,69 @@
+2026-11-17T01:18:54.1916620+00:00 Starting Music
+
+2026-11-17T01:18:54.1930311+00:00 Initializing COM wrappers
+
+2026-11-17T01:18:54.1941867+00:00 Starting XAML application
+
+2026-11-17T01:18:54.8075353+00:00 XAML initialization callback entered
+
+2026-11-17T01:18:54.8094158+00:00 Constructing App
+
+2026-11-17T01:18:54.8119712+00:00 App constructor entered
+
+2026-11-17T01:18:54.8193720+00:00 Loading compiled application resources
+
+2026-11-17T01:18:54.8233664+00:00 Compiled application resources loaded
+
+2026-11-17T01:18:54.8236308+00:00 Published XAML files: App.xbf=True; Music.pri=True; Microsoft.UI.Xaml.Controls.pri=True
+
+2026-11-17T01:18:54.8237814+00:00 App constructed
+
+2026-11-17T01:18:54.8728712+00:00 Resolving compiled native style: MusicButtonStyle
+
+2026-11-17T01:18:54.8900627+00:00 Compiled native style resolved: MusicButtonStyle
+
+2026-11-17T01:18:54.8902801+00:00 Resolving compiled native style: MusicSliderStyle
+
+2026-11-17T01:18:54.8905712+00:00 Compiled native style resolved: MusicSliderStyle
+
+2026-11-17T01:18:54.8907256+00:00 Creating native window
+
+2026-11-17T01:18:55.1241269+00:00 Native window activated
+
+2026-11-17T01:18:55.1875132+00:00 Building navigation content
+
+2026-11-17T01:18:55.1900302+00:00 Building home heading
+
+2026-11-17T01:18:55.1922868+00:00 Building home artists
+
+2026-11-17T01:18:55.1978135+00:00 Building home songs
+
+2026-11-17T01:18:55.2151354+00:00 Building home playlists
+
+2026-11-17T01:18:55.2175550+00:00 Navigation content built
+
+2026-11-17T01:18:55.9908656+00:00 Building navigation content
+
+2026-11-17T01:18:55.9912351+00:00 Building home heading
+
+2026-11-17T01:18:55.9923904+00:00 Building home artists
+
+2026-11-17T01:18:55.9954061+00:00 Building home songs
+
+2026-11-17T01:18:56.0043407+00:00 Building home playlists
+
+2026-11-17T01:18:56.0063710+00:00 Navigation content built
+
+2026-11-17T01:18:56.2657157+00:00 Building navigation content
+
+2026-11-17T01:18:56.2925499+00:00 Navigation content built
+
+2026-11-17T01:19:21.3075421+00:00 Unhandled WinUI error
+System.ArgumentException HRESULT=0x80070057
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+   at ABI.Microsoft.UI.Composition.ICompositionObjectMethods.StopAnimation(IObjectReference _obj, String propertyName)
+   at Microsoft.UI.Composition.CompositionObject.StopAnimation(String propertyName)
+   at Danvu.Windows.Views.LyricsPanel.SetAmbientMotion(Boolean enabled) in D:\a\danvu\danvu\src\Danvu.Windows\Views\LyricsPanel.cs:line 772
+   at Danvu.Windows.Views.LyricsPanel.<.ctor>b__49_12(Object _, RoutedEventArgs _) in D:\a\danvu\danvu\src\Danvu.Windows\Views\LyricsPanel.cs:line 259
+   at WinRT._EventSource_global__Microsoft_UI_Xaml_RoutedEventHandler.EventState.<GetEventInvoke>b__1_0(Object sender, RoutedEventArgs e)
+   at ABI.Microsoft.UI.Xaml.RoutedEventHandler.Do_Abi_Invoke(IntPtr thisPtr, IntPtr sender, IntPtr e)
