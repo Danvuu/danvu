@@ -1,0 +1,179 @@
+﻿STOWED RECORD 0: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80070057; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 1: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80070057; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 2: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80070057; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 3: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80070057; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(7ac.1d9c): Unknown exception - code c000027b (first/second chance not available)
+
+KERNELBASE!RaiseFailFastException+0x188:
+00007ff8`322af0d8 0f1f440000      nop     dword ptr [rax+rax]
+0:000> cdb: Reading initial command '!analyze -v; .exr -1; k 20; q'
+*                        Exception Analysis                                   *
+*                                                                             *
+*** WARNING: Check Image - Checksum mismatch - Dump: 0xe5b12b, File: 0xe58b27 - D:\a\_temp\MusicNativeCrash-0059d5783f4344128e9e943f1e0e320a\symbols\Microsoft.UI.Xaml.dll\2239DE89e5e000\Microsoft.UI.Xaml.dll
+*** WARNING: Unable to verify checksum for Music.exe
+DEBUG_FLR_EXCEPTION_CODE(80070057) and the ".exr -1" ExceptionCode(c000027b) don't match
+
+    Value: STOWED_EXCEPTION_80070057_Microsoft.UI.Xaml.dll!FailFastWithStowedExceptions
+
+KERNELBASE!RaiseFailFastException+0x188:
+00007ff8`322af0d8 0f1f440000      nop     dword ptr [rax+rax]
+Resetting default scope
+EXCEPTION_RECORD:  (.exr -1)
+ExceptionAddress: 00007fffe923dce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+PROCESS_NAME:  Music.dll
+
+ERROR_CODE: (NTSTATUS) 0xc000027b - An application-internal exception has occurred.
+
+EXCEPTION_CODE_STR:  80070057
+
+EXCEPTION_PARAMETER1:  0000021dae7295e0
+
+EXCEPTION_PARAMETER2:  0000000000000004
+
+FAULTING_THREAD:  ffffffff
+
+STACK_TEXT:  
+0000001a`58b7c760 00007ff8`322af0d8 KERNELBASE!RaiseFailFastException+0x188
+0000001a`58b7cd40 00007ff8`33a33549 combase!RoFailFastWithErrorContextInternal2+0x4a9
+0000001a`58b7cf60 00007fff`e923dce5 Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x59
+0000001a`58b7cf90 00007fff`e967e606 Microsoft_UI_Xaml!DirectUI::ErrorHelper::ProcessUnhandledError+0xfa
+0000001a`58b7cfd0 00007fff`e967df41 Microsoft_UI_Xaml!DirectUI::FinalUnhandledErrorDetectedRegistration::OnFinalUnhandledErrorDetected+0xd1
+0000001a`58b7d060 00007ff8`15803899 twinapi_appcore!Windows::Internal::Details::GitInvokeHelper<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Windows::Internal::GitPtr,2>::Invoke+0x59
+0000001a`58b7d090 00007ff8`158038d9 twinapi_appcore!Windows::ApplicationModel::Core::UnhandledErrorInvokeHelper::Invoke+0x19
+0000001a`58b7d0c0 00007ff8`157f52f7 twinapi_appcore!Microsoft::WRL::InvokeTraits<2>::InvokeDelegates<<lambda_e478ebca019219710ec18bdfd8216607>,Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64> >+0x57
+0000001a`58b7d100 00007ff8`157e1e48 twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::DoInvoke<<lambda_e478ebca019219710ec18bdfd8216607> >+0x78
+0000001a`58b7d140 00007ff8`157b1269 twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::InvokeAll<std::nullptr_t,Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>+0x29
+0000001a`58b7d190 00007ff8`157b1066 twinapi_appcore!Windows::ApplicationModel::Core::CoreApplication::ForwardLocalError+0x76
+0000001a`58b7d1e0 00007ff8`157b0f86 twinapi_appcore!Windows::ApplicationModel::Core::CoreApplicationFactory::ForwardLocalError+0x116
+0000001a`58b7d220 00007ff8`33a44c65 combase!CallErrorForwarder+0x181
+0000001a`58b7d2b0 00007fff`e967e867 Microsoft_UI_Xaml!DirectUI::ErrorHelper::ReportUnhandledError+0xd3
+0000001a`58b7d340 00007fff`e91a66f5 Microsoft_UI_Xaml!DirectUI::DXamlCore::FireEvent+0x2034c5
+0000001a`58b7d3f0 00007fff`e8fa3614 Microsoft_UI_Xaml!CCoreServices::CLR_FireEvent+0x134
+0000001a`58b7d480 00007fff`e8fa34cd Microsoft_UI_Xaml!CommonBrowserHost::CLR_FireEvent+0x1d
+0000001a`58b7d4c0 00007fff`e906a733 Microsoft_UI_Xaml!CControlBase::ScriptCallback+0xf3
+0000001a`58b7d550 00007fff`e8f54b33 Microsoft_UI_Xaml!CXcpDispatcher::OnScriptCallback+0x113
+0000001a`58b7d620 00007fff`e8f54924 Microsoft_UI_Xaml!CXcpDispatcher::OnWindowMessage+0x40
+0000001a`58b7d650 00007fff`e8f54889 Microsoft_UI_Xaml!CXcpDispatcher::ProcessMessage+0x2d
+0000001a`58b7d680 00007fff`e8f54701 Microsoft_UI_Xaml!CXcpDispatcher::MessageTimerCallback+0xe1
+0000001a`58b7d6d0 00007fff`e90b811d Microsoft_UI_Xaml!Microsoft::WRL::Details::DelegateArgTraits<long (__cdecl ABI::Windows::Foundation::ITypedEventHandler_impl<ABI::Windows::Foundation::Internal::AggregateType<ABI::Microsoft::UI::Dispatching::DispatcherQueueTimer *,ABI::Microsoft::UI::Dispatching::IDispatcherQueueTimer *>,IInspectable *>::*)(ABI::Microsoft::UI::Dispatching::IDispatcherQueueTimer *,IInspectable *)>::DelegateInvokeHelper<Microsoft::WRL::Implements<Microsoft::WRL::RuntimeClassFlag
+0000001a`58b7d700 00007fff`fcbc7607 CoreMessagingXP!Microsoft::WRL::Details::DelegateArgTraits<long (__cdecl Windows::Foundation::ITypedEventHandler_impl<Windows::Foundation::Internal::AggregateType<Microsoft::UI::Dispatching::DispatcherQueueTimer * __ptr64,Microsoft::UI::Dispatching::IDispatcherQueueTimer * __ptr64>,IInspectable * __ptr64>::*)(Microsoft::UI::Dispatching::IDispatcherQueueTimer * __ptr64,IInspectable * __ptr64) __ptr64>::DelegateInvokeHelper<Microsoft::WRL::Implements<Microsoft::
+0000001a`58b7d740 00007fff`fcbc73f1 CoreMessagingXP!Microsoft::WRL::EventSource<Windows::Foundation::ITypedEventHandler<Microsoft::UI::Dispatching::DispatcherQueueTimer * __ptr64,IInspectable * __ptr64>,Microsoft::WRL::InvokeModeOptions<1> >::InvokeAll<Microsoft::UI::Dispatching::DispatcherQueueTimer * __ptr64,std::nullptr_t>+0xad
+0000001a`58b7d790 00007fff`fcbc7a33 CoreMessagingXP!Microsoft::UI::Dispatching::DispatcherQueueTimer::TimerCallback+0x83
+0000001a`58b7d7f0 00007fff`fcb70a3d CoreMessagingXP!CFlat::SehSafe::Execute<<lambda_a81ff790741c2a62f2197c2561f5fe49> >+0x21
+0000001a`58b7d820 00007fff`fcb74a96 CoreMessagingXP!Microsoft::CoreUI::ActionCallback::ImportAdapter$+0x66
+0000001a`58b7d860 00007fff`fcb60dd9 CoreMessagingXP!Microsoft::CoreUI::Dispatch::TimeoutManager::Callback_OnDispatch+0x1a9
+0000001a`58b7d920 00007fff`fcb4c8c0 CoreMessagingXP!Microsoft::CoreUI::Dispatch::Dispatcher::Callback_DispatchNextItem+0x1bc
+0000001a`58b7d9c0 00007fff`fcb4c62d CoreMessagingXP!Microsoft::CoreUI::Dispatch::Dispatcher::Callback_DispatchLoop+0x1b9
+0000001a`58b7da80 00007fff`fcb3fd7c CoreMessagingXP!Microsoft::CoreUI::Dispatch::EventLoop::Callback_RunCoreLoop+0x164
+0000001a`58b7dae0 00007fff`fcb42ca6 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::DrainCoreMessagingQueue+0x15a
+0000001a`58b7dba0 00007fff`fcb4301c CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::OnUserDispatch+0x98
+0000001a`58b7dbf0 00007fff`fcb836e3 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::DoWork+0xa7
+0000001a`58b7dc50 00007fff`fcb83876 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::HandleDispatchNotifyMessage+0x132
+0000001a`58b7dcb0 00007fff`fcb83dee CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::WindowProc+0x5e
+0000001a`58b7dce0 00007ff8`32d074f6 user32!UserCallWinProcCheckWow+0x356
+0000001a`58b7de40 00007ff8`32d06d7c user32!DispatchClientMessage+0x9c
+0000001a`58b7dea0 00007ff8`32d34e83 user32!_fnDWORD+0x33
+0000001a`58b7df00 00007ff8`34a462e4 ntdll!KiUserCallbackDispatcherContinue+0x0
+0000001a`58b7df88 00007ff8`31d412c4 win32u!NtUserPeekMessage+0x14
+0000001a`58b7df90 00007ff8`32cfdd9f user32!_PeekMessage+0x3f
+0000001a`58b7e000 00007ff8`32cfdd28 user32!PeekMessageW+0x168
+0000001a`58b7e070 00007fff`fcb83541 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::DispatchNextUserQueueItemNative+0xbd
+0000001a`58b7e0f0 00007fff`fcb43318 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::RunIntegratedLoop+0xe4
+0000001a`58b7e160 00007fff`fcb42567 CoreMessagingXP!Microsoft::CoreUI::Dispatch::UserAdapter::Callback_HostModeRun+0xdb
+0000001a`58b7e200 00007fff`fcb4e8e8 CoreMessagingXP!Microsoft::CoreUI::Dispatch::Win32EventLoopBridge::Callback_Run+0x228
+0000001a`58b7e290 00007fff`fcb3fb7c CoreMessagingXP!Microsoft::CoreUI::Dispatch::EventLoop::Callback_Run+0x108
+0000001a`58b7e320 00007fff`fcb49275 CoreMessagingXP!Microsoft::CoreUI::IExportMessageLoopExtensions::ExportAdapter$::RunUntilExitFlag+0xa5
+0000001a`58b7e380 00007fff`fcbc5be1 CoreMessagingXP!Microsoft::UI::Dispatching::DispatcherQueue::Run+0x51
+0000001a`58b7e3c0 00007fff`fcbc1a31 CoreMessagingXP!Microsoft::UI::Dispatching::DispatcherQueueController::ShutdownQueue+0x131
+0000001a`58b7e420 00007fff`e900dd82 Microsoft_UI_Xaml!DirectUI::FrameworkApplication::StartDesktop+0x21a
+0000001a`58b7e4c0 00007fff`e91129f2 Microsoft_UI_Xaml!DirectUI::FrameworkApplicationFactory::Start+0x62
+0000001a`58b7e510 00007fff`94aec126 unknown!unknown+0x0
+0000001a`58b7e640 00007fff`94aead6c unknown!unknown+0x0
+0000001a`58b7e680 00007fff`94aea032 unknown!unknown+0x0
+0000001a`58b7e720 00007fff`f4703b03 coreclr!CallDescrWorkerInternal+0x83
+0000001a`58b7e760 00007fff`f45d6af8 coreclr!MethodDescCallSite::CallTargetWorker+0x414
+0000001a`58b7e900 00007fff`f464ae7f coreclr!RunMainInternal+0x113
+0000001a`58b7ea20 00007fff`f464ab62 coreclr!RunMain+0x112
+0000001a`58b7eac0 00007fff`f464a523 coreclr!Assembly::ExecuteMainMethod+0x1b7
+0000001a`58b7ed90 00007fff`f4649475 coreclr!CorHost2::ExecuteAssembly+0x235
+0000001a`58b7eea0 00007fff`f46ac3b7 coreclr!coreclr_execute_assembly+0xd7
+0000001a`58b7ef40 00007ff8`0b1bdd0a hostpolicy!run_app_for_context+0x5ea
+0000001a`58b7f070 00007ff8`0b1bdfac hostpolicy!run_app+0x3c
+0000001a`58b7f0b0 00007ff8`0b1bef21 hostpolicy!corehost_main+0x171
+0000001a`58b7f1b0 00007ff8`0b26d56b hostfxr!execute_app+0x2bb
+0000001a`58b7f240 00007ff8`0b27029c hostfxr!`anonymous namespace'::read_config_and_execute+0xac
+0000001a`58b7f340 00007ff8`0b272676 hostfxr!fx_muxer_t::handle_exec_host_command+0x1d6
+0000001a`58b7f3f0 00007ff8`0b27079d hostfxr!fx_muxer_t::execute+0x2ad
+0000001a`58b7f520 00007ff8`0b268998 hostfxr!hostfxr_main_startupinfo+0xa8
+0000001a`58b7f620 00007ff6`c5a92f48 Music_exe!exe_start+0xaa8
+0000001a`58b7f7d0 00007ff6`c5a933c6 Music_exe!wmain+0x156
+0000001a`58b7f850 00007ff6`c5aa3b28 Music_exe!__scrt_common_main_seh+0x10c
+0000001a`58b7f890 00007ff8`3447dd37 kernel32!BaseThreadInitThunk+0x17
+0000001a`58b7f8c0 00007ff8`3491f2bc ntdll!RtlUserThreadStart+0x2c
+
+STACK_COMMAND:  *** Stowed Exception v2 ***; .exr -1; dpp 0x21dae7295e0 L0x4; dt 0x21dafee90a8 combase!STOWED_EXCEPTION_INFORMATION_V2 -r; dps 0x21daf642030 L0x1; *** Nested 'LEO1' @ 0x21DAF8CF890 ***; *** Invalid Nested Address *** ; ** Pseudo Context ** StowedPseudo ** Val
+
+FAULTING_SOURCE_LINE:  C:\__w\1\s\dxaml\xcp\components\base\ErrorContext.cpp
+
+FAULTING_SOURCE_FILE:  C:\__w\1\s\dxaml\xcp\components\base\ErrorContext.cpp
+
+FAULTING_SOURCE_LINE_NUMBER:  1508
+
+SYMBOL_NAME:  Microsoft_UI_Xaml!FailFastWithStowedExceptions+59
+
+MODULE_NAME: Microsoft_UI_Xaml
+
+IMAGE_NAME:  Microsoft.UI.Xaml.dll
+
+FAILURE_BUCKET_ID:  STOWED_EXCEPTION_80070057_Microsoft.UI.Xaml.dll!FailFastWithStowedExceptions
+
+FAILURE_ID_HASH:  {8515d18b-7ebe-014c-4d0c-76fe9d7344d9}
+
+ExceptionAddress: 00007fffe923dce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+0000001a`58b7c760 00007ff8`33a33549     KERNELBASE!RaiseFailFastException+0x188
+0000001a`58b7cd40 00007fff`e923dce5     combase!RoFailFastWithErrorContextInternal2+0x4a9
+0000001a`58b7cf60 00007fff`e967e606     Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x59
+0000001a`58b7cf90 00007fff`e967df41     Microsoft_UI_Xaml!DirectUI::ErrorHelper::ProcessUnhandledError+0xfa
+0000001a`58b7cfd0 00007ff8`15803899     Microsoft_UI_Xaml!DirectUI::FinalUnhandledErrorDetectedRegistration::OnFinalUnhandledErrorDetected+0xd1
+0000001a`58b7d060 00007ff8`158038d9     twinapi_appcore!Windows::Internal::Details::GitInvokeHelper<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Windows::Internal::GitPtr,2>::Invoke+0x59
+0000001a`58b7d090 00007ff8`157f52f7     twinapi_appcore!Windows::ApplicationModel::Core::UnhandledErrorInvokeHelper::Invoke+0x19
+0000001a`58b7d0c0 00007ff8`157e1e48     twinapi_appcore!Microsoft::WRL::InvokeTraits<2>::InvokeDelegates<<lambda_e478ebca019219710ec18bdfd8216607>,Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64> >+0x57
+0000001a`58b7d100 00007ff8`157b1269     twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::DoInvoke<<lambda_e478ebca019219710ec18bdfd8216607> >+0x78
+0000001a`58b7d140 00007ff8`157b1066     twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::InvokeAll<std::nullptr_t,Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>+0x29
+0000001a`58b7d190 00007ff8`157b0f86     twinapi_appcore!Windows::ApplicationModel::Core::CoreApplication::ForwardLocalError+0x76
+0000001a`58b7d1e0 00007ff8`33a44c65     twinapi_appcore!Windows::ApplicationModel::Core::CoreApplicationFactory::ForwardLocalError+0x116
+0000001a`58b7d220 00007fff`e967e867     combase!CallErrorForwarder+0x181
+0000001a`58b7d2b0 00007fff`e91a66f5     Microsoft_UI_Xaml!DirectUI::ErrorHelper::ReportUnhandledError+0xd3
+0000001a`58b7d340 00007fff`e8fa3614     Microsoft_UI_Xaml!DirectUI::DXamlCore::FireEvent+0x2034c5
+(Inline Function) --------`--------     Microsoft_UI_Xaml!AgCoreCallbacks::FireEvent+0x36
+0000001a`58b7d3f0 00007fff`e8fa34cd     Microsoft_UI_Xaml!CCoreServices::CLR_FireEvent+0x134
+0000001a`58b7d480 00007fff`e906a733     Microsoft_UI_Xaml!CommonBrowserHost::CLR_FireEvent+0x1d
+0000001a`58b7d4c0 00007fff`e8f54b33     Microsoft_UI_Xaml!CControlBase::ScriptCallback+0xf3
+0000001a`58b7d550 00007fff`e8f54924     Microsoft_UI_Xaml!CXcpDispatcher::OnScriptCallback+0x113
+0000001a`58b7d620 00007fff`e8f54889     Microsoft_UI_Xaml!CXcpDispatcher::OnWindowMessage+0x40
+0000001a`58b7d650 00007fff`e8f54701     Microsoft_UI_Xaml!CXcpDispatcher::ProcessMessage+0x2d
+(Inline Function) --------`--------     Microsoft_UI_Xaml!CDeferredInvoke::DispatchQueuedMessage+0x2f
+0000001a`58b7d680 00007fff`e90b811d     Microsoft_UI_Xaml!CXcpDispatcher::MessageTimerCallback+0xe1
+(Inline Function) --------`--------     Microsoft_UI_Xaml!CXcpDispatcher::MessageTimerCallbackStatic+0x9
+0000001a`58b7d6d0 00007fff`fcbc7607     Microsoft_UI_Xaml!Microsoft::WRL::Details::DelegateArgTraits<long (__cdecl ABI::Windows::Foundation::ITypedEventHandler_impl<ABI::Windows::Foundation::Internal::AggregateType<ABI::Microsoft::UI::Dispatching::DispatcherQueueTimer *,ABI::Microsoft::UI::Dispatching::IDispatcherQueueTimer *>,IInspectable *>::*)(ABI::Microsoft::UI::Dispatching::IDispatcherQueueTimer *,IInspectable *)>::DelegateInvokeHelper<Microsoft::WRL::Implements<Microsoft::WRL::RuntimeClass
