@@ -161,7 +161,7 @@ public sealed partial class MainWindow
         if (await ShowDialogAsync(dialog) != ContentDialogResult.Primary) return;
         var playlist = await _music.CreatePlaylistAsync(name.Text.Trim(), description.Text.Trim(), _lifetime.Token);
         InvalidateLibrary();
-        await NavigateAsync(new Route("Playlist", playlist.Id, playlist.Name, playlist.ArtworkUrl));
+        await NavigateAsync(PlaylistRoute(playlist));
     }
     private async Task AddToPlaylistAsync(Track track)
     {
@@ -190,7 +190,13 @@ public sealed partial class MainWindow
         var service = _music;
         var queue = await service.GetQueueAsync(_lifetime.Token);
         if (!ReferenceEquals(service, _music)) return;
-        var panel = new Grid { Width = 285, Padding = new Thickness(18), Background = Ui.Brush(Color.FromArgb(255, 23, 22, 28)), CornerRadius = new CornerRadius(14), Margin = new Thickness(0, 0, 12, 0) };
+        var panel = new Grid
+        {
+            Width = 285, Padding = new Thickness(20),
+            Background = new AcrylicBrush { TintColor = Color.FromArgb(255, 27, 27, 31), TintOpacity = .8, FallbackColor = Color.FromArgb(255, 25, 25, 29) },
+            BorderBrush = Ui.Brush(Color.FromArgb(20, 255, 255, 255)), BorderThickness = new Thickness(1, 0, 0, 0),
+            Margin = new Thickness(0, 0, 0, 0),
+        };
         panel.RowDefinitions.Add(new RowDefinition { Height = Ui.Auto });
         panel.RowDefinitions.Add(new RowDefinition { Height = Ui.Auto });
         panel.RowDefinitions.Add(new RowDefinition { Height = Ui.Star });
@@ -199,12 +205,16 @@ public sealed partial class MainWindow
         Ui.Add(heading, headingLabel);
         Ui.Add(heading, Ui.IconButton("\uE711", "Close queue", () => Run(ToggleQueueAsync), 14), 0, 1);
         Ui.Add(panel, heading);
-        var now = new StackPanel { Spacing = 10, Margin = new Thickness(0, 12, 0, 18) };
+        var now = new StackPanel { Spacing = 9, Margin = new Thickness(0, 16, 0, 18) };
         now.Children.Add(Ui.Text("NOW PLAYING", 10, true, Ui.Muted));
         if (_playback?.Track is { } current)
         {
-            var name = Ui.Text(current.Title, 14, true, Ui.Accent); name.TextWrapping = TextWrapping.Wrap;
-            now.Children.Add(name); now.Children.Add(Ui.Text(current.Artist, 12, false, Ui.Muted));
+            var currentRow = Ui.Columns(Ui.Auto, Ui.Star); currentRow.ColumnSpacing = 12;
+            Ui.Add(currentRow, Ui.Art(current.ArtworkUrl, 46, 7));
+            var labels = new StackPanel { Spacing = 3, VerticalAlignment = VerticalAlignment.Center };
+            labels.Children.Add(Ui.Text(current.Title, 14, true));
+            labels.Children.Add(Ui.Text(current.Artist, 12, false, Ui.Muted));
+            Ui.Add(currentRow, labels, 0, 1); now.Children.Add(currentRow);
         }
         now.Children.Add(Ui.Text(_music.CanReorderQueue ? "UP NEXT · DRAG TO REORDER" : "UP NEXT · SPOTIFY QUEUE", 10, true, Ui.Muted));
         Ui.Add(panel, now, 1);

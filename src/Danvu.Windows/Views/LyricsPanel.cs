@@ -27,18 +27,27 @@ public sealed class LyricsPanel : Grid
     private readonly Func<int, Task> _seek;
     private readonly Action<string> _report;
     private readonly Grid _atmosphere = new();
+    private readonly Grid _layout = new() { Padding = new Thickness(56, 22, 56, 18), RowSpacing = 10 };
     private readonly Grid _body = new();
     private readonly ColumnDefinition _artColumn = new() { Width = new GridLength(0.88, GridUnitType.Star) };
     private readonly ScrollViewer _scroll = new();
-    private readonly StackPanel _lineStack = new() { Spacing = 14 };
+    private readonly StackPanel _lineStack = new() { Spacing = 12 };
     private readonly Border _topSpace = new();
     private readonly Border _bottomSpace = new();
-    private readonly StackPanel _artPanel = new() { Spacing = 18, VerticalAlignment = VerticalAlignment.Center };
-    private readonly Border _artBorder = new() { CornerRadius = new CornerRadius(14), Height = 310, Width = 310 };
+    private readonly StackPanel _artPanel = new() { Spacing = 28, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+    private readonly Grid _artStage = new() { Width = 340, Height = 340 };
+    private readonly Ellipse _artGlow = new() { Width = 560, Height = 560, IsHitTestVisible = false };
+    private readonly Border _artBorder = new()
+    {
+        CornerRadius = new CornerRadius(13), Height = 340, Width = 340,
+        BorderBrush = new SolidColorBrush(Color.FromArgb(25, 255, 255, 255)), BorderThickness = new Thickness(1)
+    };
     private readonly Image _art = new() { Stretch = Stretch.UniformToFill };
-    private readonly TextBlock _title = Label("", 28, 1);
-    private readonly TextBlock _artist = Label("", 19, 0.64);
-    private readonly TextBlock _source = Label("", 11, 0.52);
+    private readonly TextBlock _title = Label("", 31, 1);
+    private readonly TextBlock _artist = Label("", 20, 0.68);
+    private readonly TextBlock _album = Label("", 12, 0.36);
+    private readonly TextBlock _headerTitle = Label("NOW PLAYING", 11, 0.58);
+    private readonly TextBlock _source = Label("", 10, 0.36);
     private readonly Button _jump;
     private readonly List<LyricRow> _rows = [];
     private readonly UISettings _uiSettings = new();
@@ -51,6 +60,7 @@ public sealed class LyricsPanel : Grid
     private bool _following = true;
     private bool _isPlaying;
     private bool _loaded;
+    private double _lyricFontSize = 44;
     private ConnectedAnimation? _artworkAnimation;
 
     public event EventHandler? CloseRequested;
@@ -61,12 +71,24 @@ public sealed class LyricsPanel : Grid
         _seek = seek;
         _report = report;
         RequestedTheme = ElementTheme.Dark;
-        Background = new SolidColorBrush(Color.FromArgb(255, 25, 21, 30));
-        CornerRadius = new CornerRadius(16);
+        Background = new SolidColorBrush(Color.FromArgb(255, 21, 18, 25));
+        CornerRadius = new CornerRadius(12);
         Children.Add(_atmosphere);
-        Children.Add(new Border { Background = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0)), IsHitTestVisible = false });
+        Children.Add(new Border
+        {
+            Background = new LinearGradientBrush
+            {
+                StartPoint = new global::Windows.Foundation.Point(0, 0), EndPoint = new global::Windows.Foundation.Point(1, 1),
+                GradientStops =
+                {
+                    new GradientStop { Color = Color.FromArgb(10, 0, 0, 0), Offset = 0 },
+                    new GradientStop { Color = Color.FromArgb(45, 0, 0, 0), Offset = 1 }
+                }
+            },
+            IsHitTestVisible = false
+        });
 
-        var layout = new Grid { Padding = new Thickness(34, 24, 34, 18), RowSpacing = 14 };
+        var layout = _layout;
         layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         layout.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -75,21 +97,23 @@ public sealed class LyricsPanel : Grid
         var header = new Grid();
         header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        header.Children.Add(new StackPanel
-        {
-            Orientation = Orientation.Horizontal,
-            Spacing = 10,
-            Children = { Label("♫", 20, 0.85), Label("LYRICS", 12, 0.65) },
-            VerticalAlignment = VerticalAlignment.Center
-        });
-        var close = QuietButton("⌄", "Close lyrics", 26);
+        _headerTitle.CharacterSpacing = 130;
+        _headerTitle.FontWeight = Microsoft.UI.Text.FontWeights.SemiBold;
+        _headerTitle.VerticalAlignment = VerticalAlignment.Center;
+        header.Children.Add(_headerTitle);
+        var close = QuietButton("⌄", "Close lyrics", 23);
+        close.Width = 38; close.Height = 38; close.Padding = new Thickness(0);
+        close.Background = new SolidColorBrush(Color.FromArgb(18, 255, 255, 255));
+        close.BorderBrush = new SolidColorBrush(Color.FromArgb(20, 255, 255, 255));
+        close.BorderThickness = new Thickness(1);
+        close.CornerRadius = new CornerRadius(19);
         AutomationProperties.SetAutomationId(close, "Lyrics.Close");
         close.Click += (_, _) => CloseRequested?.Invoke(this, EventArgs.Empty);
         Grid.SetColumn(close, 1);
         header.Children.Add(close);
         layout.Children.Add(header);
 
-        _body.ColumnSpacing = 62;
+        _body.ColumnSpacing = 84;
         _body.ColumnDefinitions.Add(_artColumn);
         _body.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.4, GridUnitType.Star) });
         Grid.SetRow(_body, 1);
@@ -101,11 +125,17 @@ public sealed class LyricsPanel : Grid
             StartPoint = new global::Windows.Foundation.Point(0, 0), EndPoint = new global::Windows.Foundation.Point(1, 1),
             GradientStops = { new GradientStop { Color = Color.FromArgb(255, 117, 56, 77), Offset = 0 }, new GradientStop { Color = Color.FromArgb(255, 31, 36, 73), Offset = 1 } }
         };
-        _artPanel.Children.Add(_artBorder);
+        var artGlowCanvas = new Canvas { IsHitTestVisible = false };
+        artGlowCanvas.Children.Add(_artGlow);
+        _artStage.Children.Add(artGlowCanvas);
+        _artStage.Children.Add(_artBorder);
+        _artPanel.Children.Add(_artStage);
         _title.FontWeight = Microsoft.UI.Text.FontWeights.SemiBold;
         _title.TextWrapping = TextWrapping.WrapWholeWords;
-        _artPanel.Children.Add(new StackPanel { Spacing = 5, Children = { _title, _artist } });
-        _artPanel.Children.Add(Label("Follow every word.", 13, 0.42));
+        _title.MaxLines = 2;
+        _artist.TextTrimming = TextTrimming.CharacterEllipsis;
+        _album.TextTrimming = TextTrimming.CharacterEllipsis;
+        _artPanel.Children.Add(new StackPanel { Spacing = 5, Children = { _title, _artist, _album } });
         _body.Children.Add(_artPanel);
 
         Grid.SetColumn(_lyricRegion, 1);
@@ -137,8 +167,8 @@ public sealed class LyricsPanel : Grid
         }), true);
         _scroll.SizeChanged += (_, _) =>
         {
-            _topSpace.Height = Math.Max(40, _scroll.ViewportHeight * 0.39);
-            _bottomSpace.Height = Math.Max(80, _scroll.ViewportHeight * 0.48);
+            _topSpace.Height = Math.Max(40, _scroll.ViewportHeight * 0.36);
+            _bottomSpace.Height = Math.Max(80, _scroll.ViewportHeight * 0.50);
             if (_following) FollowCurrent(false);
         };
 
@@ -152,12 +182,14 @@ public sealed class LyricsPanel : Grid
         footer.Children.Add(_source);
         _jump = QuietButton("↑  Jump to current", "Jump to current lyric", 13);
         _jump.Background = new SolidColorBrush(Color.FromArgb(30, 255, 255, 255));
+        _jump.BorderBrush = new SolidColorBrush(Color.FromArgb(24, 255, 255, 255));
+        _jump.BorderThickness = new Thickness(1);
         _jump.CornerRadius = new CornerRadius(20);
         _jump.Visibility = Visibility.Collapsed;
         _jump.Click += (_, _) => ResumeFollowing();
         Grid.SetColumn(_jump, 1);
         footer.Children.Add(_jump);
-        _import = QuietButton("Import .lrc", "Import a synchronized LRC lyrics file for this track", 12);
+        _import = QuietButton("Import lyrics", "Import a synchronized LRC lyrics file for this track", 11);
         _import.Click += (_, _) => ImportRequested?.Invoke(this, EventArgs.Empty);
         Grid.SetColumn(_import, 2);
         footer.Children.Add(_import);
@@ -170,14 +202,29 @@ public sealed class LyricsPanel : Grid
             {
                 Rect = new global::Windows.Foundation.Rect(0, 0, args.NewSize.Width, args.NewSize.Height)
             };
-            var compact = args.NewSize.Width < 900;
+            var compact = args.NewSize.Width < 820;
             _artPanel.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
             _artColumn.Width = compact ? new GridLength(0) : new GridLength(0.88, GridUnitType.Star);
-            _body.ColumnSpacing = compact ? 0 : 62;
-            var coverSize = Math.Clamp(args.NewSize.Width * 0.28, 180, 360);
+            _layout.Padding = new Thickness(compact ? 30 : 56, 24, compact ? 30 : 56, 20);
+            _body.ColumnSpacing = compact ? 0 : Math.Clamp(args.NewSize.Width * 0.065, 40, 100);
+            var coverSize = Math.Clamp(Math.Min(args.NewSize.Width * 0.29, args.NewSize.Height - 285), 160, 390);
             _artBorder.Width = coverSize;
             _artBorder.Height = coverSize;
-            foreach (var row in _rows) row.Text.FontSize = compact ? 34 : 42;
+            _artStage.Width = coverSize;
+            _artStage.Height = coverSize;
+            _artPanel.MaxWidth = coverSize;
+            _artGlow.Width = coverSize * 1.9;
+            _artGlow.Height = coverSize * 1.9;
+            Canvas.SetLeft(_artGlow, -coverSize * 0.45);
+            Canvas.SetTop(_artGlow, -coverSize * 0.28);
+            _title.FontSize = coverSize < 260 ? 25 : 31;
+            _artist.FontSize = coverSize < 260 ? 17 : 20;
+            _lyricFontSize = compact ? 36 : Math.Clamp(args.NewSize.Width * 0.034, 34, 48);
+            foreach (var row in _rows)
+            {
+                row.Text.FontSize = _lyricFontSize;
+                row.Text.LineHeight = _lyricFontSize * 1.19;
+            }
         };
         Loaded += (_, _) =>
         {
@@ -201,6 +248,7 @@ public sealed class LyricsPanel : Grid
         _document = document;
         _title.Text = track.Title;
         _artist.Text = track.Artist;
+        _album.Text = track.Album;
         _source.Text = document.Source;
         AutomationProperties.SetName(_art, $"{track.Album} album artwork");
         try
@@ -221,15 +269,16 @@ public sealed class LyricsPanel : Grid
 
         foreach (var line in document.Lines.OrderBy(line => line.TimeMs))
         {
-            var text = Label(string.IsNullOrWhiteSpace(line.Text) ? "•••" : line.Text, ActualWidth < 900 ? 34 : 42, 1);
+            var text = Label(string.IsNullOrWhiteSpace(line.Text) ? "•••" : line.Text, _lyricFontSize, 1);
             text.FontWeight = Microsoft.UI.Text.FontWeights.Bold;
             text.TextWrapping = TextWrapping.WrapWholeWords;
-            text.LineHeight = ActualWidth < 900 ? 42 : 52;
+            text.CharacterSpacing = -25;
+            text.LineHeight = _lyricFontSize * 1.19;
             var button = new Button
             {
                 Content = text,
-                Padding = new Thickness(3, 10, 10, 10),
-                Margin = new Thickness(5, 0, 12, 0),
+                Padding = new Thickness(3, 12, 10, 12),
+                Margin = new Thickness(5, 0, 14, 0),
                 Background = new SolidColorBrush(Colors.Transparent),
                 BorderThickness = new Thickness(0),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -237,6 +286,9 @@ public sealed class LyricsPanel : Grid
                 CornerRadius = new CornerRadius(8),
                 Opacity = 1
             };
+            button.Resources["ButtonBackgroundPointerOver"] = new SolidColorBrush(Color.FromArgb(8, 255, 255, 255));
+            button.Resources["ButtonBackgroundPressed"] = new SolidColorBrush(Color.FromArgb(14, 255, 255, 255));
+            ElementCompositionPreview.SetIsTranslationEnabled(button, true);
             AutomationProperties.SetName(button, $"Seek to {TimeSpan.FromMilliseconds(line.TimeMs):m\\:ss}: {line.Text}");
             AutomationProperties.SetAutomationId(button, $"Lyrics.Line.{_rows.Count}");
             button.Click += async (_, _) =>
