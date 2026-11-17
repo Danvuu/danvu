@@ -35,6 +35,130 @@ function Get-BoundedCrashAnalysis {
     return $result.Substring(0, [Math]::Min(16000, $result.Length))
 }
 
+function Invoke-PrivateCdb {
+    param([string]$Cdb, [string]$Dump, [string]$Symbols, [string]$Commands, [int]$TimeoutMilliseconds = 60000)
+    $start = New-Object System.Diagnostics.ProcessStartInfo
+    $start.FileName = $Cdb; $start.UseShellExecute = $false; $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true; $start.RedirectStandardError = $true
+    $start.Arguments = '-z "' + $Dump + '" -y "srv*' + $Symbols + '*https://msdl.microsoft.com/download/symbols" -c "' + $Commands + '"'
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $start
+    try {
+        if (-not $process.Start()) { throw 'Private stowed-exception debugger did not start.' }
+        $stdout = $process.StandardOutput.ReadToEndAsync(); $stderr = $process.StandardError.ReadToEndAsync()
+        if (-not $process.WaitForExit($TimeoutMilliseconds)) { $process.Kill(); $process.WaitForExit(); throw 'Private stowed-exception inspection timed out.' }
+        $process.WaitForExit()
+        if ($null -eq $process.ExitCode -or $process.ExitCode -ne 0) { throw 'Private stowed-exception debugger did not complete successfully.' }
+        if (-not [Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($stdout, $stderr), 10000)) { throw 'Private debugger output was incomplete.' }
+        return $stdout.GetAwaiter().GetResult() + "`r`n" + $stderr.GetAwaiter().GetResult()
+    }
+    finally { $process.Dispose() }
+}
+
+function Get-MarkedCdbText {
+    param([string]$Text, [string]$Marker)
+    $pattern = '(?ms)^\s*' + [regex]::Escape($Marker + '_BEGIN') + '\s*\r?\n(.*?)^\s*' + [regex]::Escape($Marker + '_END') + '\s*$'
+    $match = [regex]::Match($Text, $pattern)
+    if (-not $match.Success) { throw 'Expected private debugger output marker was absent.' }
+    return $match.Groups[1].Value
+}
+
+function Get-StowedArrayInformation {
+    param([string]$Text)
+    $codes = [regex]::Matches($Text, '(?im)^\s*ExceptionCode:\s*([0-9a-f]{8})\b')
+    $first = [regex]::Matches($Text, '(?im)^\s*Parameter\[0\]:\s*(?:0x)?([0-9a-f`]+)\s*$')
+    $second = [regex]::Matches($Text, '(?im)^\s*Parameter\[1\]:\s*(?:0x)?([0-9a-f`]+)\s*$')
+    if ($codes.Count -eq 0 -or $codes[$codes.Count - 1].Groups[1].Value -ine 'c000027b' -or $first.Count -eq 0 -or $second.Count -eq 0) { return $null }
+    $pointer = $first[$first.Count - 1].Groups[1].Value.Replace('`', '')
+    $count = [Convert]::ToUInt64($second[$second.Count - 1].Groups[1].Value.Replace('`', ''), 16)
+    if ($pointer -notmatch '^[0-9a-fA-F]{1,16}$' -or [Convert]::ToUInt64($pointer, 16) -eq 0 -or $count -lt 1 -or $count -gt 16) { throw 'Stowed-exception array/count outside the diagnostic bound.' }
+    return [pscustomobject]@{ Pointer = $pointer; Count = [int]$count }
+}
+
+function Convert-StowedTypeFields {
+    param([string]$Text)
+    $code = [regex]::Match($Text, '(?im)^\s*\+0x[0-9a-f]+\s+ResultCode\s*:\s*(?:0x([0-9a-f]+)|0n(-?\d+))')
+    $form = [regex]::Match($Text, '(?im)^\s*\+0x[0-9a-f]+\s+ExceptionForm\s*:\s*(?:0y([01]+)|0n(\d+)|0x([0-9a-f]+)|(\d+))')
+    if (-not $code.Success -or -not $form.Success) { throw 'Symbols did not expose the stowed structure ResultCode/ExceptionForm fields.' }
+    $number = if ($code.Groups[1].Success) { [Convert]::ToInt64($code.Groups[1].Value, 16) } else { [long]$code.Groups[2].Value }
+    $hresult = '0x' + (($number -band 4294967295L).ToString('X8'))
+    $kind = if ($form.Groups[1].Success) { [Convert]::ToInt32($form.Groups[1].Value, 2) } elseif ($form.Groups[2].Success) { [int]$form.Groups[2].Value } elseif ($form.Groups[3].Success) { [Convert]::ToInt32($form.Groups[3].Value, 16) } else { [int]$form.Groups[4].Value }
+    $pointer = $null
+    if ($kind -eq 2) {
+        $errorText = [regex]::Match($Text, '(?im)^\s*\+0x[0-9a-f]+\s+ErrorText\s*:\s*(?:0x)?([0-9a-f]{8}`?[0-9a-f]{8})\b')
+        if ($errorText.Success) { $pointer = $errorText.Groups[1].Value.Replace('`', '') }
+    }
+    return [pscustomobject]@{ HResult = $hresult; ExceptionForm = $kind; ErrorTextPointer = $pointer }
+}
+
+function Convert-BoundedDebuggerUtf16 {
+    param([string]$Text, [string]$Pointer)
+    $base = [Convert]::ToUInt64($Pointer, 16)
+    $words = @{}
+    foreach ($line in ($Text -split "`r?`n")) {
+        $row = [regex]::Match($line, '^\s*([0-9a-fA-F]{8}`?[0-9a-fA-F]{8})\s+(.+)$')
+        if (-not $row.Success) { continue }
+        $address = [Convert]::ToUInt64($row.Groups[1].Value.Replace('`', ''), 16)
+        foreach ($token in ($row.Groups[2].Value -split '[\s-]+')) {
+            if ($token -notmatch '^[0-9a-fA-F]{4}$') { break }
+            if ($address -ge $base -and $address -lt ($base + 512) -and ($address - $base) % 2 -eq 0) { $words[[int]($address - $base)] = [Convert]::ToUInt16($token, 16) }
+            $address += 2
+        }
+    }
+    $builder = New-Object System.Text.StringBuilder
+    $terminated = $false
+    for ($offset = 0; $offset -lt 512; $offset += 2) {
+        if (-not $words.ContainsKey($offset)) { break }
+        if ($words[$offset] -eq 0) { $terminated = $true; break }
+        [void]$builder.Append([char]$words[$offset])
+    }
+    $message = $builder.ToString() -replace '(?i)github_pat_[a-z0-9_]+|gh[pousr]_[a-z0-9_]{20,}', '[redacted credential pattern]'
+    if ($message -match '(?i)authorization|bearer\s|access.token|refresh.token|password|secret|environment') { $message = '[sensitive diagnostic text omitted]' }
+    return [pscustomobject]@{ Text = $message; Terminated = $terminated; CharactersRead = $builder.Length }
+}
+
+function Get-StowedExceptionDetails {
+    param([string]$InitialText, [string]$Cdb, [string]$Dump, [string]$Symbols)
+    $array = Get-StowedArrayInformation $InitialText
+    if ($null -eq $array) { return @() }
+    $arrayText = Invoke-PrivateCdb $Cdb $Dump $Symbols ('.echo MUSIC_ARRAY_BEGIN; dps 0x' + $array.Pointer + ' L0x' + $array.Count.ToString('X') + '; .echo MUSIC_ARRAY_END; q')
+    $block = Get-MarkedCdbText $arrayText 'MUSIC_ARRAY'
+    $base = [Convert]::ToUInt64($array.Pointer, 16)
+    $records = @()
+    foreach ($match in [regex]::Matches($block, '(?im)^\s*([0-9a-f]{8}`?[0-9a-f]{8})\s+([0-9a-f]{8}`?[0-9a-f]{8})\b')) {
+        $slot = [Convert]::ToUInt64($match.Groups[1].Value.Replace('`', ''), 16)
+        $pointer = $match.Groups[2].Value.Replace('`', '')
+        if ($slot -ge $base -and $slot -lt ($base + $array.Count * 8) -and ($slot - $base) % 8 -eq 0 -and [Convert]::ToUInt64($pointer, 16) -ne 0) { $records += [pscustomobject]@{ Index = [int](($slot - $base) / 8); Pointer = $pointer } }
+    }
+    if ($records.Count -eq 0) { throw 'No readable stowed-exception pointers were obtained.' }
+    $commands = '.reload /f combase.dll; '
+    foreach ($record in $records) { $commands += '.echo MUSIC_TYPE_' + $record.Index + '_BEGIN; dt 0x' + $record.Pointer + ' combase!STOWED_EXCEPTION_INFORMATION_V2 -r; .echo MUSIC_TYPE_' + $record.Index + '_END; ' }
+    $types = Invoke-PrivateCdb $Cdb $Dump $Symbols ($commands + 'q')
+    $public = @(); $textCommands = ''
+    foreach ($record in $records) {
+        $fields = Convert-StowedTypeFields (Get-MarkedCdbText $types ('MUSIC_TYPE_' + $record.Index))
+        $record | Add-Member -NotePropertyName Fields -NotePropertyValue $fields
+        if ($fields.ExceptionForm -eq 2 -and $null -ne $fields.ErrorTextPointer -and [Convert]::ToUInt64($fields.ErrorTextPointer, 16) -ne 0) {
+            $textCommands += '.echo MUSIC_TEXT_' + $record.Index + '_BEGIN; dw 0x' + $fields.ErrorTextPointer + ' L0x100; .echo MUSIC_TEXT_' + $record.Index + '_END; '
+        }
+    }
+    $strings = if ($textCommands.Length -gt 0) { Invoke-PrivateCdb $Cdb $Dump $Symbols ($textCommands + 'q') } else { '' }
+    foreach ($record in $records) {
+        $fields = $record.Fields
+        $item = [ordered]@{ Index = $record.Index; Type = 'combase!STOWED_EXCEPTION_INFORMATION_V2'; HResult = $fields.HResult; ExceptionForm = $fields.ExceptionForm; ErrorText = $null; TextStatus = 'BinaryFormNoErrorTextRead' }
+        if ($fields.ExceptionForm -eq 2) {
+            $item.TextStatus = 'NullOrUnreadableErrorText'
+            if ($null -ne $fields.ErrorTextPointer -and [Convert]::ToUInt64($fields.ErrorTextPointer, 16) -ne 0) {
+                $decoded = Convert-BoundedDebuggerUtf16 (Get-MarkedCdbText $strings ('MUSIC_TEXT_' + $record.Index)) $fields.ErrorTextPointer
+                $item.ErrorText = $decoded.Text
+                $item.TextStatus = if ($decoded.Terminated) { 'NullTerminatedWithin256Characters' } else { 'TruncatedOrUnreadableWithin256Characters' }
+            }
+        }
+        $public += [pscustomobject]$item
+    }
+    return $public
+}
+
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT -or $env:GITHUB_ACTIONS -ne 'true' -or $env:RUNNER_ENVIRONMENT -ne 'github-hosted') {
     throw 'WER crash diagnostics are restricted to the disposable GitHub-hosted Windows runner; no client registry changes are allowed.'
 }
@@ -43,7 +167,7 @@ New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
 $publicPath = Join-Path $OutputDirectory 'crash-capture.json'
 $statePath = Join-Path $env:RUNNER_TEMP 'music-wer-state.json'
 $registryPath = 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\Music.exe'
-$info = [ordered]@{ SourceCommit = $SourceCommit; Status = 'Unverified'; CdbPath = $null; CdbVersion = $null; DumpCreated = $false; DumpBytes = $null; CdbExitCode = $null; RegistryRestored = $false; Error = $null; Note = 'Runner-local dump only. No dump, raw memory, or full debugger log is exported. Missing tools or capture do not validate the app.' }
+$info = [ordered]@{ SourceCommit = $SourceCommit; Status = 'Unverified'; CdbPath = $null; CdbVersion = $null; DumpCreated = $false; DumpBytes = $null; CdbExitCode = $null; StowedInspectionStatus = 'NotAttempted'; StowedExceptions = @(); RegistryRestored = $false; Error = $null; Note = 'Runner-local dump only. No dump, raw memory, or full debugger log is exported. Missing tools or capture do not validate the app.' }
 $state = $null
 
 try {
@@ -114,6 +238,20 @@ try {
             $text = $stdout.GetAwaiter().GetResult() + "`r`n" + $stderr.GetAwaiter().GetResult()
             $bounded = Get-BoundedCrashAnalysis -Text $text
             if ($bounded.Length -eq 0) { $bounded = 'The debugger produced no matching bounded exception/stack diagnostics. No underlying cause is established.' }
+            try {
+                $info.StowedExceptions = @(Get-StowedExceptionDetails -InitialText $text -Cdb $state.CdbPath -Dump $dump.FullName -Symbols $symbols)
+                $info.StowedInspectionStatus = if ($info.StowedExceptions.Count -gt 0) { 'SymbolFieldsRead' } else { 'NoStowedArrayFound' }
+                $specific = @()
+                foreach ($item in $info.StowedExceptions) {
+                    $specific += "STOWED RECORD $($item.Index): $($item.Type)"
+                    $specific += "HRESULT: $($item.HResult); ExceptionForm: $($item.ExceptionForm)"
+                    $specific += "ErrorText: $($item.ErrorText)"
+                    $specific += "Text status: $($item.TextStatus)"
+                }
+                if ($specific.Count -gt 0) { $bounded = ($specific -join "`r`n") + "`r`n`r`n" + $bounded }
+            }
+            catch { $info.StowedInspectionStatus = 'Unavailable'; $info.Error = 'Stowed detail inspection unavailable: ' + $_.Exception.Message }
+            $bounded = $bounded.Substring(0, [Math]::Min(16000, $bounded.Length))
             $bounded | Set-Content -LiteralPath (Join-Path $OutputDirectory 'crash-analysis.txt') -Encoding UTF8
             $info.Status = 'LocalAnalysisCompletedNotRootCauseProof'
         }

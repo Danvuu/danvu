@@ -22,7 +22,14 @@ public sealed partial class MainWindow
         _route = route;
         var version = ++_navigationVersion;
         UpdateNavigation();
-        _page.Content = new ProgressRing { IsActive = true, Width = 32, Height = 32, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        var loading = new ProgressBar
+        {
+            IsIndeterminate = true, Width = 180, Height = 4,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(loading, "Loading music");
+        _page.Content = loading;
         try
         {
             var content = await BuildRouteAsync(route);
