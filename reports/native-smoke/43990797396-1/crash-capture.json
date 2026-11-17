@@ -1,0 +1,55 @@
+﻿{
+    "SourceCommit":  "07f84743b9418203b594a0eeb2f09e4bb694c007",
+    "Status":  "LocalAnalysisCompletedNotRootCauseProof",
+    "CdbPath":  "C:\\Program Files (x86)\\Windows Kits\\10\\Debuggers\\x64\\cdb.exe",
+    "CdbVersion":  "10.0.26100.9457 (WinBuild.160101.0800)",
+    "DumpCreated":  true,
+    "DumpBytes":  326575701,
+    "CdbExitCode":  0,
+    "StowedInspectionStatus":  "SymbolFieldsRead",
+    "StowedExceptions":  [
+                             {
+                                 "Index":  0,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x80004005",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             },
+                             {
+                                 "Index":  1,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x80004005",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             },
+                             {
+                                 "Index":  2,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x80004005",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             },
+                             {
+                                 "Index":  3,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x80004005",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             },
+                             {
+                                 "Index":  4,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x80070002",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             }
+                         ],
+    "RegistryRestored":  true,
+    "Error":  null,
+    "Note":  "Runner-local dump only. No dump, raw memory, or full debugger log is exported. Missing tools or capture do not validate the app."
+}
