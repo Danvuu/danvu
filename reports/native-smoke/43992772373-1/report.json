@@ -1,0 +1,83 @@
+﻿{
+    "SourceCommit":  "5d028c7615312e8d5cf956409476f3d19248b122",
+    "StartedUtc":  "2026-11-17T01:06:24.3420193Z",
+    "FinishedUtc":  "2026-11-17T01:06:52.0033573Z",
+    "Result":  "Failed",
+    "FailureKind":  "NativeStartupOrFunctionalCheck",
+    "Stage":  "WaitWindow",
+    "ApplicationExecuted":  true,
+    "Candidate":  [
+                      {
+                          "Path":  "Music.dll",
+                          "Sha256":  "9FB20D9E2F33A8FBACFAA09AB35DDFCE07F4F55DF768CA4FCF0C9DCCCFFB2C4D"
+                      },
+                      {
+                          "Path":  "Music.exe",
+                          "Sha256":  "87284A0DB830B6EAD8DA0B374D475708CB46ADB72223B185692A7BF673D244E2"
+                      }
+                  ],
+    "Defender":  {
+                     "AMEngineVersion":  "1.1.26100.4",
+                     "AMProductVersion":  "4.18.26100.4",
+                     "AMServiceEnabled":  true,
+                     "AntivirusEnabled":  true,
+                     "RealTimeProtectionEnabled":  true,
+                     "AntivirusSignatureVersion":  "1.463.334.0",
+                     "AntivirusSignatureLastUpdated":  "\/Date(1794850101000)\/",
+                     "DefenderSignaturesOutOfDate":  false
+                 },
+    "DefenderScanExitCode":  0,
+    "DefenderScanOutcome":  "ExitZeroNoScopedDetection",
+    "Detections":  [
+
+                   ],
+    "Desktop":  {
+                    "UserInteractive":  true,
+                    "SessionId":  2,
+                    "InputDesktop":  "Default"
+                },
+    "ProtectionEnableAttempted":  true,
+    "ProtectionEnableResult":  "EnabledAndVerified",
+    "ProcessId":  2120,
+    "ProcessExitCode":  -1073741189,
+    "ForcedTermination":  false,
+    "Checks":  [
+                   {
+                       "Name":  "Protection strengthened",
+                       "Passed":  true,
+                       "Detail":  "Enabled real-time protection with the supported Defender preference command on the isolated hosted runner, then verified it effective. No protection reduction was requested.",
+                       "Utc":  "2026-11-17T01:06:47.8513121Z"
+                   },
+                   {
+                       "Name":  "Candidate antivirus gate",
+                       "Passed":  true,
+                       "Detail":  "Signature refresh succeeded, real-time protection enabled, native scan exit 0, no scoped detections, and bundle hashes unchanged. This does not clear the original user alert.",
+                       "Utc":  "2026-11-17T01:06:48.6424713Z"
+                   },
+                   {
+                       "Name":  "Interactive desktop",
+                       "Passed":  true,
+                       "Detail":  "Session 2; accessible Default input desktop.",
+                       "Utc":  "2026-11-17T01:06:49.4737823Z"
+                   }
+               ],
+    "Interactions":  [
+
+                     ],
+    "PositionProvider":  null,
+    "Screenshots":  [
+
+                    ],
+    "Errors":  [
+                   "Application exited before its window was ready (exit -1073741189)."
+               ],
+    "ApplicationEvents":  [
+                              {
+                                  "TimeCreated":  "\/Date(1794877609910)\/",
+                                  "Id":  1000,
+                                  "ProviderName":  "Application Error",
+                                  "Message":  "Faulting application name: Music.exe, version: 0.1.1.0, time stamp: 0x6ae30000\r\nFaulting module name: Microsoft.UI.Xaml.dll, version: 3.1.8.0, time stamp: 0x2239de89\r\nException code: 0xc000027b\r\nFault offset: 0x000000000039dce5\r\nFaulting process id: 0x848\r\nFaulting application start time: 0x1DD762FEC870FB0\r\nFaulting application path: D:\\a\\danvu\\danvu\\artifacts\\publish\\win-x64\\Music.exe\r\nFaulting module path: D:\\a\\danvu\\danvu\\artifacts\\publish\\win-x64\\Microsoft.UI.Xaml.dll\r\nReport Id: 8d9fdf77-6a5f-4da3-bcb8-e86088dec2e3\r\nFaulting package full name: \r\nFaulting package-relative application ID: "
+                              }
+                          ],
+    "Scope":  "Current source build only. Silent demo UI flow; no Spotify login, quarantined release execution, AV bypass, binary upload, or performance claim."
+}
