@@ -1,0 +1,457 @@
+﻿[
+    {
+        "Id":  "",
+        "Name":  "PopupHost",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Popup",
+        "Type":  "ControlType.Window",
+        "Offscreen":  true,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Ctrl+F",
+        "Type":  "ControlType.ToolTip",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Ctrl+F",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Non Client Input Sink Window",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "AppWindow Custom Title Bar",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Minimize",
+        "Name":  "Minimize",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Maximize",
+        "Name":  "Maximize",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Close",
+        "Name":  "Close",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Music",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Toggle",
+        "Name":  "Toggle library sidebar",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Back (Alt+Left)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  false
+    },
+    {
+        "Id":  "",
+        "Name":  "Forward (Alt+Right)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  false
+    },
+    {
+        "Id":  "",
+        "Name":  "Search music (Ctrl+F)",
+        "Type":  "ControlType.Edit",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Jam",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Jam",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Sign in",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Sign in",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Pane",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Music",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Home",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Listen Now",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Search",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Browse",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Library",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Library",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Recently added",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Artists",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Artists",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Albums",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Albums",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Songs",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Songs",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Liked",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Liked songs",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Playlists",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Create playlist",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Nav.Playlists",
+        "Name":  "",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Your playlists",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Account \u0026 settings",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Account \u0026 settings",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Demo collection",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Loading music",
+        "Type":  "ControlType.Group",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Loading music",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Shuffle",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Previous track (Ctrl+Left)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.PlayPause",
+        "Name":  "Play or pause (Space)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Next track (Ctrl+Right)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Repeat off",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Open Now Playing and lyrics",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "",
+        "Type":  "ControlType.Image",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.TrackTitle",
+        "Name":  "Afterglow",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Luna Vale",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "0:00",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Position",
+        "Name":  "Playback position",
+        "Type":  "ControlType.Slider",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "−3:08",
+        "Type":  "ControlType.Text",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Like current song",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Playback volume",
+        "Type":  "ControlType.Slider",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "Player.Lyrics",
+        "Name":  "Lyrics (Ctrl+L)",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Queue",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    },
+    {
+        "Id":  "",
+        "Name":  "Spotify playback devices",
+        "Type":  "ControlType.Button",
+        "Offscreen":  false,
+        "Enabled":  true
+    }
+]
