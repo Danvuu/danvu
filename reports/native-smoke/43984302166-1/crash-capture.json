@@ -1,0 +1,16 @@
+﻿{
+    "SourceCommit":  "a3a6c6b6646df465fe36568c1cfcd9ba7da23886",
+    "Status":  "LocalAnalysisCompletedNotRootCauseProof",
+    "CdbPath":  "C:\\Program Files (x86)\\Windows Kits\\10\\Debuggers\\x64\\cdb.exe",
+    "CdbVersion":  "10.0.26100.9457 (WinBuild.160101.0800)",
+    "DumpCreated":  true,
+    "DumpBytes":  432337468,
+    "CdbExitCode":  0,
+    "StowedInspectionStatus":  "Unavailable",
+    "StowedExceptions":  [
+
+                         ],
+    "RegistryRestored":  true,
+    "Error":  "Stowed detail inspection unavailable: Symbols did not expose the stowed structure ResultCode/ExceptionForm fields.",
+    "Note":  "Runner-local dump only. No dump, raw memory, or full debugger log is exported. Missing tools or capture do not validate the app."
+}
