@@ -52,6 +52,11 @@ public sealed partial class App : Application
         StartupDiagnostics.Record("Loading compiled application resources");
         InitializeComponent();
         StartupDiagnostics.Record("Compiled application resources loaded");
+        StartupDiagnostics.Record($"Application resources: Count={Resources.Count}; MusicButtonStyle={Resources.ContainsKey("MusicButtonStyle")}; MusicSliderStyle={Resources.ContainsKey("MusicSliderStyle")}; App.xbf={File.Exists(Path.Combine(AppContext.BaseDirectory, "App.xbf"))}; PRI files={Directory.EnumerateFiles(AppContext.BaseDirectory, "*.pri").Take(64).Count()}");
+        // Force deferred styles to resolve before constructing the native window.
+        _ = (Style)Resources["MusicButtonStyle"];
+        _ = (Style)Resources["MusicSliderStyle"];
+        StartupDiagnostics.Record("Custom native button and slider styles resolved");
     }
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {

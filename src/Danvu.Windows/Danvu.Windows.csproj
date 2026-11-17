@@ -36,4 +36,28 @@
     <ProjectReference Include="../Danvu.Core/Danvu.Core.csproj" />
     <Content Include="Assets/**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <!-- WinUI 1.8's generated XBF item list participates in build copying, but the
+       .NET publish pipeline uses a different list. Keep the SDK's target paths. -->
+  <Target Name="IncludeCompiledXamlInPublish"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          DependsOnTargets="AddProcessedXamlFilesToCopyLocal">
+    <ItemGroup>
+      <_MusicCompiledXaml Include="@(_ProcessedXamlFilesToCopyLocalWithTargetPath)"
+                          Condition="'%(_ProcessedXamlFilesToCopyLocalWithTargetPath.Extension)' == '.xbf'" />
+      <_MusicAppXaml Include="@(_MusicCompiledXaml)" Condition="'%(_MusicCompiledXaml.Filename)' == 'App'" />
+    </ItemGroup>
+    <Error Condition="'@(_MusicAppXaml)' == ''" Text="WinUI did not produce the compiled application XAML publish item." />
+    <Error Condition="!Exists('%(_MusicCompiledXaml.FullPath)')" Text="Compiled XAML publish input is missing: %(_MusicCompiledXaml.TargetPath)." />
+    <Error Condition="'$(ProjectPriFullPath)' != '' and !Exists('$(ProjectPriFullPath)')" Text="The generated application resource index is missing." />
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(_MusicCompiledXaml)" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(_MusicCompiledXaml.TargetPath)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+      <ResolvedFileToPublish Include="$(ProjectPriFullPath)" Exclude="@(ResolvedFileToPublish)" Condition="'$(ProjectPriFullPath)' != ''">
+        <RelativePath>$(ProjectPriFileName)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 </Project>
