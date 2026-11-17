@@ -1,0 +1,37 @@
+2026-11-17T00:51:39.6799549+00:00 Starting Music
+
+2026-11-17T00:51:39.6818639+00:00 Initializing COM wrappers
+
+2026-11-17T00:51:39.6835268+00:00 Starting XAML application
+
+2026-11-17T00:51:39.9039215+00:00 XAML initialization callback entered
+
+2026-11-17T00:51:39.9058514+00:00 Constructing App
+
+2026-11-17T00:51:39.9083189+00:00 App constructor entered
+
+2026-11-17T00:51:39.9158493+00:00 Loading compiled application resources
+
+2026-11-17T00:51:39.9199572+00:00 Compiled application resources loaded
+
+2026-11-17T00:51:39.9201460+00:00 App constructed
+
+2026-11-17T00:51:39.9254649+00:00 Creating native window
+
+2026-11-17T00:51:40.1350807+00:00 Unhandled WinUI error
+System.Runtime.InteropServices.COMException HRESULT=0x80004005
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+   at WinRT.ExceptionHelpers.ThrowExceptionForHR(Int32 hr)
+   at WinRT.GenericTypeInstantiations.Windows_Foundation_Collections_IMap_2_object__object.Lookup(IObjectReference _obj, Object key)
+   at ABI.Windows.Foundation.Collections.IMapMethods`2.Lookup(IObjectReference obj, K key)
+   at ABI.System.Collections.Generic.IDictionaryMethods`2.Lookup(IObjectReference obj, K key)
+   at ABI.System.Collections.Generic.IDictionaryMethods`2.Indexer_Get(IObjectReference obj, Dictionary`2 __lookupCache, K key)
+   at Microsoft.UI.Xaml.ResourceDictionary.get_Item(Object key)
+   at Danvu.Windows.Views.Ui.StyleButton(Button button) in D:\a\danvu\danvu\src\Danvu.Windows\Views\Ui.cs:line 160
+   at Danvu.Windows.Views.Ui.Tactile(FrameworkElement element, Single pressScale) in D:\a\danvu\danvu\src\Danvu.Windows\Views\Ui.cs:line 163
+   at Danvu.Windows.Views.LyricsPanel.QuietButton(String text, String accessibleName, Double size) in D:\a\danvu\danvu\src\Danvu.Windows\Views\LyricsPanel.cs:line 825
+   at Danvu.Windows.Views.LyricsPanel..ctor(Func`2 seek, Action`1 report) in D:\a\danvu\danvu\src\Danvu.Windows\Views\LyricsPanel.cs:line 111
+   at Danvu.Windows.MainWindow..ctor() in D:\a\danvu\danvu\src\Danvu.Windows\MainWindow.cs:line 78
+   at Danvu.Windows.App.OnLaunched(LaunchActivatedEventArgs args) in D:\a\danvu\danvu\src\Danvu.Windows\Program.cs:line 59
+   at Microsoft.UI.Xaml.Application.Microsoft.UI.Xaml.IApplicationOverrides.OnLaunched(LaunchActivatedEventArgs args)
+   at ABI.Microsoft.UI.Xaml.IApplicationOverrides.Do_Abi_OnLaunched_0(IntPtr thisPtr, IntPtr args)
