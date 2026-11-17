@@ -1,0 +1,56 @@
+2026-11-17T00:43:39.4503241+00:00 Starting Music
+
+2026-11-17T00:43:39.4521532+00:00 Initializing COM wrappers
+
+2026-11-17T00:43:39.4537014+00:00 Starting XAML application
+
+2026-11-17T00:43:40.1227104+00:00 XAML initialization callback entered
+
+2026-11-17T00:43:40.1247585+00:00 Constructing App
+
+2026-11-17T00:43:40.1275070+00:00 App constructor entered
+
+2026-11-17T00:43:40.1355216+00:00 Loading compiled application resources
+
+2026-11-17T00:43:40.1399340+00:00 Compiled application resources loaded
+
+2026-11-17T00:43:40.1401635+00:00 App constructed
+
+2026-11-17T00:43:40.1455098+00:00 Creating native window
+
+2026-11-17T00:43:40.4152233+00:00 Native window activated
+
+2026-11-17T00:43:40.4863355+00:00 Building navigation content
+
+2026-11-17T00:43:40.4911284+00:00 Building home heading
+
+2026-11-17T00:43:40.4960715+00:00 Building home artists
+
+2026-11-17T00:43:40.5010822+00:00 Building home songs
+
+2026-11-17T00:43:40.5195187+00:00 Building home playlists
+
+2026-11-17T00:43:40.5218869+00:00 Navigation content built
+
+2026-11-17T00:43:41.2823910+00:00 Building navigation content
+
+2026-11-17T00:43:41.2827117+00:00 Building home heading
+
+2026-11-17T00:43:41.2916519+00:00 Building home artists
+
+2026-11-17T00:43:41.2950857+00:00 Building home songs
+
+2026-11-17T00:43:41.3048160+00:00 Building home playlists
+
+2026-11-17T00:43:41.3067626+00:00 Navigation content built
+
+2026-11-17T00:43:41.3191196+00:00 Navigation content failed
+System.Runtime.InteropServices.COMException HRESULT=0x800F1000
+   at System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(Int32 errorCode)
+   at WinRT.DelegateExtensions.DynamicInvokeAbi(Delegate del, Object[] invoke_params)
+   at ABI.System.Collections.Generic.IListMethods`2.AppendDynamic(IObjectReference obj, T value)
+   at ABI.System.Collections.Generic.IVectorMethods`1.Append(IObjectReference obj, T value)
+   at ABI.System.Collections.Generic.IListMethods`1.Add(IObjectReference obj, T item)
+   at Microsoft.UI.Xaml.Controls.UIElementCollection.Add(UIElement item)
+   at Danvu.Windows.Views.Ui.Add(Grid grid, UIElement element, Int32 row, Int32 column) in D:\a\danvu\danvu\src\Danvu.Windows\Views\Ui.cs:line 133
+   at Danvu.Windows.MainWindow.NavigateAsync(Route route, Boolean record) in D:\a\danvu\danvu\src\Danvu.Windows\MainWindow.Browse.cs:line 41
