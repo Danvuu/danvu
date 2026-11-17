@@ -1,0 +1,39 @@
+﻿{
+    "SourceCommit":  "5d028c7615312e8d5cf956409476f3d19248b122",
+    "Status":  "LocalAnalysisCompletedNotRootCauseProof",
+    "CdbPath":  "C:\\Program Files (x86)\\Windows Kits\\10\\Debuggers\\x64\\cdb.exe",
+    "CdbVersion":  "10.0.26100.9457 (WinBuild.160101.0800)",
+    "DumpCreated":  true,
+    "DumpBytes":  259725151,
+    "CdbExitCode":  0,
+    "StowedInspectionStatus":  "SymbolFieldsRead",
+    "StowedExceptions":  [
+                             {
+                                 "Index":  0,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x8000FFFF",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             },
+                             {
+                                 "Index":  1,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x8000FFFF",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             },
+                             {
+                                 "Index":  2,
+                                 "Type":  "combase!STOWED_EXCEPTION_INFORMATION_V2",
+                                 "HResult":  "0x8000FFFF",
+                                 "ExceptionForm":  1,
+                                 "ErrorText":  null,
+                                 "TextStatus":  "BinaryFormNoErrorTextRead"
+                             }
+                         ],
+    "RegistryRestored":  true,
+    "Error":  null,
+    "Note":  "Runner-local dump only. No dump, raw memory, or full debugger log is exported. Missing tools or capture do not validate the app."
+}
