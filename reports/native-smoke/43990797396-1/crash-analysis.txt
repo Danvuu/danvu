@@ -1,0 +1,162 @@
+﻿STOWED RECORD 0: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80004005; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 1: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80004005; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 2: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80004005; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 3: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80004005; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+STOWED RECORD 4: combase!STOWED_EXCEPTION_INFORMATION_V2
+HRESULT: 0x80070002; ExceptionForm: 1
+ErrorText: 
+Text status: BinaryFormNoErrorTextRead
+
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(b20.180c): Unknown exception - code c000027b (first/second chance not available)
+
+KERNELBASE!RaiseFailFastException+0x188:
+00007ffd`cb9ff0d8 0f1f440000      nop     dword ptr [rax+rax]
+0:000> cdb: Reading initial command '!analyze -v; .exr -1; k 20; q'
+*                        Exception Analysis                                   *
+*                                                                             *
+*** WARNING: Check Image - Checksum mismatch - Dump: 0xe5b12b, File: 0xe58b27 - D:\a\_temp\MusicNativeCrash-53f81a53b7174fb98bc379e736da4d97\symbols\Microsoft.UI.Xaml.dll\2239DE89e5e000\Microsoft.UI.Xaml.dll
+*** WARNING: Unable to verify checksum for Music.exe
+DEBUG_FLR_EXCEPTION_CODE(80004005) and the ".exr -1" ExceptionCode(c000027b) don't match
+
+    Value: STOWED_EXCEPTION_80004005_Microsoft.UI.Xaml.dll!FailFastWithStowedExceptions
+
+KERNELBASE!RaiseFailFastException+0x188:
+00007ffd`cb9ff0d8 0f1f440000      nop     dword ptr [rax+rax]
+Resetting default scope
+EXCEPTION_RECORD:  (.exr -1)
+ExceptionAddress: 00007ffd815fdce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+PROCESS_NAME:  Music.dll
+
+ERROR_CODE: (NTSTATUS) 0xc000027b - An application-internal exception has occurred.
+
+EXCEPTION_CODE_STR:  80004005
+
+EXCEPTION_PARAMETER1:  000001099a8eb2a0
+
+EXCEPTION_PARAMETER2:  0000000000000005
+
+FAULTING_THREAD:  ffffffff
+
+STACK_TEXT:  
+00000001`dfd7dbf0 00007ffd`cb9ff0d8 KERNELBASE!RaiseFailFastException+0x188
+00000001`dfd7e1d0 00007ffd`cd443549 combase!RoFailFastWithErrorContextInternal2+0x4a9
+00000001`dfd7e3f0 00007ffd`815fdce5 Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x59
+00000001`dfd7e420 00007ffd`81a3e606 Microsoft_UI_Xaml!DirectUI::ErrorHelper::ProcessUnhandledError+0xfa
+00000001`dfd7e460 00007ffd`81a3df41 Microsoft_UI_Xaml!DirectUI::FinalUnhandledErrorDetectedRegistration::OnFinalUnhandledErrorDetected+0xd1
+00000001`dfd7e4f0 00007ffd`af083899 twinapi_appcore!Windows::Internal::Details::GitInvokeHelper<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Windows::Internal::GitPtr,2>::Invoke+0x59
+00000001`dfd7e520 00007ffd`af0838d9 twinapi_appcore!Windows::ApplicationModel::Core::UnhandledErrorInvokeHelper::Invoke+0x19
+00000001`dfd7e550 00007ffd`af0752f7 twinapi_appcore!Microsoft::WRL::InvokeTraits<2>::InvokeDelegates<<lambda_e478ebca019219710ec18bdfd8216607>,Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64> >+0x57
+00000001`dfd7e590 00007ffd`af061e48 twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::DoInvoke<<lambda_e478ebca019219710ec18bdfd8216607> >+0x78
+00000001`dfd7e5d0 00007ffd`af031269 twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::InvokeAll<std::nullptr_t,Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>+0x29
+00000001`dfd7e620 00007ffd`af031066 twinapi_appcore!Windows::ApplicationModel::Core::CoreApplication::ForwardLocalError+0x76
+00000001`dfd7e670 00007ffd`af030f86 twinapi_appcore!Windows::ApplicationModel::Core::CoreApplicationFactory::ForwardLocalError+0x116
+00000001`dfd7e6b0 00007ffd`cd454c65 combase!CallErrorForwarder+0x181
+00000001`dfd7e740 00007ffd`81a3e867 Microsoft_UI_Xaml!DirectUI::ErrorHelper::ReportUnhandledError+0xd3
+00000001`dfd7e7d0 00007ffd`8156b20c Microsoft_UI_Xaml!DirectUI::FrameworkApplication::InvokeOnLaunchActivated+0x1fd604
+00000001`dfd7e820 00007ffd`8136d463 Microsoft_UI_Xaml!DirectUI::FrameworkApplication::StartOnCurrentThreadImpl+0xa3
+00000001`dfd7e860 00007ffd`8136d397 Microsoft_UI_Xaml!DirectUI::FrameworkApplicationGenerated::StartOnCurrentThread+0x27
+00000001`dfd7e8a0 00007ffd`813dac0a Microsoft_UI_Xaml!DirectUI::WindowsXamlManager::XamlCore::Initialize+0xe6
+00000001`dfd7e900 00007ffd`813db6a4 Microsoft_UI_Xaml!DirectUI::WindowsXamlManager::Initialize+0x174
+00000001`dfd7e970 00007ffd`81311473 Microsoft_UI_Xaml!ctl::ComObjectBase::CreateInstanceBase+0x13
+00000001`dfd7e9a0 00007ffd`8149ed68 Microsoft_UI_Xaml!ctl::ComObject<DirectUI::WindowsXamlManager>::CreateInstance<DirectUI::WindowsXamlManager>+0x60
+00000001`dfd7e9d0 00007ffd`8147cba8 Microsoft_UI_Xaml!ctl::make<DirectUI::WindowsXamlManager>+0x20
+00000001`dfd7ea00 00007ffd`8147c97c Microsoft_UI_Xaml!DirectUI::WindowsXamlManagerFactory::InitializeForCurrentThreadImpl+0x78
+00000001`dfd7ea60 00007ffd`8147c8da Microsoft_UI_Xaml!DirectUI::WindowsXamlManagerFactory::InitializeForCurrentThread+0x3a
+00000001`dfd7eaa0 00007ffd`813cdd54 Microsoft_UI_Xaml!DirectUI::FrameworkApplication::StartDesktop+0x1ec
+00000001`dfd7eb40 00007ffd`814d29f2 Microsoft_UI_Xaml!DirectUI::FrameworkApplicationFactory::Start+0x62
+00000001`dfd7eb90 00007ffd`442bc126 unknown!unknown+0x0
+00000001`dfd7ecc0 00007ffd`442bad6c unknown!unknown+0x0
+00000001`dfd7ed00 00007ffd`442ba032 unknown!unknown+0x0
+00000001`dfd7eda0 00007ffd`a3f03b03 coreclr!CallDescrWorkerInternal+0x83
+00000001`dfd7ede0 00007ffd`a3dd6af8 coreclr!MethodDescCallSite::CallTargetWorker+0x414
+00000001`dfd7ef80 00007ffd`a3e4ae7f coreclr!RunMainInternal+0x113
+00000001`dfd7f0a0 00007ffd`a3e4ab62 coreclr!RunMain+0x112
+00000001`dfd7f140 00007ffd`a3e4a523 coreclr!Assembly::ExecuteMainMethod+0x1b7
+00000001`dfd7f410 00007ffd`a3e49475 coreclr!CorHost2::ExecuteAssembly+0x235
+00000001`dfd7f520 00007ffd`a3eac3b7 coreclr!coreclr_execute_assembly+0xd7
+00000001`dfd7f5c0 00007ffd`a4fddd0a hostpolicy!run_app_for_context+0x5ea
+00000001`dfd7f6f0 00007ffd`a4fddfac hostpolicy!run_app+0x3c
+00000001`dfd7f730 00007ffd`a4fdef21 hostpolicy!corehost_main+0x171
+00000001`dfd7f830 00007ffd`a6ddd56b hostfxr!execute_app+0x2bb
+00000001`dfd7f8c0 00007ffd`a6de029c hostfxr!`anonymous namespace'::read_config_and_execute+0xac
+00000001`dfd7f9c0 00007ffd`a6de2676 hostfxr!fx_muxer_t::handle_exec_host_command+0x1d6
+00000001`dfd7fa70 00007ffd`a6de079d hostfxr!fx_muxer_t::execute+0x2ad
+00000001`dfd7fba0 00007ffd`a6dd8998 hostfxr!hostfxr_main_startupinfo+0xa8
+00000001`dfd7fca0 00007ff6`58f92f48 Music_exe!exe_start+0xaa8
+00000001`dfd7fe50 00007ff6`58f933c6 Music_exe!wmain+0x156
+00000001`dfd7fed0 00007ff6`58fa3b28 Music_exe!__scrt_common_main_seh+0x10c
+00000001`dfd7ff10 00007ffd`cd70dd37 kernel32!BaseThreadInitThunk+0x17
+00000001`dfd7ff40 00007ffd`ce6df2bc ntdll!RtlUserThreadStart+0x2c
+
+STACK_COMMAND:  *** Stowed Exception v2 ***; .exr -1; dpp 0x1099a8eb2a0 L0x5; dt 0x1099a8db4b8 combase!STOWED_EXCEPTION_INFORMATION_V2 -r; dps 0x10995303d00 L0x1; *** Nested 'LEO1' @ 0x1099505E590 ***; *** Invalid Nested Address *** ; ** Pseudo Context ** StowedPseudo ** Val
+
+FAULTING_SOURCE_LINE:  C:\__w\1\s\dxaml\xcp\components\base\ErrorContext.cpp
+
+FAULTING_SOURCE_FILE:  C:\__w\1\s\dxaml\xcp\components\base\ErrorContext.cpp
+
+FAULTING_SOURCE_LINE_NUMBER:  1508
+
+SYMBOL_NAME:  Microsoft_UI_Xaml!FailFastWithStowedExceptions+59
+
+MODULE_NAME: Microsoft_UI_Xaml
+
+IMAGE_NAME:  Microsoft.UI.Xaml.dll
+
+FAILURE_BUCKET_ID:  STOWED_EXCEPTION_80004005_Microsoft.UI.Xaml.dll!FailFastWithStowedExceptions
+
+FAILURE_ID_HASH:  {d411757f-1979-5655-2ad9-26b136d0b67f}
+
+ExceptionAddress: 00007ffd815fdce5 (Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x0000000000000059)
+   ExceptionCode: c000027b
+  ExceptionFlags: 00000001
+NumberParameters: 2
+00000001`dfd7dbf0 00007ffd`cd443549     KERNELBASE!RaiseFailFastException+0x188
+00000001`dfd7e1d0 00007ffd`815fdce5     combase!RoFailFastWithErrorContextInternal2+0x4a9
+00000001`dfd7e3f0 00007ffd`81a3e606     Microsoft_UI_Xaml!FailFastWithStowedExceptions+0x59
+00000001`dfd7e420 00007ffd`81a3df41     Microsoft_UI_Xaml!DirectUI::ErrorHelper::ProcessUnhandledError+0xfa
+00000001`dfd7e460 00007ffd`af083899     Microsoft_UI_Xaml!DirectUI::FinalUnhandledErrorDetectedRegistration::OnFinalUnhandledErrorDetected+0xd1
+00000001`dfd7e4f0 00007ffd`af0838d9     twinapi_appcore!Windows::Internal::Details::GitInvokeHelper<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Windows::Internal::GitPtr,2>::Invoke+0x59
+00000001`dfd7e520 00007ffd`af0752f7     twinapi_appcore!Windows::ApplicationModel::Core::UnhandledErrorInvokeHelper::Invoke+0x19
+00000001`dfd7e550 00007ffd`af061e48     twinapi_appcore!Microsoft::WRL::InvokeTraits<2>::InvokeDelegates<<lambda_e478ebca019219710ec18bdfd8216607>,Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64> >+0x57
+00000001`dfd7e590 00007ffd`af031269     twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::DoInvoke<<lambda_e478ebca019219710ec18bdfd8216607> >+0x78
+00000001`dfd7e5d0 00007ffd`af031066     twinapi_appcore!Microsoft::WRL::EventSource<Windows::Foundation::IEventHandler<Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>,Microsoft::WRL::InvokeModeOptions<2> >::InvokeAll<std::nullptr_t,Windows::ApplicationModel::Core::UnhandledErrorDetectedEventArgs * __ptr64>+0x29
+00000001`dfd7e620 00007ffd`af030f86     twinapi_appcore!Windows::ApplicationModel::Core::CoreApplication::ForwardLocalError+0x76
+00000001`dfd7e670 00007ffd`cd454c65     twinapi_appcore!Windows::ApplicationModel::Core::CoreApplicationFactory::ForwardLocalError+0x116
+00000001`dfd7e6b0 00007ffd`81a3e867     combase!CallErrorForwarder+0x181
+00000001`dfd7e740 00007ffd`8156b20c     Microsoft_UI_Xaml!DirectUI::ErrorHelper::ReportUnhandledError+0xd3
+00000001`dfd7e7d0 00007ffd`8136d463     Microsoft_UI_Xaml!DirectUI::FrameworkApplication::InvokeOnLaunchActivated+0x1fd604
+00000001`dfd7e820 00007ffd`8136d397     Microsoft_UI_Xaml!DirectUI::FrameworkApplication::StartOnCurrentThreadImpl+0xa3
+00000001`dfd7e860 00007ffd`813dac0a     Microsoft_UI_Xaml!DirectUI::FrameworkApplicationGenerated::StartOnCurrentThread+0x27
+00000001`dfd7e8a0 00007ffd`813db6a4     Microsoft_UI_Xaml!DirectUI::WindowsXamlManager::XamlCore::Initialize+0xe6
+00000001`dfd7e900 00007ffd`81311473     Microsoft_UI_Xaml!DirectUI::WindowsXamlManager::Initialize+0x174
+00000001`dfd7e970 00007ffd`8149ed68     Microsoft_UI_Xaml!ctl::ComObjectBase::CreateInstanceBase+0x13
+00000001`dfd7e9a0 00007ffd`8147cba8     Microsoft_UI_Xaml!ctl::ComObject<DirectUI::WindowsXamlManager>::CreateInstance<DirectUI::WindowsXamlManager>+0x60
+(Inline Function) --------`--------     Microsoft_UI_Xaml!ctl::ComObject<DirectUI::WindowsXamlManager>::CreateInstance+0x16
+00000001`dfd7e9d0 00007ffd`8147c97c     Microsoft_UI_Xaml!ctl::make<DirectUI::WindowsXamlManager>+0x20
+00000001`dfd7ea00 00007ffd`8147c8da     Microsoft_UI_Xaml!DirectUI::WindowsXamlManagerFactory::InitializeForCurrentThreadImpl+0x78
+00000001`dfd7ea60 00007ffd`813cdd54     Microsoft_UI_Xaml!DirectUI::WindowsXamlManagerFactory::InitializeForCurrentThread+0x3a
+00000001`dfd7eaa0 00007ffd`814d29f2     Microsoft_UI_Xaml!DirectUI::FrameworkApplication::StartDesktop+0x1ec
+(Inline Function) --------`--------     Microsoft_UI_Xaml!DirectUI::FrameworkApplicationFactory::StartImpl+0x37
+00000001`dfd7eb40 00007ffd`442bc126     Microsoft_UI_Xaml!DirectUI::FrameworkApplicationFactory::Start+0x62
+00000001`dfd7eb90 00007ffd`442bad6c     0x00007ffd`442bc126
+00000001`dfd7ecc0 00007ffd`442ba032     0x00007ffd`442bad6c
+00000001`dfd7ed00 00007ffd`a3f03b03     0x00007ffd`442ba032
+00000001`dfd7eda0 00007ffd`a3dd6af8     coreclr!CallDescrWorkerInternal+0x83
+quit:
